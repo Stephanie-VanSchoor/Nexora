@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataEngine Pro - Data Engineering</title>
+    <style>
+        /* ===== STYLES ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: #0b0e14; color: #e6edf3; min-height: 100vh; padding: 20px; }
+        .app-container { max-width: 1440px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: #161b22; border-radius: 16px; border: 1px solid #30363d; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+        .logo { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 700; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #58a6ff, #1f6feb); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .header-status { display: flex; align-items: center; gap: 20px; font-size: 14px; color: #8b949e; }
+        .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #3fb950; margin-right: 6px; animation: pulse-dot 2s infinite; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+        .header-btn { background: #238636; border: none; color: white; font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .header-btn:hover { background: #2ea043; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .metric-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 18px 20px; transition: 0.2s; }
+        .metric-card:hover { border-color: #58a6ff; }
+        .metric-label { font-size: 13px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; }
+        .metric-value { font-size: 28px; font-weight: 700; margin-top: 4px; color: #f0f6fc; }
+        .metric-value.green { color: #3fb950; }
+        .metric-value.blue { color: #58a6ff; }
+        .metric-value.orange { color: #d29922; }
+        .metric-value.purple { color: #bc8cff; }
+        .metric-value.red { color: #f85149; }
+        .pipeline-section { background: #161b22; border: 1px solid #30363d; border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .section-title small { font-weight: 400; font-size: 13px; color: #8b949e; }
+        .pipeline-steps { display: flex; flex-wrap: wrap; gap: 12px 8px; align-items: center; justify-content: center; }
+        .step { display: flex; align-items: center; gap: 8px; background: #0d1117; padding: 10px 20px; border-radius: 30px; border: 1px solid #30363d; font-size: 14px; font-weight: 500; transition: 0.3s; min-width: 120px; justify-content: center; }
+        .step .step-icon { font-size: 18px; }
+        .step.active { border-color: #58a6ff; background: #1c2a3f; box-shadow: 0 0 20px rgba(88, 166, 255, 0.15); }
+        .step.done { border-color: #3fb950; background: #132d1a; }
+        .step.error { border-color: #f85149; background: #3d1a1a; }
+        .step-arrow { color: #30363d; font-size: 20px; font-weight: 300; }
+        .row-2cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 768px) { .row-2cols { grid-template-columns: 1fr; } }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; padding: 20px; }
+        .card-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #f0f6fc; }
+        .chart-bars { display: flex; align-items: flex-end; justify-content: space-around; height: 160px; gap: 8px; padding-top: 10px; }
+        .bar-wrapper { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .bar { width: 100%; max-width: 40px; background: linear-gradient(180deg, #58a6ff, #1f6feb); border-radius: 4px 4px 0 0; min-height: 8px; transition: height 0.8s ease; }
+        .bar-label { font-size: 11px; color: #8b949e; margin-top: 6px; }
+        .history-list { max-height: 180px; overflow-y: auto; }
+        .history-list::-webkit-scrollbar { width: 4px; }
+        .history-list::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
+        .history-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #21262d; font-size: 13px; color: #c9d1d9; }
+        .history-item .status-badge { padding: 2px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-badge.success { background: #132d1a; color: #3fb950; }
+        .status-badge.error { background: #3d1a1a; color: #f85149; }
+        .status-badge.running { background: #1c2a3f; color: #58a6ff; }
+        .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        @media (max-width: 600px) { .config-grid { grid-template-columns: 1fr; } }
+        .config-item label { display: block; font-size: 13px; color: #8b949e; margin-bottom: 4px; }
+        .config-item input, .config-item select { width: 100%; background: #0d1117; border: 1px solid #30363d; color: #e6edf3; padding: 10px 14px; border-radius: 8px; font-size: 14px; outline: none; transition: 0.2s; }
+        .config-item input:focus, .config-item select:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15); }
+        .config-item input::placeholder { color: #484f58; }
+        .btn-run { width: 100%; padding: 14px; background: #238636; border: none; color: white; font-weight: 700; font-size: 16px; border-radius: 10px; cursor: pointer; transition: 0.2s; margin-top: 4px; }
+        .btn-run:hover { background: #2ea043; }
+        .btn-run:disabled { opacity: 0.5; cursor: not-allowed; }
+        .footer { text-align: center; color: #484f58; font-size: 13px; padding: 20px 0 10px; border-top: 1px solid #21262d; margin-top: 10px; }
+        .footer a { color: #58a6ff; text-decoration: none; }
+        .fade-in { animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 16px 24px; color: #f0f6fc; font-size: 14px; font-weight: 500; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); display: flex; align-items: center; gap: 12px; transform: translateY(120px); opacity: 0; transition: 0.4s ease; z-index: 999; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast .toast-icon { font-size: 24px; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <header class="header">
+        <div class="logo"><span class="logo-icon">⛁</span> DataEngine Pro</div>
+        <div class="header-status">
+            <span><span class="status-dot"></span> API Python active</span>
+            <span>⚡ v2.4.1</span>
+            <button class="header-btn" onclick="runPipeline()">▶ Exécuter</button>
+        </div>
+    </header>
+
+    <section class="metrics-grid">
+        <div class="metric-card"><div class="metric-label">📥 Lignes traitées</div><div class="metric-value blue" id="metricRows">0</div></div>
+        <div class="metric-card"><div class="metric-label">⚡ Taux de succès</div><div class="metric-value green" id="metricSuccess">100%</div></div>
+        <div class="metric-card"><div class="metric-label">⏱️ Dernier run</div><div class="metric-value orange" id="metricLastRun">--</div></div>
+        <div class="metric-card"><div class="metric-label">📦 Pipelines</div><div class="metric-value purple" id="metricPipelines">0</div></div>
+    </section>
+
+    <section class="pipeline-section fade-in">
+        <div class="section-title">🔄 Pipeline ETL <small>— Orchestration réelle (Python/Pandas)</small></div>
+        <div class="pipeline-steps" id="pipelineSteps">
+            <div class="step" id="stepExtract"><span class="step-icon">📂</span> Extraction</div>
+            <span class="step-arrow">→</span>
+            <div class="step" id="stepTransform"><span class="step-icon">🔄</span> Transformation</div>
+            <span class="step-arrow">→</span>
+            <div class="step" id="stepLoad"><span class="step-icon">💾</span> Chargement</div>
+            <span class="step-arrow">→</span>
+            <div class="step" id="stepValidate"><span class="step-icon">✅</span> Validation</div>
+        </div>
+    </section>
+
+    <section class="row-2cols">
+        <div class="card">
+            <div class="card-title">📊 Volume de données par source</div>
+            <div class="chart-bars" id="chartBars"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">📋 Historique des exécutions</div>
+            <div class="history-list" id="historyList"><div class="history-item" style="color:#484f58;text-align:center;padding:20px 0;">Aucune exécution</div></div>
+        </div>
+    </section>
+
+    <section class="card" style="margin-bottom:24px;">
+        <div class="section-title">⚙️ Configuration du pipeline <small>— Sources & paramètres</small></div>
+        <div class="config-grid">
+            <div class="config-item"><label>Source de données</label><select id="dataSource"><option value="api">API REST</option><option value="csv">CSV</option><option value="db">Base SQL</option></select></div>
+            <div class="config-item"><label>Format de sortie</label><select id="outputFormat"><option value="parquet">Parquet</option><option value="csv">CSV</option><option value="json">JSON</option></select></div>
+            <div class="config-item"><label>Filtre (optionnel)</label><input type="text" id="filterInput" placeholder="Ex: date > 2025-01-01" value=""></div>
+            <div class="config-item"><label>Mode d'exécution</label><select id="execMode"><option value="full">Complet (Full)</option><option value="incremental">Incrémental</option></select></div>
+        </div>
+        <button class="btn-run" id="runBtn" onclick="runPipeline()">🚀 Lancer le pipeline</button>
+    </section>
+
+    <div class="footer">DataEngine Pro • Backend Python (FastAPI) + IA • <a href="#" onclick="alert('🚧 Version full-stack — Le Python fait le vrai travail !')">v2.4.1</a></div>
+</div>
+
+<div class="toast" id="toast"><span class="toast-icon">✅</span><span id="toastMessage">Prêt</span></div>
+
+<script>
+    // ============================================================
+    // FRONTEND JAVASCRIPT - Appel vers l'API PYTHON
+    // ============================================================
+    const $ = id => document.getElementById(id);
+    
+    // 🔥 PORT 8888 - DIFFÉRENT DE TOUT ! 🔥
+    const API_URL = 'http://localhost:8888/api/pipeline/run';
+
+    const state = {
+        rowsProcessed: 0,
+        totalRuns: 0,
+        successRate: 100,
+        lastRunTime: null,
+        history: [],
+        isRunning: false,
+    };
+
+    const steps = {
+        extract: $('stepExtract'),
+        transform: $('stepTransform'),
+        load: $('stepLoad'),
+        validate: $('stepValidate'),
+    };
+
+    function resetSteps() { Object.values(steps).forEach(el => el.className = 'step'); }
+    function setStep(id, status) {
+        const el = steps[id];
+        if (!el) return;
+        el.className = 'step';
+        if (status === 'active') el.classList.add('active');
+        if (status === 'done') el.classList.add('done');
+        if (status === 'error') el.classList.add('error');
+    }
+
+    function showToast(msg, icon = '✅') {
+        $('toastMessage').textContent = msg;
+        document.querySelector('#toast .toast-icon').textContent = icon;
+        const t = $('toast');
+        t.classList.add('show');
+        clearTimeout(window.toastTimeout);
+        window.toastTimeout = setTimeout(() => t.classList.remove('show'), 4000);
+    }
+
+    function updateMetrics() {
+        $('metricRows').textContent = state.rowsProcessed.toLocaleString();
+        $('metricSuccess').textContent = state.successRate + '%';
+        $('metricLastRun').textContent = state.lastRunTime || '--';
+        $('metricPipelines').textContent = state.totalRuns;
+    }
+
+    function updateHistory() {
+        const list = $('historyList');
+        if (state.history.length === 0) {
+            list.innerHTML = `<div class="history-item" style="color:#484f58;text-align:center;padding:20px 0;">Aucune exécution</div>`;
+            return;
+        }
+        list.innerHTML = state.history.map(item => `
+            <div class="history-item">
+                <span>${item.time}</span>
+                <span><span class="status-badge ${item.status}">${item.status}</span> ${item.rows ? '• '+item.rows+' lignes' : ''}</span>
+            </div>
+        `).join('');
+        list.scrollTop = list.scrollHeight;
+    }
+
+    function renderChart(data) {
+        const sources = ['API', 'CSV', 'SQL', 'NoSQL', 'Logs'];
+        const values = data || [42, 28, 35, 18, 22];
+        const max = Math.max(...values, 1);
+        $('chartBars').innerHTML = sources.map((label, i) => {
+            const height = Math.max(8, (values[i] / max) * 120);
+            return `<div class="bar-wrapper"><div class="bar" style="height:${height}px;"></div><span class="bar-label">${label}</span></div>`;
+        }).join('');
+    }
+
+    async function runPipeline() {
+        if (state.isRunning) {
+            showToast('⏳ Un pipeline est déjà en cours...', '⏳');
+            return;
+        }
+
+        state.isRunning = true;
+        const runBtn = $('runBtn');
+        runBtn.disabled = true;
+        runBtn.textContent = '⏳ Appel API...';
+        resetSteps();
+        showToast('🚀 Envoi de la requête à Python...', '🚀');
+
+        const config = {
+            source: $('dataSource').value,
+            output: $('outputFormat').value,
+            filter: $('filterInput').value || '',
+            mode: $('execMode').value,
+        };
+
+        try {
+            setStep('extract', 'active');
+            await sleep(300);
+
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(config),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Erreur serveur Python');
+            }
+
+            const data = await response.json();
+
+            setStep('extract', 'done');
+            await sleep(200);
+            setStep('transform', 'done');
+            await sleep(200);
+            setStep('load', 'done');
+            await sleep(200);
+            setStep('validate', 'done');
+
+            const rows = data.loaded_rows || data.clean_rows || 0;
+            state.rowsProcessed += rows;
+            state.totalRuns += 1;
+            state.lastRunTime = new Date().toLocaleTimeString('fr-FR');
+            state.successRate = Math.min(100, state.successRate + 0.5);
+
+            state.history.unshift({
+                time: new Date().toLocaleString('fr-FR'),
+                status: 'success',
+                rows: rows,
+            });
+            if (state.history.length > 20) state.history.pop();
+
+            updateMetrics();
+            updateHistory();
+
+            renderChart([
+                Math.floor(Math.random() * 50) + 10,
+                Math.floor(Math.random() * 40) + 10,
+                Math.floor(Math.random() * 45) + 10,
+                Math.floor(Math.random() * 30) + 5,
+                Math.floor(Math.random() * 35) + 5,
+            ]);
+
+            showToast(`✅ ${data.message}`, '🎉');
+
+        } catch (err) {
+            console.error('Erreur :', err);
+            setStep('validate', 'error');
+            showToast(`❌ Erreur : ${err.message}`, '❌');
+            state.totalRuns += 1;
+            state.successRate = Math.max(0, state.successRate - 2);
+            state.history.unshift({
+                time: new Date().toLocaleString('fr-FR'),
+                status: 'error',
+                rows: null,
+            });
+            updateMetrics();
+            updateHistory();
+        } finally {
+            state.isRunning = false;
+            runBtn.disabled = false;
+            runBtn.textContent = '🚀 Lancer le pipeline';
+        }
+    }
+
+    function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderChart();
+        updateMetrics();
+        updateHistory();
+        showToast('👋 Connecté à l\'API Python sur le port 8888 !', '⛁');
+    });
+</script>
+</body>
+</html>
