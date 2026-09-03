@@ -1,309 +1,3269 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DataEngine Pro - Data Engineering</title>
-    <style>
-        /* ===== STYLES ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: #0b0e14; color: #e6edf3; min-height: 100vh; padding: 20px; }
-        .app-container { max-width: 1440px; margin: 0 auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: #161b22; border-radius: 16px; border: 1px solid #30363d; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-        .logo { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 700; }
-        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #58a6ff, #1f6feb); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .header-status { display: flex; align-items: center; gap: 20px; font-size: 14px; color: #8b949e; }
-        .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #3fb950; margin-right: 6px; animation: pulse-dot 2s infinite; }
-        @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
-        .header-btn { background: #238636; border: none; color: white; font-weight: 600; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.2s; }
-        .header-btn:hover { background: #2ea043; }
-        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
-        .metric-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 18px 20px; transition: 0.2s; }
-        .metric-card:hover { border-color: #58a6ff; }
-        .metric-label { font-size: 13px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; }
-        .metric-value { font-size: 28px; font-weight: 700; margin-top: 4px; color: #f0f6fc; }
-        .metric-value.green { color: #3fb950; }
-        .metric-value.blue { color: #58a6ff; }
-        .metric-value.orange { color: #d29922; }
-        .metric-value.purple { color: #bc8cff; }
-        .metric-value.red { color: #f85149; }
-        .pipeline-section { background: #161b22; border: 1px solid #30363d; border-radius: 16px; padding: 24px; margin-bottom: 24px; }
-        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-        .section-title small { font-weight: 400; font-size: 13px; color: #8b949e; }
-        .pipeline-steps { display: flex; flex-wrap: wrap; gap: 12px 8px; align-items: center; justify-content: center; }
-        .step { display: flex; align-items: center; gap: 8px; background: #0d1117; padding: 10px 20px; border-radius: 30px; border: 1px solid #30363d; font-size: 14px; font-weight: 500; transition: 0.3s; min-width: 120px; justify-content: center; }
-        .step .step-icon { font-size: 18px; }
-        .step.active { border-color: #58a6ff; background: #1c2a3f; box-shadow: 0 0 20px rgba(88, 166, 255, 0.15); }
-        .step.done { border-color: #3fb950; background: #132d1a; }
-        .step.error { border-color: #f85149; background: #3d1a1a; }
-        .step-arrow { color: #30363d; font-size: 20px; font-weight: 300; }
-        .row-2cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
-        @media (max-width: 768px) { .row-2cols { grid-template-columns: 1fr; } }
-        .card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; padding: 20px; }
-        .card-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #f0f6fc; }
-        .chart-bars { display: flex; align-items: flex-end; justify-content: space-around; height: 160px; gap: 8px; padding-top: 10px; }
-        .bar-wrapper { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .bar { width: 100%; max-width: 40px; background: linear-gradient(180deg, #58a6ff, #1f6feb); border-radius: 4px 4px 0 0; min-height: 8px; transition: height 0.8s ease; }
-        .bar-label { font-size: 11px; color: #8b949e; margin-top: 6px; }
-        .history-list { max-height: 180px; overflow-y: auto; }
-        .history-list::-webkit-scrollbar { width: 4px; }
-        .history-list::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
-        .history-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #21262d; font-size: 13px; color: #c9d1d9; }
-        .history-item .status-badge { padding: 2px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .status-badge.success { background: #132d1a; color: #3fb950; }
-        .status-badge.error { background: #3d1a1a; color: #f85149; }
-        .status-badge.running { background: #1c2a3f; color: #58a6ff; }
-        .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-        @media (max-width: 600px) { .config-grid { grid-template-columns: 1fr; } }
-        .config-item label { display: block; font-size: 13px; color: #8b949e; margin-bottom: 4px; }
-        .config-item input, .config-item select { width: 100%; background: #0d1117; border: 1px solid #30363d; color: #e6edf3; padding: 10px 14px; border-radius: 8px; font-size: 14px; outline: none; transition: 0.2s; }
-        .config-item input:focus, .config-item select:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15); }
-        .config-item input::placeholder { color: #484f58; }
-        .btn-run { width: 100%; padding: 14px; background: #238636; border: none; color: white; font-weight: 700; font-size: 16px; border-radius: 10px; cursor: pointer; transition: 0.2s; margin-top: 4px; }
-        .btn-run:hover { background: #2ea043; }
-        .btn-run:disabled { opacity: 0.5; cursor: not-allowed; }
-        .footer { text-align: center; color: #484f58; font-size: 13px; padding: 20px 0 10px; border-top: 1px solid #21262d; margin-top: 10px; }
-        .footer a { color: #58a6ff; text-decoration: none; }
-        .fade-in { animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .toast { position: fixed; bottom: 30px; right: 30px; background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 16px 24px; color: #f0f6fc; font-size: 14px; font-weight: 500; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); display: flex; align-items: center; gap: 12px; transform: translateY(120px); opacity: 0; transition: 0.4s ease; z-index: 999; }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast .toast-icon { font-size: 24px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sellify — Marketplace digitale</title>
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #f7f7f5;
+    --white: #ffffff;
+    --black: #111111;
+    --text: #181818;
+    --muted: #737373;
+    --border: #e5e5e5;
+    --purple: #7c3aed;
+    --purple-dark: #6d28d9;
+    --purple-light: #ede9fe;
+    --green: #16a34a;
+    --red: #dc2626;
+    --blue: #2563eb;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header {
+    min-height: 72px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 5%;
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 900;
+}
+
+.logo span {
+    color: var(--purple);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+nav a {
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.sell-button,
+.cart-button {
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 9px;
+}
+
+.sell-button {
+    border: none;
+    background: var(--black);
+    color: white;
+    padding: 11px 17px;
+}
+
+.cart-button {
+    position: relative;
+    border: 1px solid var(--border);
+    background: white;
+    padding: 10px 14px;
+}
+
+#cartCount {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+
+    width: 20px;
+    height: 20px;
+
+    background: var(--purple);
+    color: white;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+}
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero {
+    text-align: center;
+    padding: 90px 20px 75px;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #ddd6fe,
+            transparent 42%
+        ),
+        var(--bg);
+}
+
+.badge {
+    display: inline-block;
+
+    padding: 8px 14px;
+
+    background: var(--purple-light);
+    color: var(--purple-dark);
+
+    border-radius: 999px;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    margin-bottom: 22px;
+}
+
+.hero h1 {
+    font-size: clamp(42px, 7vw, 76px);
+    line-height: .95;
+    letter-spacing: -4px;
+}
+
+.hero h1 span {
+    color: var(--purple);
+}
+
+.hero p {
+    max-width: 620px;
+    margin: 25px auto;
+
+    color: var(--muted);
+
+    line-height: 1.6;
+    font-size: 18px;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.primary-button,
+.secondary-button {
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.primary-button {
+    background: var(--black);
+    color: white;
+    border: none;
+}
+
+.secondary-button {
+    background: white;
+    border: 1px solid var(--border);
+}
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.search-container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 0 20px 30px;
+}
+
+.search {
+    width: 100%;
+    padding: 15px 18px;
+
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    outline: none;
+    font-size: 15px;
+}
+
+/* =====================================================
+   CATEGORIES
+===================================================== */
+
+.categories {
+    max-width: 1100px;
+    margin: auto;
+
+    padding: 0 20px 35px;
+
+    display: flex;
+    gap: 10px;
+
+    overflow-x: auto;
+}
+
+.category {
+    white-space: nowrap;
+
+    padding: 10px 16px;
+
+    background: white;
+    border: 1px solid var(--border);
+
+    border-radius: 999px;
+
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.category.active {
+    background: var(--black);
+    color: white;
+}
+
+/* =====================================================
+   PRODUCTS
+===================================================== */
+
+.products-section {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+}
+
+.section-title h2 {
+    font-size: 28px;
+}
+
+.products-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+}
+
+/* =====================================================
+   PRODUCT CARD
+===================================================== */
+
+.product-card {
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    transition: .2s;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.08);
+}
+
+/* =====================================================
+   IMAGE PRINCIPALE
+===================================================== */
+
+.product-image {
+    width: 100%;
+    height: 240px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #111,
+            #6d28d9
+        );
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    cursor: zoom-in;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition: .25s;
+}
+
+.product-image:hover img {
+    transform: scale(1.04);
+}
+
+.no-image {
+    font-size: 60px;
+}
+
+/* =====================================================
+   THUMBNAILS
+===================================================== */
+
+.product-thumbnails {
+    display: flex;
+
+    gap: 7px;
+
+    padding: 9px;
+
+    overflow-x: auto;
+
+    background: white;
+}
+
+.product-thumbnails img {
+    width: 52px;
+    height: 52px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+
+    border: 2px solid transparent;
+
+    cursor: pointer;
+}
+
+.product-thumbnails img:hover {
+    border-color: var(--purple);
+}
+
+/* =====================================================
+   PRODUCT INFO
+===================================================== */
+
+.product-info {
+    padding: 18px;
+}
+
+.product-category {
+    color: var(--purple);
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    text-transform: uppercase;
+
+    margin-bottom: 8px;
+}
+
+.product-name {
+    font-size: 19px;
+    font-weight: 900;
+
+    margin-bottom: 8px;
+}
+
+.product-description {
+    color: var(--muted);
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    min-height: 42px;
+}
+
+.product-files-count {
+    margin-top: 12px;
+
+    font-size: 13px;
+
+    color: var(--muted);
+
+    background: #f5f5f5;
+
+    padding: 8px 10px;
+
+    border-radius: 8px;
+}
+
+.product-bottom {
+    margin-top: 18px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+.price {
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.buy-button {
+    background: var(--black);
+
+    color: white;
+
+    border: none;
+
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+/* =====================================================
+   ACTIONS PRODUIT
+===================================================== */
+
+.product-actions {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 8px;
+
+    margin-top: 10px;
+}
+
+.product-action {
+    border: none;
+
+    padding: 9px;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.view-button {
+    background: #f3f4f6;
+    color: #111;
+}
+
+.edit-button {
+    background: var(--purple-light);
+    color: var(--purple-dark);
+}
+
+.delete-button {
+    width: 100%;
+
+    margin-top: 8px;
+
+    background: #fee2e2;
+
+    color: var(--red);
+}
+
+/* =====================================================
+   MODALS
+===================================================== */
+
+.modal {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,.68);
+
+    z-index: 500;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    width: 100%;
+
+    max-width: 700px;
+
+    max-height: 92vh;
+
+    overflow-y: auto;
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    position: relative;
+}
+
+.close {
+    position: absolute;
+
+    right: 18px;
+    top: 18px;
+
+    border: none;
+
+    background: #f1f1f1;
+
+    width: 35px;
+    height: 35px;
+
+    border-radius: 50%;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+.modal h2 {
+    margin-bottom: 25px;
+}
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    display: block;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+
+    padding: 13px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    outline: none;
+
+    font-family: inherit;
+}
+
+.form-group textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+/* =====================================================
+   UPLOAD PHOTOS
+===================================================== */
+
+.image-upload {
+    border: 2px dashed #d4d4d4;
+
+    border-radius: 14px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    background: #fafafa;
+}
+
+.image-upload-icon {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.image-upload p {
+    color: var(--muted);
+
+    font-size: 13px;
+
+    margin: 7px 0 15px;
+}
+
+.image-upload input {
+    border: none;
+}
+
+/* =====================================================
+   PREVIEW PHOTOS
+===================================================== */
+
+.images-preview {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+.preview-item {
+    position: relative;
+
+    height: 120px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background: #eee;
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.preview-number {
+    position: absolute;
+
+    top: 6px;
+    left: 6px;
+
+    background: rgba(0,0,0,.75);
+
+    color: white;
+
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    font-size: 11px;
+}
+
+.preview-remove {
+    position: absolute;
+
+    top: 6px;
+    right: 6px;
+
+    width: 27px;
+    height: 27px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(0,0,0,.75);
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 16px;
+}
+
+.main-photo-label {
+    position: absolute;
+
+    bottom: 6px;
+    left: 6px;
+
+    background: var(--purple);
+
+    color: white;
+
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    font-size: 10px;
+
+    font-weight: bold;
+}
+
+/* =====================================================
+   FICHIERS
+===================================================== */
+
+.file-upload {
+    border: 2px dashed #d4d4d4;
+
+    border-radius: 14px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    background: #fafafa;
+}
+
+.file-upload-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.file-upload p {
+    color: var(--muted);
+
+    font-size: 13px;
+
+    margin: 7px 0 15px;
+}
+
+.file-upload input {
+    border: none;
+}
+
+.files-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-top: 18px;
+}
+
+.file-item {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding: 12px;
+
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+}
+
+.file-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+}
+
+.file-icon {
+    font-size: 25px;
+
+    flex-shrink: 0;
+}
+
+.file-details {
+    min-width: 0;
+
+    text-align: left;
+}
+
+.file-name {
+    font-size: 14px;
+
+    font-weight: bold;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.file-size {
+    color: var(--muted);
+
+    font-size: 12px;
+
+    margin-top: 3px;
+}
+
+.remove-file {
+    width: 30px;
+    height: 30px;
+
+    flex-shrink: 0;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #fee2e2;
+
+    color: var(--red);
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    font-size: 16px;
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.publish-button {
+    width: 100%;
+
+    padding: 15px;
+
+    background: var(--purple);
+
+    color: white;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+
+    font-size: 15px;
+}
+
+.cancel-button {
+    width: 100%;
+
+    padding: 13px;
+
+    margin-top: 10px;
+
+    background: #f3f4f6;
+
+    color: #111;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+/* =====================================================
+   GALLERY / ZOOM
+===================================================== */
+
+.gallery-modal {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    background: rgba(0,0,0,.92);
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+}
+
+.gallery-modal.show {
+    display: flex;
+}
+
+.gallery-image {
+    max-width: 90vw;
+    max-height: 82vh;
+
+    object-fit: contain;
+
+    border-radius: 8px;
+
+    user-select: none;
+}
+
+.gallery-close {
+    position: absolute;
+
+    top: 20px;
+    right: 25px;
+
+    width: 45px;
+    height: 45px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: white;
+
+    color: black;
+
+    font-size: 27px;
+
+    cursor: pointer;
+}
+
+.gallery-prev,
+.gallery-next {
+    position: absolute;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 50px;
+    height: 50px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: white;
+
+    color: black;
+
+    font-size: 25px;
+
+    cursor: pointer;
+}
+
+.gallery-prev {
+    left: 25px;
+}
+
+.gallery-next {
+    right: 25px;
+}
+
+.gallery-counter {
+    position: absolute;
+
+    bottom: 25px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    color: white;
+
+    background: rgba(0,0,0,.6);
+
+    padding: 8px 14px;
+
+    border-radius: 20px;
+
+    font-size: 14px;
+}
+
+/* =====================================================
+   PRODUCT DETAILS MODAL
+===================================================== */
+
+.details-gallery {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 8px;
+
+    margin-bottom: 22px;
+}
+
+.details-gallery img {
+    width: 100%;
+    height: 90px;
+
+    object-fit: cover;
+
+    border-radius: 9px;
+
+    cursor: zoom-in;
+}
+
+.details-name {
+    font-size: 30px;
+
+    font-weight: 900;
+
+    margin-bottom: 10px;
+}
+
+.details-category {
+    display: inline-block;
+
+    background: var(--purple-light);
+
+    color: var(--purple-dark);
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    margin-bottom: 15px;
+}
+
+.details-description {
+    color: var(--muted);
+
+    line-height: 1.7;
+
+    margin-bottom: 20px;
+
+    white-space: pre-wrap;
+}
+
+.details-price {
+    font-size: 30px;
+
+    font-weight: 900;
+
+    margin-bottom: 20px;
+}
+
+.details-files {
+    border-top: 1px solid var(--border);
+
+    padding-top: 18px;
+}
+
+.details-files h3 {
+    margin-bottom: 12px;
+}
+
+.details-file {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    margin-bottom: 8px;
+}
+
+/* =====================================================
+   CART
+===================================================== */
+
+.cart-item {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.remove-cart {
+    border: none;
+
+    background: none;
+
+    cursor: pointer;
+
+    font-size: 18px;
+}
+
+.cart-total {
+    display: flex;
+
+    justify-content: space-between;
+
+    font-size: 21px;
+
+    font-weight: 900;
+
+    margin: 25px 0;
+}
+
+.checkout {
+    width: 100%;
+
+    padding: 15px;
+
+    background: var(--green);
+
+    color: white;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+    margin-top: 90px;
+
+    background: #111;
+
+    color: white;
+
+    padding: 55px 5%;
+}
+
+.footer-inner {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.footer-inner p {
+    color: #aaa;
+    margin-top: 10px;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width: 900px) {
+
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .images-preview {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media(max-width: 650px) {
+
+    nav a {
+        display: none;
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        padding-top: 60px;
+    }
+
+    .hero h1 {
+        letter-spacing: -2px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .images-preview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .details-gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gallery-prev {
+        left: 10px;
+    }
+
+    .gallery-next {
+        right: 10px;
+    }
+}
+
+</style>
 </head>
+
 <body>
-<div class="app-container">
-    <header class="header">
-        <div class="logo"><span class="logo-icon">⛁</span> DataEngine Pro</div>
-        <div class="header-status">
-            <span><span class="status-dot"></span> API Python active</span>
-            <span>⚡ v2.4.1</span>
-            <button class="header-btn" onclick="runPipeline()">▶ Exécuter</button>
-        </div>
-    </header>
 
-    <section class="metrics-grid">
-        <div class="metric-card"><div class="metric-label">📥 Lignes traitées</div><div class="metric-value blue" id="metricRows">0</div></div>
-        <div class="metric-card"><div class="metric-label">⚡ Taux de succès</div><div class="metric-value green" id="metricSuccess">100%</div></div>
-        <div class="metric-card"><div class="metric-label">⏱️ Dernier run</div><div class="metric-value orange" id="metricLastRun">--</div></div>
-        <div class="metric-card"><div class="metric-label">📦 Pipelines</div><div class="metric-value purple" id="metricPipelines">0</div></div>
-    </section>
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
-    <section class="pipeline-section fade-in">
-        <div class="section-title">🔄 Pipeline ETL <small>— Orchestration réelle (Python/Pandas)</small></div>
-        <div class="pipeline-steps" id="pipelineSteps">
-            <div class="step" id="stepExtract"><span class="step-icon">📂</span> Extraction</div>
-            <span class="step-arrow">→</span>
-            <div class="step" id="stepTransform"><span class="step-icon">🔄</span> Transformation</div>
-            <span class="step-arrow">→</span>
-            <div class="step" id="stepLoad"><span class="step-icon">💾</span> Chargement</div>
-            <span class="step-arrow">→</span>
-            <div class="step" id="stepValidate"><span class="step-icon">✅</span> Validation</div>
-        </div>
-    </section>
+<header>
 
-    <section class="row-2cols">
-        <div class="card">
-            <div class="card-title">📊 Volume de données par source</div>
-            <div class="chart-bars" id="chartBars"></div>
-        </div>
-        <div class="card">
-            <div class="card-title">📋 Historique des exécutions</div>
-            <div class="history-list" id="historyList"><div class="history-item" style="color:#484f58;text-align:center;padding:20px 0;">Aucune exécution</div></div>
-        </div>
-    </section>
+    <div class="logo">
+        Sell<span>ify</span>
+    </div>
 
-    <section class="card" style="margin-bottom:24px;">
-        <div class="section-title">⚙️ Configuration du pipeline <small>— Sources & paramètres</small></div>
-        <div class="config-grid">
-            <div class="config-item"><label>Source de données</label><select id="dataSource"><option value="api">API REST</option><option value="csv">CSV</option><option value="db">Base SQL</option></select></div>
-            <div class="config-item"><label>Format de sortie</label><select id="outputFormat"><option value="parquet">Parquet</option><option value="csv">CSV</option><option value="json">JSON</option></select></div>
-            <div class="config-item"><label>Filtre (optionnel)</label><input type="text" id="filterInput" placeholder="Ex: date > 2025-01-01" value=""></div>
-            <div class="config-item"><label>Mode d'exécution</label><select id="execMode"><option value="full">Complet (Full)</option><option value="incremental">Incrémental</option></select></div>
-        </div>
-        <button class="btn-run" id="runBtn" onclick="runPipeline()">🚀 Lancer le pipeline</button>
-    </section>
+    <nav>
 
-    <div class="footer">DataEngine Pro • Backend Python (FastAPI) + IA • <a href="#" onclick="alert('🚧 Version full-stack — Le Python fait le vrai travail !')">v2.4.1</a></div>
+        <a href="#products">
+            Marketplace
+        </a>
+
+        <a href="#products">
+            Découvrir
+        </a>
+
+        <button
+            class="sell-button"
+            onclick="openCreateModal()"
+        >
+            + Vendre
+        </button>
+
+        <button
+            class="cart-button"
+            onclick="openCart()"
+        >
+            🛒
+
+            <span id="cartCount">
+                0
+            </span>
+
+        </button>
+
+    </nav>
+
+</header>
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="hero">
+
+    <div class="badge">
+        🚀 Marketplace de produits numériques
+    </div>
+
+    <h1>
+        Crée. Vends.<br>
+        <span>Gagne.</span>
+    </h1>
+
+    <p>
+        Vends tes templates HTML, designs, ebooks,
+        ressources, logiciels et fichiers numériques.
+    </p>
+
+    <div class="hero-buttons">
+
+        <button
+            class="primary-button"
+            onclick="openCreateModal()"
+        >
+            Commencer à vendre
+        </button>
+
+        <button
+            class="secondary-button"
+            onclick="document.getElementById('products').scrollIntoView()"
+        >
+            Explorer les produits
+        </button>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     SEARCH
+===================================================== -->
+
+<div class="search-container">
+
+    <input
+        class="search"
+        id="search"
+        type="text"
+        placeholder="🔎 Rechercher un produit..."
+        oninput="renderProducts()"
+    >
+
 </div>
 
-<div class="toast" id="toast"><span class="toast-icon">✅</span><span id="toastMessage">Prêt</span></div>
+<!-- =====================================================
+     CATEGORIES
+===================================================== -->
+
+<div class="categories">
+
+    <button
+        class="category active"
+        onclick="filterCategory('Tous', this)"
+    >
+        Tous
+    </button>
+
+    <button
+        class="category"
+        onclick="filterCategory('HTML', this)"
+    >
+        HTML
+    </button>
+
+    <button
+        class="category"
+        onclick="filterCategory('Design', this)"
+    >
+        Design
+    </button>
+
+    <button
+        class="category"
+        onclick="filterCategory('Ebook', this)"
+    >
+        Ebook
+    </button>
+
+    <button
+        class="category"
+        onclick="filterCategory('Marketing', this)"
+    >
+        Marketing
+    </button>
+
+    <button
+        class="category"
+        onclick="filterCategory('Code', this)"
+    >
+        Code
+    </button>
+
+</div>
+
+<!-- =====================================================
+     PRODUCTS
+===================================================== -->
+
+<main
+    class="products-section"
+    id="products"
+>
+
+    <div class="section-title">
+
+        <h2>
+            Produits populaires
+        </h2>
+
+        <span id="productCount"></span>
+
+    </div>
+
+    <div
+        class="products-grid"
+        id="productsGrid"
+    ></div>
+
+</main>
+
+<!-- =====================================================
+     MODAL CREATION / MODIFICATION
+===================================================== -->
+
+<div
+    class="modal"
+    id="productModal"
+>
+
+    <div class="modal-content">
+
+        <button
+            class="close"
+            onclick="closeProductModal()"
+        >
+            ×
+        </button>
+
+        <h2 id="productModalTitle">
+            🚀 Publier un produit
+        </h2>
+
+        <form id="productForm">
+
+            <div class="form-group">
+
+                <label>
+                    Nom du produit
+                </label>
+
+                <input
+                    type="text"
+                    id="productName"
+                    placeholder="Ex : Portfolio HTML Premium"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Description
+                </label>
+
+                <textarea
+                    id="productDescription"
+                    placeholder="Décris ton produit..."
+                    required
+                ></textarea>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Prix (€)
+                </label>
+
+                <input
+                    type="number"
+                    id="productPrice"
+                    placeholder="19.99"
+                    min="0"
+                    step="0.01"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Catégorie
+                </label>
+
+                <select id="productCategory">
+
+                    <option value="HTML">
+                        HTML
+                    </option>
+
+                    <option value="Design">
+                        Design
+                    </option>
+
+                    <option value="Ebook">
+                        Ebook
+                    </option>
+
+                    <option value="Marketing">
+                        Marketing
+                    </option>
+
+                    <option value="Code">
+                        Code
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- PHOTOS -->
+
+            <div class="form-group">
+
+                <label>
+                    🖼️ Photos du produit
+                </label>
+
+                <div class="image-upload">
+
+                    <div class="image-upload-icon">
+                        📸
+                    </div>
+
+                    <strong>
+                        Ajoute plusieurs photos
+                    </strong>
+
+                    <p>
+                        JPG, PNG ou WEBP
+                    </p>
+
+                    <input
+                        type="file"
+                        id="productImages"
+                        accept="image/png,image/jpeg,image/webp"
+                        multiple
+                    >
+
+                    <div
+                        class="images-preview"
+                        id="imagesPreview"
+                    ></div>
+
+                </div>
+
+            </div>
+
+            <!-- FICHIERS -->
+
+            <div class="form-group">
+
+                <label>
+                    📦 Fichiers du produit
+                </label>
+
+                <div class="file-upload">
+
+                    <div class="file-upload-icon">
+                        📁
+                    </div>
+
+                    <strong>
+                        Ajoute tous les fichiers
+                    </strong>
+
+                    <p>
+                        HTML, CSS, JS, README, LICENSE,
+                        PDF, ZIP, images, etc.
+                    </p>
+
+                    <input
+                        type="file"
+                        id="productFiles"
+                        multiple
+                    >
+
+                    <div
+                        class="files-list"
+                        id="filesList"
+                    ></div>
+
+                </div>
+
+            </div>
+
+            <button
+                type="submit"
+                class="publish-button"
+                id="saveProductButton"
+            >
+                🚀 Publier le produit
+            </button>
+
+            <button
+                type="button"
+                class="cancel-button"
+                onclick="closeProductModal()"
+            >
+                Annuler
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     DETAILS PRODUIT
+===================================================== -->
+
+<div
+    class="modal"
+    id="detailsModal"
+>
+
+    <div class="modal-content">
+
+        <button
+            class="close"
+            onclick="closeDetailsModal()"
+        >
+            ×
+        </button>
+
+        <div id="detailsContent"></div>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     ZOOM IMAGE
+===================================================== -->
+
+<div
+    class="gallery-modal"
+    id="galleryModal"
+>
+
+    <button
+        class="gallery-close"
+        onclick="closeGallery()"
+    >
+        ×
+    </button>
+
+    <button
+        class="gallery-prev"
+        onclick="previousImage()"
+    >
+        ‹
+    </button>
+
+    <img
+        class="gallery-image"
+        id="galleryImage"
+        src=""
+        alt="Image du produit"
+    >
+
+    <button
+        class="gallery-next"
+        onclick="nextImage()"
+    >
+        ›
+    </button>
+
+    <div
+        class="gallery-counter"
+        id="galleryCounter"
+    >
+        1 / 1
+    </div>
+
+</div>
+
+<!-- =====================================================
+     CART
+===================================================== -->
+
+<div
+    class="modal"
+    id="cartModal"
+>
+
+    <div class="modal-content">
+
+        <button
+            class="close"
+            onclick="closeCart()"
+        >
+            ×
+        </button>
+
+        <h2>
+            🛒 Ton panier
+        </h2>
+
+        <div id="cartItems"></div>
+
+        <div class="cart-total">
+
+            <span>
+                Total
+            </span>
+
+            <span id="cartTotal">
+                0.00 €
+            </span>
+
+        </div>
+
+        <button
+            class="checkout"
+            onclick="checkout()"
+        >
+            💳 Passer au paiement
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div class="footer-inner">
+
+        <div class="logo">
+            Sell<span>ify</span>
+        </div>
+
+        <p>
+            Ta marketplace pour vendre des produits numériques.
+        </p>
+
+    </div>
+
+</footer>
 
 <script>
-    // ============================================================
-    // FRONTEND JAVASCRIPT - Appel vers l'API PYTHON
-    // ============================================================
-    const $ = id => document.getElementById(id);
-    
-    // 🔥 PORT 8888 - DIFFÉRENT DE TOUT ! 🔥
-    const API_URL = 'http://localhost:8888/api/pipeline/run';
 
-    const state = {
-        rowsProcessed: 0,
-        totalRuns: 0,
-        successRate: 100,
-        lastRunTime: null,
-        history: [],
-        isRunning: false,
-    };
+/* =====================================================
+   PRODUITS
+===================================================== */
 
-    const steps = {
-        extract: $('stepExtract'),
-        transform: $('stepTransform'),
-        load: $('stepLoad'),
-        validate: $('stepValidate'),
-    };
+let products = [
 
-    function resetSteps() { Object.values(steps).forEach(el => el.className = 'step'); }
-    function setStep(id, status) {
-        const el = steps[id];
-        if (!el) return;
-        el.className = 'step';
-        if (status === 'active') el.classList.add('active');
-        if (status === 'done') el.classList.add('done');
-        if (status === 'error') el.classList.add('error');
+    {
+        id: 1,
+
+        name: "Portfolio HTML Premium",
+
+        description:
+            "Un portfolio moderne et responsive.",
+
+        price: 19.99,
+
+        category: "HTML",
+
+        images: [
+            "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80",
+            "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=900&q=80",
+            "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=900&q=80"
+        ],
+
+        files: []
+    },
+
+    {
+        id: 2,
+
+        name: "Landing Page SaaS",
+
+        description:
+            "Landing page professionnelle pour startup.",
+
+        price: 24.99,
+
+        category: "HTML",
+
+        images: [
+            "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=900&q=80",
+            "https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=900&q=80"
+        ],
+
+        files: []
+    },
+
+    {
+        id: 3,
+
+        name: "Pack UI Design",
+
+        description:
+            "Ressources UI modernes pour tes projets.",
+
+        price: 14.99,
+
+        category: "Design",
+
+        images: [
+            "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=900&q=80",
+            "https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=900&q=80"
+        ],
+
+        files: []
+    },
+
+    {
+        id: 4,
+
+        name: "Guide Marketing Digital",
+
+        description:
+            "Guide pour développer ton business en ligne.",
+
+        price: 9.99,
+
+        category: "Ebook",
+
+        images: [
+            "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=900&q=80"
+        ],
+
+        files: []
     }
 
-    function showToast(msg, icon = '✅') {
-        $('toastMessage').textContent = msg;
-        document.querySelector('#toast .toast-icon').textContent = icon;
-        const t = $('toast');
-        t.classList.add('show');
-        clearTimeout(window.toastTimeout);
-        window.toastTimeout = setTimeout(() => t.classList.remove('show'), 4000);
+];
+
+let cart = [];
+
+let currentCategory = "Tous";
+
+let editingProductId = null;
+
+let galleryImages = [];
+
+let galleryIndex = 0;
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(text) {
+
+    return String(text)
+
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+/* =====================================================
+   FORMAT TAILLE
+===================================================== */
+
+function formatFileSize(bytes) {
+
+    if (!bytes) {
+        return "0 octet";
     }
 
-    function updateMetrics() {
-        $('metricRows').textContent = state.rowsProcessed.toLocaleString();
-        $('metricSuccess').textContent = state.successRate + '%';
-        $('metricLastRun').textContent = state.lastRunTime || '--';
-        $('metricPipelines').textContent = state.totalRuns;
-    }
+    const units = [
+        "octets",
+        "Ko",
+        "Mo",
+        "Go"
+    ];
 
-    function updateHistory() {
-        const list = $('historyList');
-        if (state.history.length === 0) {
-            list.innerHTML = `<div class="history-item" style="color:#484f58;text-align:center;padding:20px 0;">Aucune exécution</div>`;
-            return;
+    const i = Math.floor(
+        Math.log(bytes) /
+        Math.log(1024)
+    );
+
+    return (
+        (bytes / Math.pow(1024, i))
+        .toFixed(1)
+        +
+        " "
+        +
+        units[i]
+    );
+}
+
+/* =====================================================
+   ICON FICHIER
+===================================================== */
+
+function getFileIcon(filename) {
+
+    const extension =
+        filename
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+    if (
+        extension === "html" ||
+        extension === "htm"
+    ) return "🌐";
+
+    if (extension === "css")
+        return "🎨";
+
+    if (extension === "js")
+        return "⚡";
+
+    if (extension === "pdf")
+        return "📕";
+
+    if (
+        extension === "zip" ||
+        extension === "rar" ||
+        extension === "7z"
+    ) return "📦";
+
+    if (
+        extension === "png" ||
+        extension === "jpg" ||
+        extension === "jpeg" ||
+        extension === "webp"
+    ) return "🖼️";
+
+    if (
+        extension === "md" ||
+        extension === "txt"
+    ) return "📝";
+
+    return "📄";
+}
+
+/* =====================================================
+   AFFICHER PRODUITS
+===================================================== */
+
+function renderProducts() {
+
+    const grid =
+        document.getElementById("productsGrid");
+
+    const search =
+        document
+            .getElementById("search")
+            .value
+            .toLowerCase()
+            .trim();
+
+    const filtered =
+        products.filter(product => {
+
+            const matchesSearch =
+                product.name
+                    .toLowerCase()
+                    .includes(search)
+                ||
+                product.description
+                    .toLowerCase()
+                    .includes(search);
+
+            const matchesCategory =
+                currentCategory === "Tous"
+                ||
+                product.category === currentCategory;
+
+            return (
+                matchesSearch &&
+                matchesCategory
+            );
+        });
+
+    grid.innerHTML = "";
+
+    document.getElementById("productCount")
+        .textContent =
+        filtered.length + " produits";
+
+    filtered.forEach(product => {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "product-card";
+
+        const images =
+            product.images || [];
+
+        const files =
+            product.files || [];
+
+        const mainImage =
+            images.length
+                ? images[0]
+                : "";
+
+        let thumbnails = "";
+
+        if (images.length > 1) {
+
+            thumbnails = `
+
+                <div class="product-thumbnails">
+
+                    ${images.map((image, index) => `
+
+                        <img
+                            src="${image}"
+                            alt="Photo ${index + 1}"
+                            onclick="openGallery(${product.id}, ${index})"
+                        >
+
+                    `).join("")}
+
+                </div>
+
+            `;
         }
-        list.innerHTML = state.history.map(item => `
-            <div class="history-item">
-                <span>${item.time}</span>
-                <span><span class="status-badge ${item.status}">${item.status}</span> ${item.rows ? '• '+item.rows+' lignes' : ''}</span>
+
+        card.innerHTML = `
+
+            <div
+                class="product-image"
+                onclick="openGallery(${product.id}, 0)"
+            >
+
+                ${
+                    mainImage
+
+                    ?
+
+                    `
+                    <img
+                        src="${mainImage}"
+                        alt="${escapeHTML(product.name)}"
+                    >
+                    `
+
+                    :
+
+                    `
+                    <div class="no-image">
+                        📦
+                    </div>
+                    `
+                }
+
             </div>
-        `).join('');
-        list.scrollTop = list.scrollHeight;
+
+            ${thumbnails}
+
+            <div class="product-info">
+
+                <div class="product-category">
+                    ${escapeHTML(product.category)}
+                </div>
+
+                <div class="product-name">
+                    ${escapeHTML(product.name)}
+                </div>
+
+                <div class="product-description">
+                    ${escapeHTML(product.description)}
+                </div>
+
+                <div class="product-files-count">
+                    📦 ${files.length}
+                    fichier(s) inclus
+                    • 🖼️ ${images.length}
+                    photo(s)
+                </div>
+
+                <div class="product-bottom">
+
+                    <div class="price">
+                        ${Number(product.price).toFixed(2)} €
+                    </div>
+
+                    <button
+                        class="buy-button"
+                        onclick="addToCart(${product.id})"
+                    >
+                        Acheter
+                    </button>
+
+                </div>
+
+                <div class="product-actions">
+
+                    <button
+                        class="product-action view-button"
+                        onclick="viewProduct(${product.id})"
+                    >
+                        👁️ Voir
+                    </button>
+
+                    <button
+                        class="product-action edit-button"
+                        onclick="editProduct(${product.id})"
+                    >
+                        ✏️ Modifier
+                    </button>
+
+                </div>
+
+                <button
+                    class="product-action delete-button"
+                    onclick="deleteProduct(${product.id})"
+                >
+                    🗑️ Supprimer
+                </button>
+
+            </div>
+
+        `;
+
+        grid.appendChild(card);
+
+    });
+}
+
+/* =====================================================
+   CATEGORIE
+===================================================== */
+
+function filterCategory(category, button) {
+
+    currentCategory = category;
+
+    document
+        .querySelectorAll(".category")
+        .forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+    button.classList.add("active");
+
+    renderProducts();
+}
+
+/* =====================================================
+   MODAL CREATION
+===================================================== */
+
+function openCreateModal() {
+
+    editingProductId = null;
+
+    document.getElementById("productModalTitle")
+        .textContent =
+        "🚀 Publier un produit";
+
+    document.getElementById("saveProductButton")
+        .textContent =
+        "🚀 Publier le produit";
+
+    document.getElementById("productForm").reset();
+
+    document.getElementById("imagesPreview")
+        .innerHTML = "";
+
+    document.getElementById("filesList")
+        .innerHTML = "";
+
+    document.getElementById("productModal")
+        .classList.add("show");
+}
+
+/* =====================================================
+   FERMER MODAL
+===================================================== */
+
+function closeProductModal() {
+
+    document.getElementById("productModal")
+        .classList.remove("show");
+
+    editingProductId = null;
+}
+
+/* =====================================================
+   MODIFIER PRODUIT
+===================================================== */
+
+function editProduct(id) {
+
+    const product =
+        products.find(
+            p => p.id === id
+        );
+
+    if (!product) return;
+
+    editingProductId = id;
+
+    document.getElementById("productModalTitle")
+        .textContent =
+        "✏️ Modifier le produit";
+
+    document.getElementById("saveProductButton")
+        .textContent =
+        "💾 Enregistrer les modifications";
+
+    document.getElementById("productName")
+        .value =
+        product.name;
+
+    document.getElementById("productDescription")
+        .value =
+        product.description;
+
+    document.getElementById("productPrice")
+        .value =
+        product.price;
+
+    document.getElementById("productCategory")
+        .value =
+        product.category;
+
+    renderExistingImages(product);
+
+    renderExistingFiles(product);
+
+    document.getElementById("productModal")
+        .classList.add("show");
+}
+
+/* =====================================================
+   PHOTOS EXISTANTES
+===================================================== */
+
+function renderExistingImages(product) {
+
+    const preview =
+        document.getElementById("imagesPreview");
+
+    preview.innerHTML = "";
+
+    (product.images || [])
+        .forEach((image, index) => {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "preview-item";
+
+            item.innerHTML = `
+
+                <img
+                    src="${image}"
+                    alt="Photo ${index + 1}"
+                    onclick="openGallery(${product.id}, ${index})"
+                >
+
+                <span class="preview-number">
+                    ${index + 1}
+                </span>
+
+                ${
+                    index === 0
+                    ?
+                    `
+                    <span class="main-photo-label">
+                        PRINCIPALE
+                    </span>
+                    `
+                    :
+                    ""
+                }
+
+                <button
+                    type="button"
+                    class="preview-remove"
+                    onclick="removeExistingImage(${product.id}, ${index})"
+                >
+                    ×
+                </button>
+
+            `;
+
+            preview.appendChild(item);
+        });
+}
+
+/* =====================================================
+   SUPPRIMER PHOTO EXISTANTE
+===================================================== */
+
+function removeExistingImage(productId, imageIndex) {
+
+    const product =
+        products.find(
+            p => p.id === productId
+        );
+
+    if (!product) return;
+
+    if (product.images.length <= 1) {
+
+        alert(
+            "📸 Le produit doit garder au moins une photo."
+        );
+
+        return;
     }
 
-    function renderChart(data) {
-        const sources = ['API', 'CSV', 'SQL', 'NoSQL', 'Logs'];
-        const values = data || [42, 28, 35, 18, 22];
-        const max = Math.max(...values, 1);
-        $('chartBars').innerHTML = sources.map((label, i) => {
-            const height = Math.max(8, (values[i] / max) * 120);
-            return `<div class="bar-wrapper"><div class="bar" style="height:${height}px;"></div><span class="bar-label">${label}</span></div>`;
-        }).join('');
-    }
+    product.images.splice(
+        imageIndex,
+        1
+    );
 
-    async function runPipeline() {
-        if (state.isRunning) {
-            showToast('⏳ Un pipeline est déjà en cours...', '⏳');
-            return;
+    renderExistingImages(product);
+
+    renderProducts();
+}
+
+/* =====================================================
+   AJOUTER NOUVELLES PHOTOS
+===================================================== */
+
+const productImagesInput =
+    document.getElementById("productImages");
+
+const imagesPreview =
+    document.getElementById("imagesPreview");
+
+productImagesInput.addEventListener(
+    "change",
+    function() {
+
+        const files =
+            Array.from(this.files);
+
+        files.forEach(file => {
+
+            if (!file.type.startsWith("image/"))
+                return;
+
+            const url =
+                URL.createObjectURL(file);
+
+            imagesPreview.innerHTML += `
+
+                <div class="preview-item">
+
+                    <img
+                        src="${url}"
+                        alt="Nouvelle photo"
+                    >
+
+                    <span class="main-photo-label">
+                        NOUVELLE
+                    </span>
+
+                </div>
+
+            `;
+
+        });
+    }
+);
+
+/* =====================================================
+   FICHIERS EXISTANTS
+===================================================== */
+
+function renderExistingFiles(product) {
+
+    const list =
+        document.getElementById("filesList");
+
+    list.innerHTML = "";
+
+    const files =
+        product.files || [];
+
+    files.forEach(
+        (file, index) => {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "file-item";
+
+            const name =
+                typeof file === "string"
+                    ? file
+                    : file.name;
+
+            const size =
+                typeof file === "string"
+                    ? ""
+                    : formatFileSize(file.size);
+
+            item.innerHTML = `
+
+                <div class="file-info">
+
+                    <div class="file-icon">
+                        ${getFileIcon(name)}
+                    </div>
+
+                    <div class="file-details">
+
+                        <div class="file-name">
+                            ${escapeHTML(name)}
+                        </div>
+
+                        <div class="file-size">
+                            ${size}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="remove-file"
+                    onclick="removeExistingFile(${product.id}, ${index})"
+                >
+                    ×
+                </button>
+
+            `;
+
+            list.appendChild(item);
         }
+    );
+}
 
-        state.isRunning = true;
-        const runBtn = $('runBtn');
-        runBtn.disabled = true;
-        runBtn.textContent = '⏳ Appel API...';
-        resetSteps();
-        showToast('🚀 Envoi de la requête à Python...', '🚀');
+/* =====================================================
+   SUPPRIMER FICHIER EXISTANT
+===================================================== */
 
-        const config = {
-            source: $('dataSource').value,
-            output: $('outputFormat').value,
-            filter: $('filterInput').value || '',
-            mode: $('execMode').value,
-        };
+function removeExistingFile(productId, fileIndex) {
 
-        try {
-            setStep('extract', 'active');
-            await sleep(300);
+    const product =
+        products.find(
+            p => p.id === productId
+        );
 
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(config),
-            });
+    if (!product) return;
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.detail || 'Erreur serveur Python');
+    if (product.files.length <= 1) {
+
+        alert(
+            "📦 Le produit doit garder au moins un fichier."
+        );
+
+        return;
+    }
+
+    product.files.splice(
+        fileIndex,
+        1
+    );
+
+    renderExistingFiles(product);
+
+    renderProducts();
+}
+
+/* =====================================================
+   AJOUT NOUVEAUX FICHIERS
+===================================================== */
+
+const productFilesInput =
+    document.getElementById("productFiles");
+
+productFilesInput.addEventListener(
+    "change",
+    function() {
+
+        renderNewFiles();
+
+    }
+);
+
+function renderNewFiles() {
+
+    const list =
+        document.getElementById("filesList");
+
+    const newFiles =
+        Array.from(
+            productFilesInput.files
+        );
+
+    newFiles.forEach(file => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "file-item";
+
+        item.innerHTML = `
+
+            <div class="file-info">
+
+                <div class="file-icon">
+                    ${getFileIcon(file.name)}
+                </div>
+
+                <div class="file-details">
+
+                    <div class="file-name">
+                        ${escapeHTML(file.name)}
+                    </div>
+
+                    <div class="file-size">
+                        ${formatFileSize(file.size)}
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+        list.appendChild(item);
+    });
+}
+
+/* =====================================================
+   ENREGISTRER PRODUIT
+===================================================== */
+
+document
+    .getElementById("productForm")
+    .addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+            const name =
+                document.getElementById(
+                    "productName"
+                ).value.trim();
+
+            const description =
+                document.getElementById(
+                    "productDescription"
+                ).value.trim();
+
+            const price =
+                parseFloat(
+                    document.getElementById(
+                        "productPrice"
+                    ).value
+                );
+
+            const category =
+                document.getElementById(
+                    "productCategory"
+                ).value;
+
+            if (
+                !name ||
+                !description ||
+                isNaN(price) ||
+                price < 0
+            ) {
+
+                alert(
+                    "⚠️ Vérifie les informations du produit."
+                );
+
+                return;
             }
 
-            const data = await response.json();
+            /* =========================================
+               MODIFICATION
+            ========================================= */
 
-            setStep('extract', 'done');
-            await sleep(200);
-            setStep('transform', 'done');
-            await sleep(200);
-            setStep('load', 'done');
-            await sleep(200);
-            setStep('validate', 'done');
+            if (editingProductId !== null) {
 
-            const rows = data.loaded_rows || data.clean_rows || 0;
-            state.rowsProcessed += rows;
-            state.totalRuns += 1;
-            state.lastRunTime = new Date().toLocaleTimeString('fr-FR');
-            state.successRate = Math.min(100, state.successRate + 0.5);
+                const product =
+                    products.find(
+                        p =>
+                            p.id ===
+                            editingProductId
+                    );
 
-            state.history.unshift({
-                time: new Date().toLocaleString('fr-FR'),
-                status: 'success',
-                rows: rows,
-            });
-            if (state.history.length > 20) state.history.pop();
+                if (!product) return;
 
-            updateMetrics();
-            updateHistory();
+                product.name =
+                    name;
 
-            renderChart([
-                Math.floor(Math.random() * 50) + 10,
-                Math.floor(Math.random() * 40) + 10,
-                Math.floor(Math.random() * 45) + 10,
-                Math.floor(Math.random() * 30) + 5,
-                Math.floor(Math.random() * 35) + 5,
-            ]);
+                product.description =
+                    description;
 
-            showToast(`✅ ${data.message}`, '🎉');
+                product.price =
+                    price;
 
-        } catch (err) {
-            console.error('Erreur :', err);
-            setStep('validate', 'error');
-            showToast(`❌ Erreur : ${err.message}`, '❌');
-            state.totalRuns += 1;
-            state.successRate = Math.max(0, state.successRate - 2);
-            state.history.unshift({
-                time: new Date().toLocaleString('fr-FR'),
-                status: 'error',
-                rows: null,
-            });
-            updateMetrics();
-            updateHistory();
-        } finally {
-            state.isRunning = false;
-            runBtn.disabled = false;
-            runBtn.textContent = '🚀 Lancer le pipeline';
+                product.category =
+                    category;
+
+                /* Ajouter nouvelles photos */
+
+                const newImages =
+                    Array.from(
+                        productImagesInput.files
+                    );
+
+                newImages.forEach(file => {
+
+                    if (
+                        file.type.startsWith(
+                            "image/"
+                        )
+                    ) {
+
+                        product.images.push(
+                            URL.createObjectURL(file)
+                        );
+
+                    }
+
+                });
+
+                /* Ajouter nouveaux fichiers */
+
+                const newFiles =
+                    Array.from(
+                        productFilesInput.files
+                    );
+
+                product.files.push(
+                    ...newFiles
+                );
+
+                renderProducts();
+
+                closeProductModal();
+
+                alert(
+                    "✅ Produit modifié avec succès !"
+                );
+
+                return;
+            }
+
+            /* =========================================
+               NOUVEAU PRODUIT
+            ========================================= */
+
+            const imageFiles =
+                Array.from(
+                    productImagesInput.files
+                );
+
+            const productFiles =
+                Array.from(
+                    productFilesInput.files
+                );
+
+            if (imageFiles.length === 0) {
+
+                alert(
+                    "📸 Ajoute au moins une photo."
+                );
+
+                return;
+            }
+
+            if (productFiles.length === 0) {
+
+                alert(
+                    "📦 Ajoute au moins un fichier."
+                );
+
+                return;
+            }
+
+            const imageURLs =
+                imageFiles.map(
+                    file =>
+                        URL.createObjectURL(file)
+                );
+
+            const newProduct = {
+
+                id: Date.now(),
+
+                name,
+
+                description,
+
+                price,
+
+                category,
+
+                images:
+                    imageURLs,
+
+                files:
+                    productFiles
+            };
+
+            products.unshift(
+                newProduct
+            );
+
+            renderProducts();
+
+            closeProductModal();
+
+            this.reset();
+
+            imagesPreview.innerHTML = "";
+
+            document.getElementById("filesList")
+                .innerHTML = "";
+
+            alert(
+                "🎉 Produit publié !"
+            );
         }
+    );
+
+/* =====================================================
+   VOIR PRODUIT
+===================================================== */
+
+function viewProduct(id) {
+
+    const product =
+        products.find(
+            p => p.id === id
+        );
+
+    if (!product) return;
+
+    const details =
+        document.getElementById(
+            "detailsContent"
+        );
+
+    const images =
+        product.images || [];
+
+    const files =
+        product.files || [];
+
+    details.innerHTML = `
+
+        <div class="details-gallery">
+
+            ${
+                images.map(
+                    (image, index) => `
+
+                        <img
+                            src="${image}"
+                            alt="Photo ${index + 1}"
+                            onclick="openGallery(${product.id}, ${index})"
+                        >
+
+                    `
+                ).join("")
+            }
+
+        </div>
+
+        <div class="details-category">
+            ${escapeHTML(product.category)}
+        </div>
+
+        <div class="details-name">
+            ${escapeHTML(product.name)}
+        </div>
+
+        <div class="details-description">
+            ${escapeHTML(product.description)}
+        </div>
+
+        <div class="details-price">
+            ${Number(product.price).toFixed(2)} €
+        </div>
+
+        <div class="details-files">
+
+            <h3>
+                📦 Fichiers inclus (${files.length})
+            </h3>
+
+            ${
+                files.length
+                ?
+
+                files.map(file => {
+
+                    const name =
+                        typeof file === "string"
+                            ? file
+                            : file.name;
+
+                    const size =
+                        typeof file === "string"
+                            ? ""
+                            : formatFileSize(file.size);
+
+                    return `
+
+                        <div class="details-file">
+
+                            <span>
+                                ${getFileIcon(name)}
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    ${escapeHTML(name)}
+                                </strong>
+
+                                <br>
+
+                                <small>
+                                    ${size}
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }).join("")
+
+                :
+
+                `
+                <p>
+                    Aucun fichier disponible dans la démo.
+                </p>
+                `
+            }
+
+        </div>
+
+        <button
+            class="publish-button"
+            onclick="addToCart(${product.id}); closeDetailsModal();"
+        >
+            🛒 Acheter — ${Number(product.price).toFixed(2)} €
+        </button>
+
+    `;
+
+    document.getElementById("detailsModal")
+        .classList.add("show");
+}
+
+/* =====================================================
+   FERMER DETAILS
+===================================================== */
+
+function closeDetailsModal() {
+
+    document.getElementById("detailsModal")
+        .classList.remove("show");
+}
+
+/* =====================================================
+   GALERIE / ZOOM
+===================================================== */
+
+function openGallery(productId, index) {
+
+    const product =
+        products.find(
+            p => p.id === productId
+        );
+
+    if (!product) return;
+
+    galleryImages =
+        product.images || [];
+
+    galleryIndex =
+        index || 0;
+
+    updateGallery();
+
+    document.getElementById("galleryModal")
+        .classList.add("show");
+}
+
+function updateGallery() {
+
+    if (!galleryImages.length)
+        return;
+
+    document.getElementById("galleryImage")
+        .src =
+        galleryImages[galleryIndex];
+
+    document.getElementById("galleryCounter")
+        .textContent =
+        (galleryIndex + 1)
+        +
+        " / "
+        +
+        galleryImages.length;
+}
+
+function nextImage() {
+
+    if (!galleryImages.length)
+        return;
+
+    galleryIndex++;
+
+    if (
+        galleryIndex >=
+        galleryImages.length
+    ) {
+        galleryIndex = 0;
     }
 
-    function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+    updateGallery();
+}
 
-    document.addEventListener('DOMContentLoaded', () => {
-        renderChart();
-        updateMetrics();
-        updateHistory();
-        showToast('👋 Connecté à l\'API Python sur le port 8888 !', '⛁');
-    });
+function previousImage() {
+
+    if (!galleryImages.length)
+        return;
+
+    galleryIndex--;
+
+    if (galleryIndex < 0) {
+
+        galleryIndex =
+            galleryImages.length - 1;
+    }
+
+    updateGallery();
+}
+
+function closeGallery() {
+
+    document.getElementById("galleryModal")
+        .classList.remove("show");
+}
+
+/* =====================================================
+   SUPPRIMER PRODUIT
+===================================================== */
+
+function deleteProduct(id) {
+
+    const product =
+        products.find(
+            p => p.id === id
+        );
+
+    if (!product) return;
+
+    const confirmation =
+        confirm(
+            "🗑️ Supprimer définitivement « " +
+            product.name +
+            " » ?"
+        );
+
+    if (!confirmation)
+        return;
+
+    products =
+        products.filter(
+            p => p.id !== id
+        );
+
+    cart =
+        cart.filter(
+            p => p.id !== id
+        );
+
+    renderProducts();
+
+    updateCart();
+
+    alert(
+        "✅ Produit supprimé."
+    );
+}
+
+/* =====================================================
+   PANIER
+===================================================== */
+
+function addToCart(id) {
+
+    const product =
+        products.find(
+            p => p.id === id
+        );
+
+    if (!product)
+        return;
+
+    cart.push(product);
+
+    updateCart();
+
+    alert(
+        "🛒 " +
+        product.name +
+        " ajouté au panier !"
+    );
+}
+
+function updateCart() {
+
+    document.getElementById("cartCount")
+        .textContent =
+        cart.length;
+
+    const container =
+        document.getElementById(
+            "cartItems"
+        );
+
+    container.innerHTML = "";
+
+    let total = 0;
+
+    cart.forEach(
+        (product, index) => {
+
+            total +=
+                Number(
+                    product.price
+                );
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+            item.className =
+                "cart-item";
+
+            item.innerHTML = `
+
+                <div>
+
+                    <strong>
+                        ${escapeHTML(product.name)}
+                    </strong>
+
+                    <br>
+
+                    <small>
+                        ${Number(product.price).toFixed(2)} €
+                    </small>
+
+                </div>
+
+                <button
+                    class="remove-cart"
+                    onclick="removeFromCart(${index})"
+                >
+                    🗑️
+                </button>
+
+            `;
+
+            container.appendChild(item);
+
+        }
+    );
+
+    document.getElementById("cartTotal")
+        .textContent =
+        total.toFixed(2) +
+        " €";
+}
+
+function removeFromCart(index) {
+
+    cart.splice(
+        index,
+        1
+    );
+
+    updateCart();
+}
+
+function openCart() {
+
+    updateCart();
+
+    document.getElementById("cartModal")
+        .classList.add("show");
+}
+
+function closeCart() {
+
+    document.getElementById("cartModal")
+        .classList.remove("show");
+}
+
+function checkout() {
+
+    if (cart.length === 0) {
+
+        alert(
+            "🛒 Ton panier est vide."
+        );
+
+        return;
+    }
+
+    alert(
+        "💳 Le paiement sera connecté ici."
+    );
+}
+
+/* =====================================================
+   FERMER MODALS
+===================================================== */
+
+window.addEventListener(
+    "click",
+    function(event) {
+
+        const productModal =
+            document.getElementById(
+                "productModal"
+            );
+
+        const detailsModal =
+            document.getElementById(
+                "detailsModal"
+            );
+
+        const cartModal =
+            document.getElementById(
+                "cartModal"
+            );
+
+        const galleryModal =
+            document.getElementById(
+                "galleryModal"
+            );
+
+        if (
+            event.target ===
+            productModal
+        ) {
+            closeProductModal();
+        }
+
+        if (
+            event.target ===
+            detailsModal
+        ) {
+            closeDetailsModal();
+        }
+
+        if (
+            event.target ===
+            cartModal
+        ) {
+            closeCart();
+        }
+
+        if (
+            event.target ===
+            galleryModal
+        ) {
+            closeGallery();
+        }
+
+    }
+);
+
+/* =====================================================
+   CLAVIER POUR GALERIE
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        const gallery =
+            document.getElementById(
+                "galleryModal"
+            );
+
+        if (
+            !gallery.classList.contains("show")
+        ) {
+            return;
+        }
+
+        if (event.key === "Escape") {
+            closeGallery();
+        }
+
+        if (event.key === "ArrowRight") {
+            nextImage();
+        }
+
+        if (event.key === "ArrowLeft") {
+            previousImage();
+        }
+    }
+);
+
+/* =====================================================
+   INITIALISATION
+===================================================== */
+
+renderProducts();
+
+updateCart();
+
 </script>
+
 </body>
 </html>
