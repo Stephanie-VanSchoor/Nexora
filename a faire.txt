@@ -1,0 +1,12 @@
+Pour une vraie version de Nexora, je mettrais au minimum :
+
+🔒 HTTPS — GitHub Pages fournit HTTPS.
+👤 Comptes utilisateurs sécurisés avec authentification.
+🗄️ Base de données avec règles d'accès.
+📁 Fichiers privés : les fichiers achetés ne doivent pas être accessibles avec une URL publique.
+💳 Aucune donnée bancaire sensible dans le site.
+🧾 Commandes avec identifiant unique et statut en attente / payé.
+✅ Validation du virement avant téléchargement.
+🔑 Liens de téléchargement temporaires ou protégés.
+🛡️ Protection contre les injections, accès non autorisés et modification des commandes.
+🔐 Secrets/API keys jamais dans GitHub.
