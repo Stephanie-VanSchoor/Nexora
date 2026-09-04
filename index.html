@@ -233,13 +233,30 @@ function loadProducts() {
             const p = JSON.parse(saved);
             if (p.length > 0) {
                 products = p;
+                // ⭐ NOUVEAU : charge les images et fichiers séparément
+                products.forEach(prod => {
+                    const imgs = localStorage.getItem('nexora_images_' + prod.id);
+                    if (imgs) prod.images = JSON.parse(imgs);
+                    const files = localStorage.getItem('nexora_files_' + prod.id);
+                    if (files) prod.files = JSON.parse(files);
+                });
                 console.log('✅ ' + products.length + ' produits chargés');
                 return;
             }
         } catch(e) {
-            console.log('⚠️ Erreur de chargement, produits par défaut');
+            console.log('⚠️ Erreur de chargement');
         }
     }
+    // Produits par défaut (si rien n'existe)
+    products = [
+        {id:1, name:'Template HTML Premium', description:'Un template moderne.\n\n- **Responsive**\n- **SEO optimisé**', price:19.99, category:'HTML', images:['https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=900&q=80'], files:[]},
+        {id:2, name:'Pack UI Design', description:'Ressources UI pour designers.', price:14.99, category:'Design', images:['https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=900&q=80'], files:[]}
+    ];
+    saveProducts();
+}
+
+
+
     // Produits par défaut (si rien n'est sauvegardé)
     products = [
         {id:1, name:'Template HTML Premium', description:'Un template moderne.\n\n- **Responsive**\n- **SEO optimisé**', price:19.99, category:'HTML', images:['https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=900&q=80'], downloadLink:'https://exemple.com/template.zip'},
