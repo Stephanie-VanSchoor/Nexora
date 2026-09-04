@@ -226,6 +226,9 @@ let tempImages = [];
 // =====================================================
 // STOCKAGE (GARDE TES PRODUITS !)
 // =====================================================
+// =====================================================
+// STOCKAGE (GARDE TES PRODUITS !)
+// =====================================================
 function loadProducts() {
     const saved = localStorage.getItem('nexora_products');
     if (saved) {
@@ -233,7 +236,7 @@ function loadProducts() {
             const p = JSON.parse(saved);
             if (p.length > 0) {
                 products = p;
-                // ⭐ NOUVEAU : charge les images et fichiers séparément
+                // Charge les images et fichiers séparément
                 products.forEach(prod => {
                     const imgs = localStorage.getItem('nexora_images_' + prod.id);
                     if (imgs) prod.images = JSON.parse(imgs);
@@ -253,23 +256,38 @@ function loadProducts() {
         {id:2, name:'Pack UI Design', description:'Ressources UI pour designers.', price:14.99, category:'Design', images:['https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=900&q=80'], files:[]}
     ];
     saveProducts();
-}
-
-
-
-    // Produits par défaut (si rien n'est sauvegardé)
-    products = [
-        {id:1, name:'Template HTML Premium', description:'Un template moderne.\n\n- **Responsive**\n- **SEO optimisé**', price:19.99, category:'HTML', images:['https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=900&q=80'], downloadLink:'https://exemple.com/template.zip'},
-        {id:2, name:'Pack UI Design', description:'Ressources UI pour designers.', price:14.99, category:'Design', images:['https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=900&q=80'], downloadLink:'https://exemple.com/design.zip'}
-    ];
-    saveProducts();
     console.log('📦 Produits par défaut créés');
 }
-function saveProducts() { 
-    localStorage.setItem('nexora_products', JSON.stringify(products));
+
+function saveProducts() {
+    // Sauvegarder les produits SANS les images/fichiers
+    const cleanProducts = products.map(p => ({
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        price: p.price,
+        category: p.category
+    }));
+    localStorage.setItem('nexora_products', JSON.stringify(cleanProducts));
+    
+    // Sauvegarder les images et fichiers séparément
+    products.forEach(p => {
+        if (p.images && p.images.length > 0) {
+            localStorage.setItem('nexora_images_' + p.id, JSON.stringify(p.images));
+        }
+        if (p.files && p.files.length > 0) {
+            localStorage.setItem('nexora_files_' + p.id, JSON.stringify(p.files));
+        }
+    });
     console.log('💾 Produits sauvegardés (' + products.length + ')');
 }
+
 loadProducts();
+
+
+
+
+ 
 
 // =====================================================
 // AFFICHAGE
