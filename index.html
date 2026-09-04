@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexora — Vends tes fichiers</title>
+    <title>Nexora — Vends tes logiciels</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:Arial,sans-serif; background:#f5f5f5; }
@@ -51,15 +51,13 @@
         .form-group { margin-bottom:16px; }
         .form-group label { display:block; font-weight:700; margin-bottom:4px; font-size:14px; }
         .form-group input, .form-group textarea, .form-group select { width:100%; padding:12px; border:2px solid #ddd; border-radius:8px; font-size:14px; }
+        .form-group .help { color:#666; font-size:12px; margin-top:4px; }
         .upload-zone { border:2px dashed #ddd; border-radius:12px; padding:20px; text-align:center; background:#fafafa; }
         .upload-zone input { margin-top:10px; }
         .preview { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:12px; }
         .preview .item { position:relative; height:80px; background:#eee; border-radius:8px; overflow:hidden; }
         .preview .item img { width:100%; height:100%; object-fit:cover; }
         .preview .item .rm { position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.7); color:white; border:none; border-radius:50%; width:22px; height:22px; cursor:pointer; font-size:14px; }
-        .file-list { margin-top:12px; }
-        .file-item { display:flex; justify-content:space-between; padding:8px 14px; background:white; border:1px solid #ddd; border-radius:6px; margin-bottom:6px; }
-        .file-item .rm { background:#fee2e2; border:none; padding:2px 10px; border-radius:4px; cursor:pointer; color:#dc2626; }
         .publish-btn { width:100%; padding:14px; background:#7c3aed; color:white; border:none; border-radius:10px; font-weight:700; font-size:16px; cursor:pointer; }
         .cancel-btn { width:100%; padding:12px; margin-top:8px; background:#f0f0f0; border:none; border-radius:10px; font-weight:600; cursor:pointer; }
         .detail-img { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
@@ -69,12 +67,14 @@
         .detail-feat { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; margin:16px 0; padding:12px 0; border-top:1px solid #ddd; border-bottom:1px solid #ddd; }
         .detail-price { font-size:30px; font-weight:800; }
         .detail-files { margin-top:16px; padding-top:16px; border-top:2px solid #ddd; }
-        .file-dl { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; background:#f9faff; border-radius:8px; border:1px solid #ddd; margin-top:8px; }
+        .file-dl { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; background:#f9faff; border-radius:8px; border:1px solid #ddd; margin-top:8px; flex-wrap:wrap; gap:8px; }
         .dl-btn { background:#7c3aed; color:white; border:none; padding:6px 18px; border-radius:6px; cursor:pointer; font-weight:700; }
         .cart-item { display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #ddd; }
         .cart-total { display:flex; justify-content:space-between; font-size:20px; font-weight:800; margin:16px 0; padding-top:12px; border-top:2px solid #ddd; }
         .checkout-btn { width:100%; padding:14px; background:#16a34a; color:white; border:none; border-radius:10px; font-weight:700; font-size:16px; cursor:pointer; }
         .footer { background:#1a1a2e; color:white; padding:30px 20px; text-align:center; margin-top:40px; }
+        .admin-msg { background:#fef3c7; border:1px solid #f59e0b; color:#92400e; padding:10px 16px; border-radius:8px; margin:10px 0; font-weight:600; display:none; }
+        .admin-msg.show { display:block; }
         @media(max-width:600px){ .grid{grid-template-columns:1fr} .detail-img{grid-template-columns:repeat(2,1fr)} .hero h1{font-size:32px} }
     </style>
 </head>
@@ -89,12 +89,12 @@
     </nav>
 </header>
 
-<!-- MODAL PASSWORD -->
+<!-- MODAL PASSWORD (mot de passe CACHÉ) -->
 <div class="modal" id="passModal">
     <div class="modal-box" style="max-width:400px;">
         <button class="close" onclick="closePass()">×</button>
         <h2>🔐 Admin</h2>
-        <p style="color:#666;margin:10px 0;">Mot de passe : Entre le mot de passe administrateur</p>
+        <p style="color:#666;margin:10px 0;">Entre le mot de passe administrateur</p>
         <input type="password" id="passInput" style="width:100%;padding:12px;border:2px solid #ddd;border-radius:8px;font-size:16px;" placeholder="Mot de passe" onkeydown="if(event.key==='Enter') checkPass()">
         <button class="publish-btn" style="margin-top:12px;" onclick="checkPass()">Valider</button>
         <button class="cancel-btn" onclick="closePass()">Annuler</button>
@@ -104,8 +104,9 @@
 <!-- HERO -->
 <section class="hero">
     <h1>Crée. Vends.<br><span>Télécharge.</span></h1>
-    <p style="color:#666;max-width:500px;margin:10px auto;">Vends tes fichiers numériques en quelques clics.</p>
+    <p style="color:#666;max-width:500px;margin:10px auto;">Vends tes logiciels, templates, ebooks et fichiers numériques.</p>
     <input class="search" id="search" placeholder="🔎 Rechercher..." oninput="render()">
+    <div class="admin-msg" id="adminMsg">✅ Mode Admin activé — Tu peux ajouter, modifier et supprimer des produits.</div>
 </section>
 
 <!-- CATEGORIES -->
@@ -121,7 +122,7 @@
 <!-- PRODUCTS -->
 <section class="products">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <h2>Nos produits</h2>
+        <h2>Mes produits</h2>
         <span id="count"></span>
     </div>
     <div class="grid" id="grid"></div>
@@ -134,8 +135,8 @@
         <h2 id="modalTitle">🚀 Publier un produit</h2>
         <form id="productForm">
             <div class="form-group">
-                <label>Nom</label>
-                <input type="text" id="pName" placeholder="Mon super produit" required>
+                <label>Nom du produit</label>
+                <input type="text" id="pName" placeholder="Ex: Mon Logiciel Pro" required>
             </div>
             <div class="form-group">
                 <label>Description</label>
@@ -156,18 +157,14 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>📸 Images</label>
-                <div class="upload-zone">
-                    <input type="file" id="pImages" accept="image/*" multiple>
-                    <div class="preview" id="imgPreview"></div>
-                </div>
+                <label>🖼️ URL des images (une par ligne)</label>
+                <textarea id="pImageUrls" placeholder="https://mon-site.com/image1.jpg&#10;https://mon-site.com/image2.jpg" style="min-height:80px;"></textarea>
+                <div class="help">Mets les liens de tes images, une par ligne. Pas besoin d'uploader.</div>
             </div>
             <div class="form-group">
-                <label>📦 Fichiers</label>
-                <div class="upload-zone">
-                    <input type="file" id="pFiles" multiple>
-                    <div class="file-list" id="filePreview"></div>
-                </div>
+                <label>📦 LIEN DE TÉLÉCHARGEMENT (fichier)</label>
+                <input type="url" id="pDownloadLink" placeholder="https://mon-site.com/mon-logiciel.exe" required>
+                <div class="help">Mets le lien direct vers ton fichier (Google Drive, Dropbox, ton serveur).</div>
             </div>
             <button type="submit" class="publish-btn" id="saveBtn">🚀 Publier</button>
             <button type="button" class="cancel-btn" onclick="closeModal()">Annuler</button>
@@ -213,48 +210,48 @@
 
 <script>
 // =====================================================
-// CONFIG
+// CONFIG - Mot de passe CACHÉ
 // =====================================================
-const PASSWORD = 'admin123';
+const ADMIN_PASSWORD = 'admin123';  // 🔥 Change ce mot de passe ici
+
 let isAdmin = false;
 let products = [];
 let cart = [];
 let currentCat = 'Tous';
 let editId = null;
-let tempImages = [];
-let tempFiles = [];
 let galleryImages = [];
 let galleryIndex = 0;
+let tempImages = [];
 
 // =====================================================
-// CONVERSION BASE64
-// =====================================================
-function toBase64(file) {
-    return new Promise((r) => {
-        const reader = new FileReader();
-        reader.onload = () => r(reader.result);
-        reader.readAsDataURL(file);
-    });
-}
-
-// =====================================================
-// STOCKAGE
+// STOCKAGE (GARDE TES PRODUITS !)
 // =====================================================
 function loadProducts() {
     const saved = localStorage.getItem('nexora_products');
     if (saved) {
         try {
             const p = JSON.parse(saved);
-            if (p.length > 0) { products = p; return; }
-        } catch(e) {}
+            if (p.length > 0) {
+                products = p;
+                console.log('✅ ' + products.length + ' produits chargés');
+                return;
+            }
+        } catch(e) {
+            console.log('⚠️ Erreur de chargement, produits par défaut');
+        }
     }
+    // Produits par défaut (si rien n'est sauvegardé)
     products = [
-        {id:1, name:'Template HTML Premium', description:'Un template moderne.\n\n- **Responsive**\n- **SEO optimisé**', price:19.99, category:'HTML', images:['https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=900&q=80'], files:[]},
-        {id:2, name:'Pack UI Design', description:'Ressources UI pour designers.', price:14.99, category:'Design', images:['https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=900&q=80'], files:[]}
+        {id:1, name:'Template HTML Premium', description:'Un template moderne.\n\n- **Responsive**\n- **SEO optimisé**', price:19.99, category:'HTML', images:['https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=900&q=80'], downloadLink:'https://exemple.com/template.zip'},
+        {id:2, name:'Pack UI Design', description:'Ressources UI pour designers.', price:14.99, category:'Design', images:['https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=900&q=80'], downloadLink:'https://exemple.com/design.zip'}
     ];
     saveProducts();
+    console.log('📦 Produits par défaut créés');
 }
-function saveProducts() { localStorage.setItem('nexora_products', JSON.stringify(products)); }
+function saveProducts() { 
+    localStorage.setItem('nexora_products', JSON.stringify(products));
+    console.log('💾 Produits sauvegardés (' + products.length + ')');
+}
 loadProducts();
 
 // =====================================================
@@ -271,24 +268,26 @@ function render() {
     grid.innerHTML = '';
     document.getElementById('count').textContent = filtered.length + ' produits';
     if (filtered.length === 0) {
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:#666;"><div style="font-size:50px;">🔍</div><p>Aucun produit</p></div>';
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:#666;"><div style="font-size:50px;">🔍</div><p>Aucun produit trouvé</p></div>';
         return;
     }
     filtered.forEach(p => {
         const card = document.createElement('div');
         card.className = 'card';
-        const img = p.images && p.images.length > 0 ? p.images[0] : '';
-        const thumb = p.images && p.images.length > 1 ? `<div style="display:flex;gap:4px;padding:8px;overflow-x:auto;">${p.images.map((im,i) => `<img src="${im}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;border:2px solid transparent;cursor:pointer;" onclick="event.stopPropagation();openGallery(${p.id},${i})">`).join('')}</div>` : '';
+        const images = p.images || [];
+        const mainImg = images.length > 0 ? images[0] : '';
+        const thumb = images.length > 1 ? `<div style="display:flex;gap:4px;padding:8px;overflow-x:auto;">${images.map((im,i) => `<img src="${im}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;border:2px solid transparent;cursor:pointer;" onclick="event.stopPropagation();openGallery(${p.id},${i})">`).join('')}</div>` : '';
+        const hasLink = p.downloadLink && p.downloadLink.length > 0;
         card.innerHTML = `
             <div class="card-img" onclick="openGallery(${p.id},0)">
-                ${img ? `<img src="${img}">` : '<span style="font-size:40px;color:#ccc;">📦</span>'}
+                ${mainImg ? `<img src="${mainImg}">` : '<span style="font-size:40px;color:#ccc;">📦</span>'}
             </div>
             ${thumb}
             <div class="card-body">
                 <div class="card-cat">${p.category}</div>
                 <div class="card-name">${p.name}</div>
                 <div class="card-desc">${p.description.replace(/\n/g,' ').substring(0,80)}${p.description.length>80?'...':''}</div>
-                <div class="card-meta">📦 ${(p.files||[]).length} fichier(s) • 🖼️ ${(p.images||[]).length} photo(s)</div>
+                <div class="card-meta">📦 ${hasLink ? 'Lien de téléchargement' : 'Aucun fichier'}</div>
                 <div class="card-bottom">
                     <span class="price">${p.price.toFixed(2)} €</span>
                     <button class="buy-btn" onclick="addCart(${p.id})">Acheter</button>
@@ -315,7 +314,7 @@ function filter(cat, btn) {
 }
 
 // =====================================================
-// ADMIN
+// ADMIN (mot de passe CACHÉ)
 // =====================================================
 function toggleAdmin() {
     if (isAdmin) {
@@ -323,6 +322,7 @@ function toggleAdmin() {
         document.getElementById('adminBtn').textContent = '🔐 Admin';
         document.getElementById('adminBtn').classList.remove('active');
         document.getElementById('sellBtn').classList.remove('show');
+        document.getElementById('adminMsg').classList.remove('show');
         render();
         return;
     }
@@ -332,16 +332,19 @@ function toggleAdmin() {
 }
 
 function checkPass() {
-    if (document.getElementById('passInput').value === PASSWORD) {
+    const input = document.getElementById('passInput').value;
+    if (input === ADMIN_PASSWORD) {
         isAdmin = true;
         document.getElementById('adminBtn').textContent = '🔓 Admin ON';
         document.getElementById('adminBtn').classList.add('active');
         document.getElementById('sellBtn').classList.add('show');
+        document.getElementById('adminMsg').classList.add('show');
         closePass();
         render();
     } else {
-        alert('❌ Mauvais mot de passe');
+        alert('❌ Mot de passe incorrect.');
         document.getElementById('passInput').value = '';
+        document.getElementById('passInput').focus();
     }
 }
 
@@ -354,12 +357,9 @@ function openModal() {
     if (!isAdmin) { alert('🔐 Mode admin requis'); return; }
     editId = null;
     tempImages = [];
-    tempFiles = [];
     document.getElementById('modalTitle').textContent = '🚀 Publier un produit';
     document.getElementById('saveBtn').textContent = '🚀 Publier';
     document.getElementById('productForm').reset();
-    document.getElementById('imgPreview').innerHTML = '';
-    document.getElementById('filePreview').innerHTML = '';
     document.getElementById('productModal').classList.add('show');
 }
 
@@ -371,67 +371,16 @@ function editProduct(id) {
     if (!p) return;
     editId = id;
     tempImages = p.images || [];
-    tempFiles = p.files || [];
     document.getElementById('modalTitle').textContent = '✏️ Modifier';
     document.getElementById('saveBtn').textContent = '💾 Enregistrer';
     document.getElementById('pName').value = p.name;
     document.getElementById('pDesc').value = p.description;
     document.getElementById('pPrice').value = p.price;
     document.getElementById('pCat').value = p.category;
-    renderTempImages();
-    renderTempFiles();
+    document.getElementById('pImageUrls').value = (p.images || []).join('\n');
+    document.getElementById('pDownloadLink').value = p.downloadLink || '';
     document.getElementById('productModal').classList.add('show');
 }
-
-// =====================================================
-// IMAGES
-// =====================================================
-document.getElementById('pImages').addEventListener('change', async function() {
-    for (const file of this.files) {
-        if (file.type.startsWith('image/')) {
-            tempImages.push(await toBase64(file));
-        }
-    }
-    this.value = '';
-    renderTempImages();
-});
-
-function renderTempImages() {
-    const container = document.getElementById('imgPreview');
-    container.innerHTML = '';
-    tempImages.forEach((img, i) => {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerHTML = `<img src="${img}"><button class="rm" onclick="removeImg(${i})">×</button>`;
-        container.appendChild(div);
-    });
-}
-
-function removeImg(i) { tempImages.splice(i,1); renderTempImages(); }
-
-// =====================================================
-// FICHIERS
-// =====================================================
-document.getElementById('pFiles').addEventListener('change', async function() {
-    for (const file of this.files) {
-        tempFiles.push({ name: file.name, size: file.size, data: await toBase64(file) });
-    }
-    this.value = '';
-    renderTempFiles();
-});
-
-function renderTempFiles() {
-    const container = document.getElementById('filePreview');
-    container.innerHTML = '';
-    tempFiles.forEach((f, i) => {
-        const div = document.createElement('div');
-        div.className = 'file-item';
-        div.innerHTML = `<span><strong>${f.name}</strong> ${(f.size/1024).toFixed(1)} Ko</span><button class="rm" onclick="removeFile(${i})">×</button>`;
-        container.appendChild(div);
-    });
-}
-
-function removeFile(i) { tempFiles.splice(i,1); renderTempFiles(); }
 
 // =====================================================
 // ENREGISTRER
@@ -443,21 +392,32 @@ document.getElementById('productForm').addEventListener('submit', function(e) {
     const desc = document.getElementById('pDesc').value.trim();
     const price = parseFloat(document.getElementById('pPrice').value);
     const category = document.getElementById('pCat').value;
+    const imageUrls = document.getElementById('pImageUrls').value.trim().split('\n').map(s => s.trim()).filter(s => s);
+    const downloadLink = document.getElementById('pDownloadLink').value.trim();
+    
     if (!name || !desc || isNaN(price) || price < 0) { alert('⚠️ Remplis tous les champs'); return; }
-    if (tempImages.length === 0) { alert('📸 Ajoute au moins une image'); return; }
-    const data = { name, description: desc, price, category, images: tempImages.slice(), files: tempFiles.slice() };
+    if (imageUrls.length === 0) { alert('📸 Ajoute au moins une URL d\'image'); return; }
+    if (!downloadLink) { alert('📦 Ajoute un lien de téléchargement'); return; }
+    
+    const data = { 
+        name, 
+        description: desc, 
+        price, 
+        category, 
+        images: imageUrls,
+        downloadLink: downloadLink
+    };
+    
     if (editId !== null) {
         const p = products.find(x => x.id === editId);
-        if (p) { Object.assign(p, data); saveProducts(); render(); closeModal(); alert('✅ Modifié !'); }
+        if (p) { Object.assign(p, data); saveProducts(); render(); closeModal(); alert('✅ Produit modifié !'); }
     } else {
         products.unshift({ id: Date.now(), ...data });
         saveProducts();
         render();
         closeModal();
         document.getElementById('productForm').reset();
-        document.getElementById('imgPreview').innerHTML = '';
-        document.getElementById('filePreview').innerHTML = '';
-        alert('🎉 Publié !');
+        alert('🎉 Produit publié !');
     }
 });
 
@@ -483,13 +443,8 @@ function viewProduct(id) {
     if (!p) return;
     const content = document.getElementById('detailContent');
     const desc = formatDesc(p.description);
-    const files = p.files || [];
-    let filesHTML = '';
-    if (files.length > 0) {
-        filesHTML = `<div class="detail-files"><h3>📦 Fichiers (${files.length})</h3>${files.map((f,i) => 
-            `<div class="file-dl"><div><span style="font-size:20px;">📄</span> ${f.name} (${(f.size/1024).toFixed(1)} Ko)</div><button class="dl-btn" onclick="downloadFile(${p.id},${i})">⬇️ Télécharger</button></div>`
-        ).join('')}</div>`;
-    }
+    const hasLink = p.downloadLink && p.downloadLink.length > 0;
+    
     content.innerHTML = `
         <div class="detail-img">${(p.images||[]).map((im,i) => `<img src="${im}" onclick="openGallery(${p.id},${i})">`).join('')}</div>
         <span style="background:#ede9fe;color:#6d28d9;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">${p.category}</span>
@@ -505,7 +460,15 @@ function viewProduct(id) {
             <span class="detail-price">${p.price.toFixed(2)} €</span>
             <button class="btn" style="background:#7c3aed;color:white;padding:12px 30px;border-radius:60px;font-weight:700;border:none;cursor:pointer;" onclick="addCart(${p.id});closeDetail();">🛒 Acheter maintenant</button>
         </div>
-        ${filesHTML}
+        ${hasLink ? `
+            <div class="detail-files">
+                <h3>📦 Téléchargement</h3>
+                <div class="file-dl">
+                    <div><span style="font-size:20px;">⬇️</span> Fichier disponible</div>
+                    <button class="dl-btn" onclick="window.open('${p.downloadLink}','_blank')">⬇️ Télécharger</button>
+                </div>
+            </div>
+        ` : '<p style="color:#666;">Aucun fichier disponible</p>'}
     `;
     document.getElementById('detailModal').classList.add('show');
 }
@@ -531,17 +494,6 @@ function formatDesc(text) {
     }
     if (inList) out.push('</ul>');
     return out.join('');
-}
-
-function downloadFile(id, index) {
-    const p = products.find(x => x.id === id);
-    if (!p) return;
-    const f = p.files[index];
-    if (!f) return;
-    const a = document.createElement('a');
-    a.href = f.data;
-    a.download = f.name;
-    a.click();
 }
 
 function closeDetail() { document.getElementById('detailModal').classList.remove('show'); }
@@ -576,7 +528,7 @@ function addCart(id) {
     if (!p) return;
     cart.push(p);
     updateCart();
-    alert('🛒 ' + p.name + ' ajouté !');
+    alert('🛒 ' + p.name + ' ajouté au panier !');
 }
 
 function updateCart() {
@@ -627,8 +579,8 @@ document.addEventListener('keydown', function(e) {
 render();
 updateCart();
 console.log('✅ Nexora prête !');
-console.log('🔐 Admin: ' + PASSWORD);
-console.log('📦 ' + products.length + ' produits');
+console.log('📦 ' + products.length + ' produits disponibles');
+console.log('🔐 Mot de passe admin configuré');
 </script>
 </body>
 </html>
