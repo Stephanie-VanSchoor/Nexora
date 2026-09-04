@@ -1,463 +1,579 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Nexora — Marketplace</title>
+<title>Nexora — Marketplace</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f7fb;
-            color: #111827;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #111827;
+}
 
-        header {
-            background: #111827;
-            color: white;
-            padding: 18px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+header {
+    background: #111827;
+    color: white;
+    padding: 16px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 
-        .logo {
-            font-size: 25px;
-            font-weight: bold;
-        }
+.logo {
+    font-size: 27px;
+    font-weight: 800;
+}
 
-        .logo span {
-            color: #6366f1;
-        }
+.logo span {
+    color: #6366f1;
+}
 
-        nav {
-            display: flex;
-            gap: 10px;
-        }
+nav {
+    display: flex;
+    gap: 10px;
+}
 
-        button {
-            border: none;
-            cursor: pointer;
-            border-radius: 10px;
-            padding: 11px 16px;
-            font-weight: bold;
-        }
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 11px 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
 
-        .btn-primary {
-            background: #6366f1;
-            color: white;
-        }
+.primary {
+    background: #6366f1;
+    color: white;
+}
 
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-        }
+.secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
 
-        .btn-secondary {
-            background: #e5e7eb;
-            color: #111827;
-        }
+.danger {
+    background: #ef4444;
+    color: white;
+}
 
-        .hero {
-            padding: 70px 5%;
-            text-align: center;
-            background: linear-gradient(135deg, #111827, #312e81);
-            color: white;
-        }
+.hero {
+    background: linear-gradient(135deg, #111827, #312e81);
+    color: white;
+    text-align: center;
+    padding: 80px 20px;
+}
 
-        .hero h1 {
-            font-size: 45px;
-            margin-bottom: 15px;
-        }
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
 
-        .hero p {
-            color: #d1d5db;
-            font-size: 18px;
-        }
+.hero p {
+    color: #d1d5db;
+    font-size: 18px;
+}
 
-        .controls {
-            padding: 25px 5%;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+.controls {
+    padding: 25px 5%;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
 
-        input,
-        textarea,
-        select {
-            width: 100%;
-            padding: 13px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 15px;
-        }
+.controls input,
+.controls select {
+    padding: 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 15px;
+}
 
-        .search {
-            max-width: 500px;
-        }
+.search {
+    width: 450px;
+    max-width: 100%;
+}
 
-        .category {
-            max-width: 220px;
-        }
+.category {
+    width: 220px;
+}
 
-        .products {
-            padding: 20px 5% 60px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
-        }
+.admin {
+    display: none;
+    background: white;
+    padding: 25px 5%;
+    border-bottom: 1px solid #ddd;
+}
 
-        .card {
-            background: white;
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,.08);
-            transition: .2s;
-        }
+.admin.active {
+    display: block;
+}
 
-        .card:hover {
-            transform: translateY(-4px);
-        }
+.admin-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
 
-        .card-image {
-            width: 100%;
-            height: 210px;
-            object-fit: cover;
-            background: #e5e7eb;
-        }
+.products {
+    padding: 20px 5% 70px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+}
 
-        .card-content {
-            padding: 18px;
-        }
+.card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+}
 
-        .card h3 {
-            margin-bottom: 8px;
-        }
+.card-image {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    background: #e5e7eb;
+}
 
-        .description {
-            color: #6b7280;
-            min-height: 45px;
-            margin-bottom: 15px;
-        }
+.card-content {
+    padding: 18px;
+}
 
-        .price {
-            font-size: 23px;
-            font-weight: bold;
-            color: #6366f1;
-            margin-bottom: 15px;
-        }
+.card h3 {
+    margin-bottom: 8px;
+}
 
-        .actions {
-            display: flex;
-            gap: 8px;
-        }
+.card-description {
+    color: #6b7280;
+    min-height: 45px;
+    margin-bottom: 15px;
+}
 
-        .actions button {
-            flex: 1;
-        }
+.price {
+    color: #6366f1;
+    font-size: 23px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
 
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,.65);
-            z-index: 200;
-            padding: 20px;
-            overflow-y: auto;
-        }
+.actions {
+    display: flex;
+    gap: 8px;
+}
 
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.actions button {
+    flex: 1;
+}
 
-        .modal-box {
-            background: white;
-            border-radius: 18px;
-            padding: 25px;
-            width: 100%;
-            max-width: 650px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
+.empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 70px 20px;
+    color: #6b7280;
+}
 
-        .modal-box h2 {
-            margin-bottom: 20px;
-        }
+.loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 70px;
+}
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+.cart-button {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 900;
+    background: #6366f1;
+    color: white;
+    padding: 15px 22px;
+    border-radius: 50px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.25);
+}
 
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 7px;
-        }
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.65);
+    z-index: 2000;
+    padding: 20px;
+    overflow-y: auto;
+}
 
-        .admin-panel {
-            display: none;
-            padding: 30px 5%;
-            background: white;
-            border-bottom: 1px solid #ddd;
-        }
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        .admin-panel.active {
-            display: block;
-        }
+.modal-box {
+    background: white;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 650px;
+    padding: 25px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
 
-        .admin-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+.modal-box h2 {
+    margin-bottom: 20px;
+}
 
-        .empty {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6b7280;
-            grid-column: 1/-1;
-        }
+.form-group {
+    margin-bottom: 15px;
+}
 
-        .loading {
-            text-align: center;
-            padding: 60px;
-            grid-column: 1/-1;
-        }
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
 
-        .cart {
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            background: #6366f1;
-            color: white;
-            border-radius: 50px;
-            padding: 15px 22px;
-            box-shadow: 0 8px 30px rgba(0,0,0,.2);
-            z-index: 150;
-        }
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+}
 
-        .detail-image {
-            width: 100%;
-            max-height: 400px;
-            object-fit: contain;
-            border-radius: 12px;
-            background: #f3f4f6;
-            margin-bottom: 20px;
-        }
+.form-group textarea {
+    resize: vertical;
+}
 
-        .gallery {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            margin-bottom: 20px;
-        }
+.detail-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 12px;
+    background: #f3f4f6;
+}
 
-        .gallery img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+.gallery {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin: 15px 0;
+}
 
-        footer {
-            background: #111827;
-            color: white;
-            padding: 40px 5%;
-            text-align: center;
-        }
+.gallery img {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+}
 
-        @media(max-width: 600px) {
-            .hero h1 {
-                font-size: 34px;
-            }
+.cart-item {
+    border-bottom: 1px solid #ddd;
+    padding: 15px 0;
+}
 
-            header {
-                flex-direction: column;
-            }
-        }
-    </style>
+footer {
+    background: #111827;
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+@media(max-width:600px) {
+
+    header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .hero h1 {
+        font-size: 35px;
+    }
+
+    .products {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 </head>
 
 <body>
 
 <header>
-    <div class="logo">Nex<span>ora</span></div>
+
+    <div class="logo">
+        Nex<span>ora</span>
+    </div>
 
     <nav>
-        <button class="btn-secondary" onclick="openCart()">
+
+        <button class="secondary" onclick="openCart()">
             🛒 Panier (<span id="cartCount">0</span>)
         </button>
 
-        <button class="btn-primary" onclick="openAdminLogin()">
+        <button class="primary" onclick="openLogin()">
             🔐 Admin
         </button>
+
     </nav>
+
 </header>
 
+
 <section class="hero">
+
     <h1>Bienvenue sur Nexora</h1>
-    <p>Découvrez nos produits numériques</p>
+
+    <p>
+        Découvrez nos meilleurs produits numériques
+    </p>
+
 </section>
 
+
 <section class="controls">
+
     <input
-        class="search"
         id="search"
+        class="search"
         type="text"
-        placeholder="🔎 Rechercher un produit..."
+        placeholder="🔎 Rechercher..."
         oninput="renderProducts()"
     >
 
     <select
-        class="category"
         id="category"
+        class="category"
         onchange="renderProducts()"
     >
-        <option value="">Toutes les catégories</option>
+        <option value="">
+            Toutes les catégories
+        </option>
     </select>
+
 </section>
 
-<section id="adminPanel" class="admin-panel">
 
-    <h2>⚙️ Administration</h2>
+<section id="adminPanel" class="admin">
 
-    <br>
+    <h2>⚙️ Administration Nexora</h2>
 
-    <div class="admin-actions">
-        <button class="btn-primary" onclick="openProductForm()">
+    <div class="admin-buttons">
+
+        <button class="primary" onclick="openProductForm()">
             ➕ Ajouter un produit
         </button>
 
-        <button class="btn-danger" onclick="logoutAdmin()">
+        <button class="danger" onclick="logout()">
             Déconnexion
         </button>
+
     </div>
 
 </section>
 
-<main class="products" id="products">
+
+<main id="products" class="products">
+
     <div class="loading">
         Chargement des produits...
     </div>
+
 </main>
 
-<button class="cart" onclick="openCart()">
-    🛒 Panier
-    <span id="cartTotal">0.00 €</span>
+
+<button class="cart-button" onclick="openCart()">
+    🛒 <span id="cartTotal">0.00 €</span>
 </button>
 
+
 <footer>
-    <p>© 2026 Nexora — Marketplace numérique</p>
+
+    <p>
+        © 2026 Nexora — Marketplace numérique
+    </p>
+
 </footer>
 
 
-<!-- LOGIN ADMIN -->
+<!-- =========================
+     LOGIN
+========================= -->
 
-<div class="modal" id="loginModal">
+<div id="loginModal" class="modal">
+
     <div class="modal-box">
 
-        <h2>🔐 Connexion administrateur</h2>
+        <h2>🔐 Administration</h2>
 
         <div class="form-group">
+
             <label>Email</label>
-            <input id="adminEmail" type="email" placeholder="admin@email.com">
+
+            <input
+                id="adminEmail"
+                type="email"
+                placeholder="ton@email.com"
+            >
+
         </div>
 
         <div class="form-group">
+
             <label>Mot de passe</label>
-            <input id="adminPassword" type="password">
+
+            <input
+                id="adminPassword"
+                type="password"
+            >
+
         </div>
 
         <div class="actions">
-            <button class="btn-primary" onclick="loginAdmin()">
+
+            <button
+                class="primary"
+                onclick="login()"
+            >
                 Se connecter
             </button>
 
-            <button class="btn-secondary" onclick="closeModal('loginModal')">
+            <button
+                class="secondary"
+                onclick="closeModal('loginModal')"
+            >
                 Annuler
             </button>
+
         </div>
 
     </div>
+
 </div>
 
 
-<!-- FORMULAIRE PRODUIT -->
+<!-- =========================
+     PRODUIT
+========================= -->
 
-<div class="modal" id="productModal">
+<div id="productModal" class="modal">
 
     <div class="modal-box">
 
-        <h2 id="productModalTitle">
+        <h2 id="productTitle">
             Ajouter un produit
         </h2>
 
-        <input type="hidden" id="productId">
+        <input
+            id="productId"
+            type="hidden"
+        >
 
         <div class="form-group">
+
             <label>Nom du produit</label>
-            <input id="productName" type="text">
+
+            <input
+                id="productName"
+                type="text"
+                placeholder="Nom du produit"
+            >
+
         </div>
 
         <div class="form-group">
+
             <label>Description</label>
-            <textarea id="productDescription" rows="5"></textarea>
+
+            <textarea
+                id="productDescription"
+                rows="5"
+                placeholder="Description..."
+            ></textarea>
+
         </div>
 
         <div class="form-group">
+
             <label>Prix (€)</label>
-            <input id="productPrice" type="number" min="0" step="0.01">
+
+            <input
+                id="productPrice"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="9.99"
+            >
+
         </div>
 
         <div class="form-group">
+
             <label>Catégorie</label>
-            <input id="productCategory" type="text" placeholder="Templates">
+
+            <input
+                id="productCategory"
+                type="text"
+                placeholder="Templates"
+            >
+
         </div>
 
         <div class="form-group">
+
             <label>Images</label>
+
             <input
                 id="productImages"
                 type="file"
                 accept="image/*"
                 multiple
             >
+
+            <small>
+                Tu peux sélectionner plusieurs images.
+            </small>
+
         </div>
 
         <div class="form-group">
+
             <label>Fichiers numériques</label>
+
             <input
                 id="productFiles"
                 type="file"
                 multiple
             >
+
         </div>
 
         <div class="actions">
 
-            <button class="btn-primary" onclick="saveProduct()">
+            <button
+                class="primary"
+                onclick="saveProduct()"
+            >
                 💾 Enregistrer
             </button>
 
             <button
-                class="btn-secondary"
+                class="secondary"
                 onclick="closeModal('productModal')"
             >
                 Annuler
@@ -466,12 +582,15 @@
         </div>
 
     </div>
+
 </div>
 
 
-<!-- DETAIL PRODUIT -->
+<!-- =========================
+     DETAIL
+========================= -->
 
-<div class="modal" id="detailModal">
+<div id="detailModal" class="modal">
 
     <div class="modal-box">
 
@@ -480,7 +599,7 @@
         <br>
 
         <button
-            class="btn-secondary"
+            class="secondary"
             onclick="closeModal('detailModal')"
         >
             Fermer
@@ -491,9 +610,11 @@
 </div>
 
 
-<!-- PANIER -->
+<!-- =========================
+     PANIER
+========================= -->
 
-<div class="modal" id="cartModal">
+<div id="cartModal" class="modal">
 
     <div class="modal-box">
 
@@ -503,12 +624,15 @@
 
         <br>
 
-        <button class="btn-primary" onclick="checkout()">
+        <button
+            class="primary"
+            onclick="checkout()"
+        >
             💳 Commander
         </button>
 
         <button
-            class="btn-secondary"
+            class="secondary"
             onclick="closeModal('cartModal')"
         >
             Fermer
@@ -521,12 +645,16 @@
 
 <script>
 
-/* =========================================================
-   SUPABASE
-========================================================= */
+/* =====================================================
+   1. CONFIGURATION SUPABASE
+===================================================== */
 
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL =
+    "https://lqaqfzpsilxctrvazatp.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "TA_NOUVELLE_CLE_PUBLIQUE";
+
 
 const supabaseClient =
     supabase.createClient(
@@ -535,213 +663,310 @@ const supabaseClient =
     );
 
 
-/* =========================================================
-   VARIABLES
-========================================================= */
+/* =====================================================
+   2. VARIABLES
+===================================================== */
 
 let products = [];
+
 let cart = [];
+
 let currentUser = null;
 
 
-/* =========================================================
-   INITIALISATION
-========================================================= */
+/* =====================================================
+   3. DEMARRAGE
+===================================================== */
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    async function() {
 
-    await checkAdmin();
+        await checkUser();
 
-    await loadProducts();
+        await loadProducts();
 
-});
+        updateCart();
+
+    }
+);
 
 
-/* =========================================================
-   AUTH ADMIN
-========================================================= */
+/* =====================================================
+   4. AUTHENTIFICATION
+===================================================== */
 
-async function checkAdmin() {
+async function checkUser() {
 
     const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
+        data
+    } = await supabaseClient
+        .auth
+        .getSession();
 
-    currentUser = session?.user || null;
+    currentUser =
+        data.session
+            ? data.session.user
+            : null;
 
-    updateAdminPanel();
+    updateAdmin();
+
 }
 
 
-async function loginAdmin() {
+async function login() {
 
     const email =
-        document.getElementById("adminEmail").value.trim();
+        document
+            .getElementById("adminEmail")
+            .value
+            .trim();
 
     const password =
-        document.getElementById("adminPassword").value;
+        document
+            .getElementById("adminPassword")
+            .value;
+
 
     if (!email || !password) {
-        alert("Veuillez remplir les champs.");
+
+        alert(
+            "Entre ton email et ton mot de passe."
+        );
+
         return;
     }
 
-    const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-        });
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .signInWithPassword({
+                email: email,
+                password: password
+            });
+
 
     if (error) {
 
-        console.error(error);
-
         alert(
-            "Connexion impossible : " +
+            "Erreur de connexion : " +
             error.message
         );
 
         return;
     }
 
+
     currentUser = data.user;
 
     closeModal("loginModal");
 
-    updateAdminPanel();
+    updateAdmin();
+
+    renderProducts();
 
     alert("Connexion réussie !");
 }
 
 
-async function logoutAdmin() {
+async function logout() {
 
-    await supabaseClient.auth.signOut();
+    await supabaseClient
+        .auth
+        .signOut();
 
     currentUser = null;
 
-    updateAdminPanel();
+    updateAdmin();
 
-    alert("Vous êtes déconnecté.");
+    renderProducts();
+
 }
 
 
-function updateAdminPanel() {
+function updateAdmin() {
 
     const panel =
-        document.getElementById("adminPanel");
+        document.getElementById(
+            "adminPanel"
+        );
 
     if (currentUser) {
+
         panel.classList.add("active");
+
     } else {
+
         panel.classList.remove("active");
+
     }
 }
 
 
-/* =========================================================
-   PRODUITS
-========================================================= */
+/* =====================================================
+   5. CHARGER LES PRODUITS
+===================================================== */
 
 async function loadProducts() {
 
     const {
         data,
         error
-    } = await supabaseClient
-        .from("products")
-        .select("*")
-        .order("created_at", {
-            ascending: false
-        });
+    } =
+        await supabaseClient
+            .from("products")
+            .select("*")
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
 
     if (error) {
 
         console.error(error);
 
-        document.getElementById("products").innerHTML = `
+        document.getElementById(
+            "products"
+        ).innerHTML = `
             <div class="empty">
-                ❌ Impossible de charger les produits.
+                ❌ Erreur de connexion à Supabase.
                 <br><br>
-                Vérifie ta connexion Supabase.
+                Vérifie ta configuration.
             </div>
         `;
 
         return;
     }
 
+
     products = data || [];
 
     updateCategories();
 
     renderProducts();
+
 }
 
+
+/* =====================================================
+   6. CATEGORIES
+===================================================== */
 
 function updateCategories() {
 
     const select =
-        document.getElementById("category");
+        document.getElementById(
+            "category"
+        );
+
 
     const categories =
-        [...new Set(
-            products
-                .map(p => p.category)
-                .filter(Boolean)
-        )];
+        [
+            ...new Set(
+                products
+                    .map(
+                        product =>
+                            product.category
+                    )
+                    .filter(Boolean)
+            )
+        ];
+
 
     select.innerHTML =
-        `<option value="">Toutes les catégories</option>`;
+        `<option value="">
+            Toutes les catégories
+        </option>`;
 
-    categories.forEach(category => {
 
-        const option =
-            document.createElement("option");
+    categories.forEach(
+        category => {
 
-        option.value = category;
-        option.textContent = category;
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-        select.appendChild(option);
+            option.value =
+                category;
 
-    });
+            option.textContent =
+                category;
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
 }
 
+
+/* =====================================================
+   7. AFFICHER PRODUITS
+===================================================== */
 
 function renderProducts() {
 
     const container =
-        document.getElementById("products");
+        document.getElementById(
+            "products"
+        );
+
 
     const search =
-        document
-            .getElementById("search")
-            .value
-            .toLowerCase();
+        document.getElementById(
+            "search"
+        ).value.toLowerCase();
+
 
     const category =
-        document
-            .getElementById("category")
-            .value;
+        document.getElementById(
+            "category"
+        ).value;
+
 
     const filtered =
-        products.filter(product => {
+        products.filter(
+            product => {
 
-            const matchesSearch =
-                product.name
-                    .toLowerCase()
-                    .includes(search) ||
+                const name =
+                    (
+                        product.name ||
+                        ""
+                    ).toLowerCase();
 
-                product.description
-                    .toLowerCase()
-                    .includes(search);
 
-            const matchesCategory =
-                !category ||
-                product.category === category;
+                const description =
+                    (
+                        product.description ||
+                        ""
+                    ).toLowerCase();
 
-            return matchesSearch &&
-                   matchesCategory;
-        });
+
+                const searchOK =
+                    name.includes(search) ||
+                    description.includes(search);
+
+
+                const categoryOK =
+                    !category ||
+                    product.category === category;
+
+
+                return searchOK &&
+                       categoryOK;
+
+            }
+        );
 
 
     if (!filtered.length) {
@@ -757,16 +982,18 @@ function renderProducts() {
 
 
     container.innerHTML =
-        filtered.map(product => {
+        filtered.map(
+            product => {
 
-            const image =
-                product.images &&
-                product.images.length
-                    ? product.images[0]
-                    : "https://via.placeholder.com/600x400?text=Nexora";
+                const image =
+                    product.images &&
+                    product.images.length
+                        ? product.images[0]
+                        : "https://via.placeholder.com/600x400?text=Nexora";
 
 
-            return `
+                return `
+
                 <article class="card">
 
                     <img
@@ -778,30 +1005,34 @@ function renderProducts() {
                     <div class="card-content">
 
                         <h3>
-                            ${escapeHTML(product.name)}
+                            ${escapeHTML(
+                                product.name
+                            )}
                         </h3>
 
-                        <p class="description">
+                        <p class="card-description">
                             ${escapeHTML(
                                 product.description || ""
-                            ).substring(0, 100)}
+                            ).substring(0, 110)}
                         </p>
 
                         <div class="price">
-                            ${Number(product.price).toFixed(2)} €
+                            ${Number(
+                                product.price
+                            ).toFixed(2)} €
                         </div>
 
                         <div class="actions">
 
                             <button
-                                class="btn-primary"
+                                class="primary"
                                 onclick="showProduct('${product.id}')"
                             >
                                 Voir
                             </button>
 
                             <button
-                                class="btn-secondary"
+                                class="secondary"
                                 onclick="addToCart('${product.id}')"
                             >
                                 🛒
@@ -812,25 +1043,27 @@ function renderProducts() {
                         ${
                             currentUser
                             ? `
-                                <br>
 
-                                <div class="actions">
+                            <br>
 
-                                    <button
-                                        class="btn-secondary"
-                                        onclick="editProduct('${product.id}')"
-                                    >
-                                        ✏️ Modifier
-                                    </button>
+                            <div class="actions">
 
-                                    <button
-                                        class="btn-danger"
-                                        onclick="deleteProduct('${product.id}')"
-                                    >
-                                        🗑️
-                                    </button>
+                                <button
+                                    class="secondary"
+                                    onclick="editProduct('${product.id}')"
+                                >
+                                    ✏️
+                                </button>
 
-                                </div>
+                                <button
+                                    class="danger"
+                                    onclick="deleteProduct('${product.id}')"
+                                >
+                                    🗑️
+                                </button>
+
+                            </div>
+
                             `
                             : ""
                         }
@@ -838,15 +1071,18 @@ function renderProducts() {
                     </div>
 
                 </article>
-            `;
 
-        }).join("");
+                `;
+
+            }
+        ).join("");
+
 }
 
 
-/* =========================================================
-   UPLOAD SUPABASE STORAGE
-========================================================= */
+/* =====================================================
+   8. UPLOAD STORAGE
+===================================================== */
 
 async function uploadFile(
     bucket,
@@ -856,145 +1092,252 @@ async function uploadFile(
 
     const extension =
         file.name.includes(".")
-            ? file.name.split(".").pop()
+            ? "." +
+              file.name
+                  .split(".")
+                  .pop()
             : "";
 
+
     const fileName =
-        `${crypto.randomUUID()}${extension ? "." + extension : ""}`;
+        crypto.randomUUID() +
+        extension;
+
 
     const path =
-        `${folder}/${fileName}`;
+        folder +
+        "/" +
+        fileName;
 
 
     const {
         error
-    } = await supabaseClient
-        .storage
-        .from(bucket)
-        .upload(path, file, {
-            cacheControl: "3600",
-            upsert: false,
-            contentType: file.type
-        });
+    } =
+        await supabaseClient
+            .storage
+            .from(bucket)
+            .upload(
+                path,
+                file,
+                {
+                    cacheControl: "3600",
+                    upsert: false,
+                    contentType:
+                        file.type ||
+                        "application/octet-stream"
+                }
+            );
 
 
     if (error) {
+
         throw error;
+
     }
 
 
     const {
         data
-    } = supabaseClient
-        .storage
-        .from(bucket)
-        .getPublicUrl(path);
+    } =
+        supabaseClient
+            .storage
+            .from(bucket)
+            .getPublicUrl(path);
 
 
     return data.publicUrl;
+
 }
 
 
-/* =========================================================
-   AJOUT / MODIFICATION
-========================================================= */
+/* =====================================================
+   9. FORMULAIRE PRODUIT
+===================================================== */
 
 function openProductForm() {
 
     if (!currentUser) {
-        alert("Connecte-toi en administrateur.");
+
+        alert(
+            "Connecte-toi en administrateur."
+        );
+
         return;
     }
 
-    document.getElementById("productModalTitle")
-        .textContent = "Ajouter un produit";
 
-    document.getElementById("productId").value = "";
+    document.getElementById(
+        "productTitle"
+    ).textContent =
+        "Ajouter un produit";
 
-    document.getElementById("productName").value = "";
 
-    document.getElementById("productDescription").value = "";
+    document.getElementById(
+        "productId"
+    ).value = "";
 
-    document.getElementById("productPrice").value = "";
 
-    document.getElementById("productCategory").value = "";
+    document.getElementById(
+        "productName"
+    ).value = "";
 
-    document.getElementById("productImages").value = "";
 
-    document.getElementById("productFiles").value = "";
+    document.getElementById(
+        "productDescription"
+    ).value = "";
 
-    openModal("productModal");
+
+    document.getElementById(
+        "productPrice"
+    ).value = "";
+
+
+    document.getElementById(
+        "productCategory"
+    ).value = "";
+
+
+    document.getElementById(
+        "productImages"
+    ).value = "";
+
+
+    document.getElementById(
+        "productFiles"
+    ).value = "";
+
+
+    openModal(
+        "productModal"
+    );
+
 }
 
+
+/* =====================================================
+   10. MODIFIER PRODUIT
+===================================================== */
 
 function editProduct(id) {
 
     const product =
-        products.find(p => p.id === id);
+        products.find(
+            p => p.id === id
+        );
+
 
     if (!product) return;
 
 
-    document.getElementById("productModalTitle")
-        .textContent = "Modifier le produit";
+    document.getElementById(
+        "productTitle"
+    ).textContent =
+        "Modifier le produit";
 
-    document.getElementById("productId").value =
+
+    document.getElementById(
+        "productId"
+    ).value =
         product.id;
 
-    document.getElementById("productName").value =
+
+    document.getElementById(
+        "productName"
+    ).value =
         product.name;
 
-    document.getElementById("productDescription").value =
+
+    document.getElementById(
+        "productDescription"
+    ).value =
         product.description || "";
 
-    document.getElementById("productPrice").value =
+
+    document.getElementById(
+        "productPrice"
+    ).value =
         product.price;
 
-    document.getElementById("productCategory").value =
+
+    document.getElementById(
+        "productCategory"
+    ).value =
         product.category;
 
-    document.getElementById("productImages").value = "";
 
-    document.getElementById("productFiles").value = "";
+    document.getElementById(
+        "productImages"
+    ).value = "";
 
-    openModal("productModal");
+
+    document.getElementById(
+        "productFiles"
+    ).value = "";
+
+
+    openModal(
+        "productModal"
+    );
+
 }
 
+
+/* =====================================================
+   11. ENREGISTRER PRODUIT
+===================================================== */
 
 async function saveProduct() {
 
     if (!currentUser) {
-        alert("Tu dois être connecté.");
+
+        alert(
+            "Connexion administrateur obligatoire."
+        );
+
         return;
     }
 
 
     const id =
-        document.getElementById("productId").value;
+        document.getElementById(
+            "productId"
+        ).value;
+
 
     const name =
-        document.getElementById("productName")
-            .value.trim();
+        document.getElementById(
+            "productName"
+        ).value.trim();
+
 
     const description =
-        document.getElementById("productDescription")
-            .value.trim();
+        document.getElementById(
+            "productDescription"
+        ).value.trim();
+
 
     const price =
         Number(
-            document.getElementById("productPrice")
-                .value
+            document.getElementById(
+                "productPrice"
+            ).value
         );
 
+
     const category =
-        document.getElementById("productCategory")
-            .value.trim();
+        document.getElementById(
+            "productCategory"
+        ).value.trim();
 
 
-    if (!name || !category || isNaN(price)) {
+    if (
+        !name ||
+        !category ||
+        isNaN(price)
+    ) {
 
         alert(
-            "Nom, catégorie et prix sont obligatoires."
+            "Remplis le nom, le prix et la catégorie."
         );
 
         return;
@@ -1002,12 +1345,15 @@ async function saveProduct() {
 
 
     const imageFiles =
-        document.getElementById("productImages")
-            .files;
+        document.getElementById(
+            "productImages"
+        ).files;
+
 
     const digitalFiles =
-        document.getElementById("productFiles")
-            .files;
+        document.getElementById(
+            "productFiles"
+        ).files;
 
 
     try {
@@ -1017,27 +1363,30 @@ async function saveProduct() {
         let files = [];
 
 
-        /*
-         * Si modification :
-         * conserver les anciennes images/fichiers
-         */
-
         if (id) {
 
-            const old =
-                products.find(p => p.id === id);
+            const oldProduct =
+                products.find(
+                    p => p.id === id
+                );
+
 
             images =
-                old?.images || [];
+                oldProduct?.images || [];
+
 
             files =
-                old?.files || [];
+                oldProduct?.files || [];
+
         }
 
 
-        /* Upload images */
+        /* Images */
 
-        for (const file of imageFiles) {
+        for (
+            const file
+            of imageFiles
+        ) {
 
             const url =
                 await uploadFile(
@@ -1046,13 +1395,18 @@ async function saveProduct() {
                     id || crypto.randomUUID()
                 );
 
+
             images.push(url);
+
         }
 
 
-        /* Upload fichiers */
+        /* Fichiers */
 
-        for (const file of digitalFiles) {
+        for (
+            const file
+            of digitalFiles
+        ) {
 
             const url =
                 await uploadFile(
@@ -1061,28 +1415,35 @@ async function saveProduct() {
                     id || crypto.randomUUID()
                 );
 
+
             files.push({
+
                 name: file.name,
+
                 url: url,
+
                 size: file.size,
+
                 type: file.type
+
             });
+
         }
 
 
         const productData = {
 
-            name,
+            name: name,
 
-            description,
+            description: description,
 
-            price,
+            price: price,
 
-            category,
+            category: category,
 
-            images,
+            images: images,
 
-            files,
+            files: files,
 
             updated_at:
                 new Date().toISOString()
@@ -1094,52 +1455,65 @@ async function saveProduct() {
 
             const {
                 error
-            } = await supabaseClient
-                .from("products")
-                .update(productData)
-                .eq("id", id);
+            } =
+                await supabaseClient
+                    .from("products")
+                    .update(productData)
+                    .eq("id", id);
 
 
             if (error) throw error;
 
-            alert("Produit modifié !");
+
+            alert(
+                "✅ Produit modifié !"
+            );
 
         } else {
 
             const {
                 error
-            } = await supabaseClient
-                .from("products")
-                .insert(productData);
+            } =
+                await supabaseClient
+                    .from("products")
+                    .insert(productData);
 
 
             if (error) throw error;
 
-            alert("Produit ajouté !");
+
+            alert(
+                "✅ Produit ajouté !"
+            );
 
         }
 
 
-        closeModal("productModal");
+        closeModal(
+            "productModal"
+        );
+
 
         await loadProducts();
 
-
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(error);
 
         alert(
-            "Erreur pendant l'enregistrement :\n" +
+            "Erreur : " +
             error.message
         );
+
     }
+
 }
 
 
-/* =========================================================
-   SUPPRESSION
-========================================================= */
+/* =====================================================
+   12. SUPPRIMER
+===================================================== */
 
 async function deleteProduct(id) {
 
@@ -1147,26 +1521,32 @@ async function deleteProduct(id) {
 
 
     const product =
-        products.find(p => p.id === id);
+        products.find(
+            p => p.id === id
+        );
+
 
     if (!product) return;
 
 
-    if (
-        !confirm(
-            `Supprimer "${product.name}" ?`
-        )
-    ) {
-        return;
-    }
+    const confirmation =
+        confirm(
+            "Supprimer \"" +
+            product.name +
+            "\" ?"
+        );
+
+
+    if (!confirmation) return;
 
 
     const {
         error
-    } = await supabaseClient
-        .from("products")
-        .delete()
-        .eq("id", id);
+    } =
+        await supabaseClient
+            .from("products")
+            .delete()
+            .eq("id", id);
 
 
     if (error) {
@@ -1181,24 +1561,34 @@ async function deleteProduct(id) {
 
 
     products =
-        products.filter(p => p.id !== id);
+        products.filter(
+            p => p.id !== id
+        );
 
-    renderProducts();
 
     updateCategories();
 
-    alert("Produit supprimé.");
+    renderProducts();
+
+
+    alert(
+        "Produit supprimé."
+    );
+
 }
 
 
-/* =========================================================
-   DETAIL PRODUIT
-========================================================= */
+/* =====================================================
+   13. DETAIL
+===================================================== */
 
 function showProduct(id) {
 
     const product =
-        products.find(p => p.id === id);
+        products.find(
+            p => p.id === id
+        );
+
 
     if (!product) return;
 
@@ -1207,13 +1597,15 @@ function showProduct(id) {
         product.images || [];
 
 
-    let mainImage =
-        images[0] ||
-        "https://via.placeholder.com/600x400?text=Nexora";
+    const mainImage =
+        images.length
+            ? images[0]
+            : "https://via.placeholder.com/600x400?text=Nexora";
 
 
-    document.getElementById("detailContent")
-        .innerHTML = `
+    document.getElementById(
+        "detailContent"
+    ).innerHTML = `
 
         <h2>
             ${escapeHTML(product.name)}
@@ -1230,38 +1622,49 @@ function showProduct(id) {
         ${
             images.length
             ? `
+
                 <div class="gallery">
 
                     ${
-                        images.map(image => `
+                        images.map(
+                            image => `
+
                             <img
                                 src="${escapeHTML(image)}"
                                 onclick="
                                     document.getElementById(
                                         'detailMainImage'
-                                    ).src='${escapeHTML(image)}'
+                                    ).src =
+                                    '${escapeHTML(image)}'
                                 "
                             >
-                        `).join("")
+
+                            `
+                        ).join("")
                     }
 
                 </div>
+
             `
             : ""
         }
 
         <p>
-            ${escapeHTML(product.description || "")}
+            ${escapeHTML(
+                product.description || ""
+            )}
         </p>
 
         <br>
 
         <div class="price">
-            ${Number(product.price).toFixed(2)} €
+            ${Number(
+                product.price
+            ).toFixed(2)} €
         </div>
 
         <button
-            class="btn-primary"
+            class="primary"
             onclick="addToCart('${product.id}')"
         >
             🛒 Ajouter au panier
@@ -1270,24 +1673,32 @@ function showProduct(id) {
     `;
 
 
-    openModal("detailModal");
+    openModal(
+        "detailModal"
+    );
+
 }
 
 
-/* =========================================================
-   PANIER
-========================================================= */
+/* =====================================================
+   14. PANIER
+===================================================== */
 
 function addToCart(id) {
 
     const product =
-        products.find(p => p.id === id);
+        products.find(
+            p => p.id === id
+        );
+
 
     if (!product) return;
 
 
     const existing =
-        cart.find(item => item.id === id);
+        cart.find(
+            item => item.id === id
+        );
 
 
     if (existing) {
@@ -1297,10 +1708,16 @@ function addToCart(id) {
     } else {
 
         cart.push({
+
             id: product.id,
+
             name: product.name,
-            price: Number(product.price),
+
+            price:
+                Number(product.price),
+
             quantity: 1
+
         });
 
     }
@@ -1309,8 +1726,10 @@ function addToCart(id) {
     updateCart();
 
     alert(
-        `"${product.name}" ajouté au panier.`
+        product.name +
+        " ajouté au panier."
     );
+
 }
 
 
@@ -1319,7 +1738,8 @@ function updateCart() {
     const count =
         cart.reduce(
             (total, item) =>
-                total + item.quantity,
+                total +
+                item.quantity,
             0
         );
 
@@ -1334,19 +1754,27 @@ function updateCart() {
         );
 
 
-    document.getElementById("cartCount")
-        .textContent = count;
+    document.getElementById(
+        "cartCount"
+    ).textContent =
+        count;
 
-    document.getElementById("cartTotal")
-        .textContent =
-        total.toFixed(2) + " €";
+
+    document.getElementById(
+        "cartTotal"
+    ).textContent =
+        total.toFixed(2) +
+        " €";
+
 }
 
 
 function openCart() {
 
     const container =
-        document.getElementById("cartContent");
+        document.getElementById(
+            "cartContent"
+        );
 
 
     if (!cart.length) {
@@ -1357,108 +1785,131 @@ function openCart() {
             </p>
         `;
 
-        openModal("cartModal");
+        openModal(
+            "cartModal"
+        );
 
         return;
     }
 
 
-    container.innerHTML = `
+    container.innerHTML =
 
-        ${cart.map(item => `
+        cart.map(
+            item => `
 
-            <div style="
-                padding:15px 0;
-                border-bottom:1px solid #ddd;
-            ">
+            <div class="cart-item">
 
                 <strong>
-                    ${escapeHTML(item.name)}
+                    ${escapeHTML(
+                        item.name
+                    )}
                 </strong>
 
-                <br>
+                <br><br>
 
-                ${item.quantity} ×
-                ${item.price.toFixed(2)} €
+                ${item.quantity}
+                ×
+                ${item.price.toFixed(2)}
+                €
 
                 <br><br>
 
                 <button
-                    class="btn-danger"
-                    onclick="removeFromCart('${item.id}')"
+                    class="danger"
+                    onclick="
+                        removeFromCart(
+                            '${item.id}'
+                        )
+                    "
                 >
                     Supprimer
                 </button>
 
             </div>
 
-        `).join("")}
+            `
+        ).join("");
+
+
+    const total =
+        cart.reduce(
+            (sum, item) =>
+                sum +
+                item.price *
+                item.quantity,
+            0
+        );
+
+
+    container.innerHTML += `
 
         <br>
 
-        <strong style="font-size:20px">
+        <h3>
             Total :
-            ${cart.reduce(
-                (total, item) =>
-                    total +
-                    item.price *
-                    item.quantity,
-                0
-            ).toFixed(2)} €
-        </strong>
+            ${total.toFixed(2)} €
+        </h3>
+
     `;
 
 
-    openModal("cartModal");
+    openModal(
+        "cartModal"
+    );
+
 }
 
 
 function removeFromCart(id) {
 
     cart =
-        cart.filter(item => item.id !== id);
+        cart.filter(
+            item => item.id !== id
+        );
+
 
     updateCart();
 
     openCart();
+
 }
 
 
-/* =========================================================
-   PAIEMENT
-========================================================= */
+/* =====================================================
+   15. PAIEMENT
+===================================================== */
 
 function checkout() {
 
     if (!cart.length) {
 
-        alert("Ton panier est vide.");
+        alert(
+            "Ton panier est vide."
+        );
 
         return;
     }
 
 
-    /*
-     * Ici on pourra connecter Stripe,
-     * PayPal ou une autre solution
-     * de paiement.
-     */
-
     alert(
-        "Le paiement sera connecté dans la prochaine étape."
+        "💳 Le système de paiement sera connecté à Stripe dans la prochaine étape."
     );
+
 }
 
 
-/* =========================================================
-   MODALS
-========================================================= */
+/* =====================================================
+   16. MODALS
+===================================================== */
 
 function openModal(id) {
 
     document
         .getElementById(id)
-        .classList.add("active");
+        .classList
+        .add("active");
+
 }
 
 
@@ -1466,16 +1917,20 @@ function closeModal(id) {
 
     document
         .getElementById(id)
-        .classList.remove("active");
+        .classList
+        .remove("active");
+
 }
 
 
-function openAdminLogin() {
+function openLogin() {
 
     if (currentUser) {
 
         document
-            .getElementById("adminPanel")
+            .getElementById(
+                "adminPanel"
+            )
             .scrollIntoView({
                 behavior: "smooth"
             });
@@ -1483,26 +1938,53 @@ function openAdminLogin() {
         return;
     }
 
-    openModal("loginModal");
+
+    openModal(
+        "loginModal"
+    );
+
 }
 
 
-/* =========================================================
-   SECURITE HTML
-========================================================= */
+/* =====================================================
+   17. PROTECTION HTML
+===================================================== */
 
 function escapeHTML(value) {
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
 
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
 
 </script>
 
 </body>
 </html>
+         
+      
+    
