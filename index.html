@@ -1,3269 +1,985 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Nexora — Marketplace digitale</title>
-
-<style>
-
-/* =====================================================
-   RESET 
-===================================================== */
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}     
-
-:root {
-    --bg: #f7f7f5;
-    --white: #ffffff;
-    --black: #111111;
-    --text: #181818;
-    --muted: #737373;
-    --border: #e5e5e5;
-    --purple: #7c3aed;
-    --purple-dark: #6d28d9;
-    --purple-light: #ede9fe;
-    --green: #16a34a;
-    --red: #dc2626;
-    --blue: #2563eb;
-}
-
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-}
-
-/* =====================================================
-   HEADER
-===================================================== */
-
-header {
-    min-height: 72px;
-    background: white;
-    border-bottom: 1px solid var(--border);
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 12px 5%;
-
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.logo {
-    font-size: 26px;
-    font-weight: 900;
-}
-
-.logo span {
-    color: var(--purple);
-}
-
-nav {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-nav a {
-    color: #333;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.sell-button,
-.cart-button {
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 9px;
-}
-
-.sell-button {
-    border: none;
-    background: var(--black);
-    color: white;
-    padding: 11px 17px;
-}
-
-.cart-button {
-    position: relative;
-    border: 1px solid var(--border);
-    background: white;
-    padding: 10px 14px;
-}
-
-#cartCount {
-    position: absolute;
-    top: -7px;
-    right: -7px;
-
-    width: 20px;
-    height: 20px;
-
-    background: var(--purple);
-    color: white;
-
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 11px;
-}
-
-/* =====================================================
-   HERO
-===================================================== */
-
-.hero {
-    text-align: center;
-    padding: 90px 20px 75px;
-
-    background:
-        radial-gradient(
-            circle at top,
-            #ddd6fe,
-            transparent 42%
-        ),
-        var(--bg);
-}
-
-.badge {
-    display: inline-block;
-
-    padding: 8px 14px;
-
-    background: var(--purple-light);
-    color: var(--purple-dark);
-
-    border-radius: 999px;
-
-    font-size: 13px;
-    font-weight: bold;
-
-    margin-bottom: 22px;
-}
-
-.hero h1 {
-    font-size: clamp(42px, 7vw, 76px);
-    line-height: .95;
-    letter-spacing: -4px;
-}
-
-.hero h1 span {
-    color: var(--purple);
-}
-
-.hero p {
-    max-width: 620px;
-    margin: 25px auto;
-
-    color: var(--muted);
-
-    line-height: 1.6;
-    font-size: 18px;
-}
-
-.hero-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 28px;
-}
-
-.primary-button,
-.secondary-button {
-    padding: 14px 22px;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.primary-button {
-    background: var(--black);
-    color: white;
-    border: none;
-}
-
-.secondary-button {
-    background: white;
-    border: 1px solid var(--border);
-}
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-.search-container {
-    max-width: 1100px;
-    margin: auto;
-    padding: 0 20px 30px;
-}
-
-.search {
-    width: 100%;
-    padding: 15px 18px;
-
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-
-    outline: none;
-    font-size: 15px;
-}
-
-/* =====================================================
-   CATEGORIES
-===================================================== */
-
-.categories {
-    max-width: 1100px;
-    margin: auto;
-
-    padding: 0 20px 35px;
-
-    display: flex;
-    gap: 10px;
-
-    overflow-x: auto;
-}
-
-.category {
-    white-space: nowrap;
-
-    padding: 10px 16px;
-
-    background: white;
-    border: 1px solid var(--border);
-
-    border-radius: 999px;
-
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.category.active {
-    background: var(--black);
-    color: white;
-}
-
-/* =====================================================
-   PRODUCTS
-===================================================== */
-
-.products-section {
-    max-width: 1100px;
-    margin: auto;
-    padding: 20px;
-}
-
-.section-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    margin-bottom: 25px;
-}
-
-.section-title h2 {
-    font-size: 28px;
-}
-
-.products-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 20px;
-}
-
-/* =====================================================
-   PRODUCT CARD
-===================================================== */
-
-.product-card {
-    background: white;
-
-    border: 1px solid var(--border);
-
-    border-radius: 16px;
-
-    overflow: hidden;
-
-    transition: .2s;
-}
-
-.product-card:hover {
-    transform: translateY(-4px);
-
-    box-shadow:
-        0 15px 35px rgba(0,0,0,.08);
-}
-
-/* =====================================================
-   IMAGE PRINCIPALE
-===================================================== */
-
-.product-image {
-    width: 100%;
-    height: 240px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #111,
-            #6d28d9
-        );
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    overflow: hidden;
-
-    cursor: zoom-in;
-}
-
-.product-image img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    transition: .25s;
-}
-
-.product-image:hover img {
-    transform: scale(1.04);
-}
-
-.no-image {
-    font-size: 60px;
-}
-
-/* =====================================================
-   THUMBNAILS
-===================================================== */
-
-.product-thumbnails {
-    display: flex;
-
-    gap: 7px;
-
-    padding: 9px;
-
-    overflow-x: auto;
-
-    background: white;
-}
-
-.product-thumbnails img {
-    width: 52px;
-    height: 52px;
-
-    flex-shrink: 0;
-
-    object-fit: cover;
-
-    border-radius: 8px;
-
-    border: 2px solid transparent;
-
-    cursor: pointer;
-}
-
-.product-thumbnails img:hover {
-    border-color: var(--purple);
-}
-
-/* =====================================================
-   PRODUCT INFO
-===================================================== */
-
-.product-info {
-    padding: 18px;
-}
-
-.product-category {
-    color: var(--purple);
-
-    font-size: 11px;
-
-    font-weight: 900;
-
-    text-transform: uppercase;
-
-    margin-bottom: 8px;
-}
-
-.product-name {
-    font-size: 19px;
-    font-weight: 900;
-
-    margin-bottom: 8px;
-}
-
-.product-description {
-    color: var(--muted);
-
-    font-size: 14px;
-
-    line-height: 1.5;
-
-    min-height: 42px;
-}
-
-.product-files-count {
-    margin-top: 12px;
-
-    font-size: 13px;
-
-    color: var(--muted);
-
-    background: #f5f5f5;
-
-    padding: 8px 10px;
-
-    border-radius: 8px;
-}
-
-.product-bottom {
-    margin-top: 18px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 8px;
-}
-
-.price {
-    font-size: 20px;
-    font-weight: 900;
-}
-
-.buy-button {
-    background: var(--black);
-
-    color: white;
-
-    border: none;
-
-    padding: 10px 14px;
-
-    border-radius: 8px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-}
-
-/* =====================================================
-   ACTIONS PRODUIT
-===================================================== */
-
-.product-actions {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 8px;
-
-    margin-top: 10px;
-}
-
-.product-action {
-    border: none;
-
-    padding: 9px;
-
-    border-radius: 8px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-}
-
-.view-button {
-    background: #f3f4f6;
-    color: #111;
-}
-
-.edit-button {
-    background: var(--purple-light);
-    color: var(--purple-dark);
-}
-
-.delete-button {
-    width: 100%;
-
-    margin-top: 8px;
-
-    background: #fee2e2;
-
-    color: var(--red);
-}
-
-/* =====================================================
-   MODALS
-===================================================== */
-
-.modal {
-    display: none;
-
-    position: fixed;
-
-    inset: 0;
-
-    background: rgba(0,0,0,.68);
-
-    z-index: 500;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-}
-
-.modal.show {
-    display: flex;
-}
-
-.modal-content {
-    width: 100%;
-
-    max-width: 700px;
-
-    max-height: 92vh;
-
-    overflow-y: auto;
-
-    background: white;
-
-    border-radius: 18px;
-
-    padding: 30px;
-
-    position: relative;
-}
-
-.close {
-    position: absolute;
-
-    right: 18px;
-    top: 18px;
-
-    border: none;
-
-    background: #f1f1f1;
-
-    width: 35px;
-    height: 35px;
-
-    border-radius: 50%;
-
-    font-size: 20px;
-
-    cursor: pointer;
-}
-
-.modal h2 {
-    margin-bottom: 25px;
-}
-
-/* =====================================================
-   FORM
-===================================================== */
-
-.form-group {
-    margin-bottom: 22px;
-}
-
-.form-group label {
-    display: block;
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-    margin-bottom: 8px;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%;
-
-    padding: 13px;
-
-    border: 1px solid var(--border);
-
-    border-radius: 9px;
-
-    outline: none;
-
-    font-family: inherit;
-}
-
-.form-group textarea {
-    min-height: 110px;
-    resize: vertical;
-}
-
-/* =====================================================
-   UPLOAD PHOTOS
-===================================================== */
-
-.image-upload {
-    border: 2px dashed #d4d4d4;
-
-    border-radius: 14px;
-
-    padding: 25px;
-
-    text-align: center;
-
-    background: #fafafa;
-}
-
-.image-upload-icon {
-    font-size: 42px;
-    margin-bottom: 10px;
-}
-
-.image-upload p {
-    color: var(--muted);
-
-    font-size: 13px;
-
-    margin: 7px 0 15px;
-}
-
-.image-upload input {
-    border: none;
-}
-
-/* =====================================================
-   PREVIEW PHOTOS
-===================================================== */
-
-.images-preview {
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 10px;
-
-    margin-top: 18px;
-}
-
-.preview-item {
-    position: relative;
-
-    height: 120px;
-
-    overflow: hidden;
-
-    border-radius: 10px;
-
-    background: #eee;
-}
-
-.preview-item img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-}
-
-.preview-number {
-    position: absolute;
-
-    top: 6px;
-    left: 6px;
-
-    background: rgba(0,0,0,.75);
-
-    color: white;
-
-    padding: 4px 7px;
-
-    border-radius: 6px;
-
-    font-size: 11px;
-}
-
-.preview-remove {
-    position: absolute;
-
-    top: 6px;
-    right: 6px;
-
-    width: 27px;
-    height: 27px;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background: rgba(0,0,0,.75);
-
-    color: white;
-
-    cursor: pointer;
-
-    font-size: 16px;
-}
-
-.main-photo-label {
-    position: absolute;
-
-    bottom: 6px;
-    left: 6px;
-
-    background: var(--purple);
-
-    color: white;
-
-    padding: 4px 7px;
-
-    border-radius: 6px;
-
-    font-size: 10px;
-
-    font-weight: bold;
-}
-
-/* =====================================================
-   FICHIERS
-===================================================== */
-
-.file-upload {
-    border: 2px dashed #d4d4d4;
-
-    border-radius: 14px;
-
-    padding: 25px;
-
-    text-align: center;
-
-    background: #fafafa;
-}
-
-.file-upload-icon {
-    font-size: 40px;
-    margin-bottom: 10px;
-}
-
-.file-upload p {
-    color: var(--muted);
-
-    font-size: 13px;
-
-    margin: 7px 0 15px;
-}
-
-.file-upload input {
-    border: none;
-}
-
-.files-list {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-
-    margin-top: 18px;
-}
-
-.file-item {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 10px;
-
-    padding: 12px;
-
-    background: white;
-
-    border: 1px solid var(--border);
-
-    border-radius: 10px;
-}
-
-.file-info {
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-    min-width: 0;
-}
-
-.file-icon {
-    font-size: 25px;
-
-    flex-shrink: 0;
-}
-
-.file-details {
-    min-width: 0;
-
-    text-align: left;
-}
-
-.file-name {
-    font-size: 14px;
-
-    font-weight: bold;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    white-space: nowrap;
-}
-
-.file-size {
-    color: var(--muted);
-
-    font-size: 12px;
-
-    margin-top: 3px;
-}
-
-.remove-file {
-    width: 30px;
-    height: 30px;
-
-    flex-shrink: 0;
-
-    border: none;
-
-    border-radius: 7px;
-
-    background: #fee2e2;
-
-    color: var(--red);
-
-    cursor: pointer;
-
-    font-weight: bold;
-
-    font-size: 16px;
-}
-
-/* =====================================================
-   BUTTONS
-===================================================== */
-
-.publish-button {
-    width: 100%;
-
-    padding: 15px;
-
-    background: var(--purple);
-
-    color: white;
-
-    border: none;
-
-    border-radius: 10px;
-
-    font-weight: 900;
-
-    cursor: pointer;
-
-    font-size: 15px;
-}
-
-.cancel-button {
-    width: 100%;
-
-    padding: 13px;
-
-    margin-top: 10px;
-
-    background: #f3f4f6;
-
-    color: #111;
-
-    border: none;
-
-    border-radius: 10px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-}
-
-/* =====================================================
-   GALLERY / ZOOM
-===================================================== */
-
-.gallery-modal {
-    display: none;
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 1000;
-
-    background: rgba(0,0,0,.92);
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 30px;
-}
-
-.gallery-modal.show {
-    display: flex;
-}
-
-.gallery-image {
-    max-width: 90vw;
-    max-height: 82vh;
-
-    object-fit: contain;
-
-    border-radius: 8px;
-
-    user-select: none;
-}
-
-.gallery-close {
-    position: absolute;
-
-    top: 20px;
-    right: 25px;
-
-    width: 45px;
-    height: 45px;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background: white;
-
-    color: black;
-
-    font-size: 27px;
-
-    cursor: pointer;
-}
-
-.gallery-prev,
-.gallery-next {
-    position: absolute;
-
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    width: 50px;
-    height: 50px;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background: white;
-
-    color: black;
-
-    font-size: 25px;
-
-    cursor: pointer;
-}
-
-.gallery-prev {
-    left: 25px;
-}
-
-.gallery-next {
-    right: 25px;
-}
-
-.gallery-counter {
-    position: absolute;
-
-    bottom: 25px;
-
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    color: white;
-
-    background: rgba(0,0,0,.6);
-
-    padding: 8px 14px;
-
-    border-radius: 20px;
-
-    font-size: 14px;
-}
-
-/* =====================================================
-   PRODUCT DETAILS MODAL
-===================================================== */
-
-.details-gallery {
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 8px;
-
-    margin-bottom: 22px;
-}
-
-.details-gallery img {
-    width: 100%;
-    height: 90px;
-
-    object-fit: cover;
-
-    border-radius: 9px;
-
-    cursor: zoom-in;
-}
-
-.details-name {
-    font-size: 30px;
-
-    font-weight: 900;
-
-    margin-bottom: 10px;
-}
-
-.details-category {
-    display: inline-block;
-
-    background: var(--purple-light);
-
-    color: var(--purple-dark);
-
-    padding: 6px 10px;
-
-    border-radius: 20px;
-
-    font-size: 12px;
-
-    font-weight: bold;
-
-    margin-bottom: 15px;
-}
-
-.details-description {
-    color: var(--muted);
-
-    line-height: 1.7;
-
-    margin-bottom: 20px;
-
-    white-space: pre-wrap;
-}
-
-.details-price {
-    font-size: 30px;
-
-    font-weight: 900;
-
-    margin-bottom: 20px;
-}
-
-.details-files {
-    border-top: 1px solid var(--border);
-
-    padding-top: 18px;
-}
-
-.details-files h3 {
-    margin-bottom: 12px;
-}
-
-.details-file {
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-    padding: 10px;
-
-    border: 1px solid var(--border);
-
-    border-radius: 9px;
-
-    margin-bottom: 8px;
-}
-
-/* =====================================================
-   CART
-===================================================== */
-
-.cart-item {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    padding: 15px 0;
-
-    border-bottom: 1px solid var(--border);
-}
-
-.remove-cart {
-    border: none;
-
-    background: none;
-
-    cursor: pointer;
-
-    font-size: 18px;
-}
-
-.cart-total {
-    display: flex;
-
-    justify-content: space-between;
-
-    font-size: 21px;
-
-    font-weight: 900;
-
-    margin: 25px 0;
-}
-
-.checkout {
-    width: 100%;
-
-    padding: 15px;
-
-    background: var(--green);
-
-    color: white;
-
-    border: none;
-
-    border-radius: 10px;
-
-    font-weight: 900;
-
-    cursor: pointer;
-}
-
-/* =====================================================
-   FOOTER
-===================================================== */
-
-footer {
-    margin-top: 90px;
-
-    background: #111;
-
-    color: white;
-
-    padding: 55px 5%;
-}
-
-.footer-inner {
-    max-width: 1100px;
-    margin: auto;
-}
-
-.footer-inner p {
-    color: #aaa;
-    margin-top: 10px;
-}
-
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-
-@media(max-width: 900px) {
-
-    .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .images-preview {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media(max-width: 650px) {
-
-    nav a {
-        display: none;
-    }
-
-    .products-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .hero {
-        padding-top: 60px;
-    }
-
-    .hero h1 {
-        letter-spacing: -2px;
-    }
-
-    .hero-buttons {
-        flex-direction: column;
-    }
-
-    .images-preview {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .details-gallery {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .gallery-prev {
-        left: 10px;
-    }
-
-    .gallery-next {
-        right: 10px;
-    }
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexora — Marketplace</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f8f9fa; color: #1a1a2e; }
+        a { text-decoration: none; color: #7c3aed; }
+
+        /* ===== HEADER ===== */
+        header { background: white; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e5e5; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .logo { font-size: 26px; font-weight: 900; letter-spacing: -1px; }
+        .logo span { color: #7c3aed; }
+        nav { display: flex; gap: 10px; align-items: center; }
+        .btn { padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 14px; transition: all 0.2s; }
+        .btn-primary { background: #7c3aed; color: white; }
+        .btn-primary:hover { background: #6d28d9; transform: scale(1.02); }
+        .btn-dark { background: #1a1a2e; color: white; }
+        .btn-dark:hover { background: #2d2d44; }
+        .btn-outline { background: white; color: #1a1a2e; border: 1px solid #e5e5e5; }
+        .btn-outline:hover { background: #f5f5f5; }
+        .btn-admin { background: #7c3aed; color: white; }
+        .btn-admin.active { background: #16a34a; }
+        .btn-admin.active:hover { background: #15803d; }
+        .cart-btn { background: white; border: 1px solid #e5e5e5; padding: 10px 14px; border-radius: 10px; cursor: pointer; position: relative; }
+        #cartCount { position: absolute; top: -6px; right: -6px; background: #7c3aed; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+
+        /* ===== HERO ===== */
+        .hero { text-align: center; padding: 70px 20px; background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); }
+        .hero h1 { font-size: clamp(42px, 6vw, 64px); letter-spacing: -2px; line-height: 1.1; }
+        .hero h1 span { color: #7c3aed; }
+        .hero p { color: #6b7280; max-width: 550px; margin: 18px auto; font-size: 18px; line-height: 1.6; }
+        .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+
+        /* ===== SEARCH & CATEGORIES ===== */
+        .search-container { max-width: 1100px; margin: -20px auto 20px; padding: 0 20px; position: relative; z-index: 10; }
+        .search { width: 100%; padding: 16px 20px; border: 2px solid #e5e5e5; border-radius: 14px; font-size: 15px; outline: none; background: white; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
+        .search:focus { border-color: #7c3aed; box-shadow: 0 4px 20px rgba(124,58,237,0.12); }
+        .categories { max-width: 1100px; margin: auto; padding: 0 20px 30px; display: flex; gap: 10px; overflow-x: auto; flex-wrap: nowrap; }
+        .category { padding: 8px 18px; background: white; border: 1px solid #e5e5e5; border-radius: 999px; cursor: pointer; font-weight: 600; font-size: 14px; white-space: nowrap; transition: 0.2s; }
+        .category:hover { border-color: #7c3aed; }
+        .category.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+
+        /* ===== PRODUCTS GRID ===== */
+        .products-section { max-width: 1100px; margin: auto; padding: 10px 20px 40px; }
+        .section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .section-title h2 { font-size: 28px; font-weight: 800; }
+        .section-title span { color: #6b7280; font-size: 15px; font-weight: 500; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+
+        /* ===== PRODUCT CARD ===== */
+        .product-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e5e5e5; transition: all 0.25s; }
+        .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+        .product-image { width: 100%; height: 210px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: zoom-in; position: relative; }
+        .product-image img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+        .product-image:hover img { transform: scale(1.04); }
+        .no-image { font-size: 48px; color: #ccc; }
+        .product-thumbnails { display: flex; gap: 6px; padding: 10px 14px; overflow-x: auto; background: white; }
+        .product-thumbnails img { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 2px solid transparent; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+        .product-thumbnails img:hover { border-color: #7c3aed; }
+        .product-info { padding: 16px 18px 18px; }
+        .product-category { color: #7c3aed; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .product-name { font-size: 18px; font-weight: 800; margin: 6px 0 8px; }
+        .product-desc { color: #6b7280; font-size: 14px; line-height: 1.5; min-height: 40px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .product-meta { margin-top: 12px; font-size: 13px; color: #6b7280; background: #f5f5f5; padding: 6px 12px; border-radius: 8px; display: inline-block; }
+        .product-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+        .price { font-size: 22px; font-weight: 800; }
+        .buy-btn { background: #1a1a2e; color: white; border: none; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.2s; }
+        .buy-btn:hover { background: #2d2d44; transform: scale(1.02); }
+        .product-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .action-btn { border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s; flex: 1; }
+        .view-btn { background: #f3f4f6; color: #1a1a2e; }
+        .view-btn:hover { background: #e5e7eb; }
+        .edit-btn { background: #ede9fe; color: #6d28d9; }
+        .edit-btn:hover { background: #ddd6fe; }
+        .delete-btn { width: 100%; margin-top: 8px; background: #fee2e2; color: #dc2626; border: none; padding: 8px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .delete-btn:hover { background: #fecaca; }
+        .admin-hidden { display: none !important; }
+
+        /* ===== MODALS ===== */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+        .modal.show { display: flex; }
+        .modal-content { background: white; border-radius: 20px; padding: 30px; max-width: 640px; width: 100%; max-height: 92vh; overflow-y: auto; position: relative; animation: modalIn 0.25s ease; }
+        @keyframes modalIn { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .modal-content.wide { max-width: 720px; }
+        .close { position: absolute; right: 16px; top: 16px; background: #f1f1f1; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: 0.2s; }
+        .close:hover { background: #e5e5e5; }
+        .modal h2 { font-size: 24px; font-weight: 800; margin-bottom: 20px; }
+
+        /* ===== FORM ===== */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 13px 16px; border: 2px solid #e5e5e5; border-radius: 10px; font-size: 15px; transition: 0.2s; font-family: inherit; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 4px rgba(124,58,237,0.08); }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+
+        /* ===== UPLOAD ===== */
+        .upload-zone { border: 2px dashed #d4d4d4; border-radius: 14px; padding: 25px; text-align: center; background: #fafafa; transition: 0.2s; cursor: pointer; }
+        .upload-zone:hover { border-color: #7c3aed; background: #f5f3ff; }
+        .upload-zone input[type="file"] { margin-top: 12px; }
+        .preview-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 14px; }
+        .preview-grid .item { position: relative; height: 90px; background: #eee; border-radius: 8px; overflow: hidden; }
+        .preview-grid .item img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-grid .item .remove { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .preview-grid .item .remove:hover { background: rgba(220,38,38,0.9); }
+        .file-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+        .file-list .file-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: white; border: 1px solid #e5e5e5; border-radius: 8px; }
+        .file-list .file-item .name { font-weight: 600; }
+        .file-list .file-item .size { color: #6b7280; font-size: 13px; }
+        .file-list .file-item .remove { background: #fee2e2; border: none; padding: 4px 12px; border-radius: 6px; cursor: pointer; color: #dc2626; font-weight: 700; transition: 0.2s; }
+        .file-list .file-item .remove:hover { background: #fecaca; }
+
+        /* ===== BUTTONS ===== */
+        .publish-btn { width: 100%; padding: 16px; background: #7c3aed; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .publish-btn:hover { background: #6d28d9; transform: scale(1.01); }
+        .cancel-btn { width: 100%; padding: 14px; margin-top: 10px; background: #f3f4f6; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .cancel-btn:hover { background: #e5e7eb; }
+
+        /* ===== DETAILS PRO ===== */
+        .details-gallery { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 20px; }
+        .details-gallery img { width: 100%; height: 90px; object-fit: cover; border-radius: 10px; cursor: zoom-in; transition: 0.2s; border: 2px solid transparent; }
+        .details-gallery img:hover { border-color: #7c3aed; }
+        .details-category { display: inline-block; background: #ede9fe; color: #6d28d9; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+        .details-name { font-size: 30px; font-weight: 800; margin: 10px 0 16px; line-height: 1.2; }
+        .details-desc { color: #374151; line-height: 1.8; font-size: 16px; background: #fafafa; padding: 20px 24px; border-radius: 12px; border-left: 4px solid #7c3aed; margin-bottom: 20px; }
+        .details-desc ul { margin: 10px 0; padding-left: 24px; list-style-type: disc; }
+        .details-desc li { margin: 6px 0; }
+        .details-desc strong { color: #1a1a2e; }
+        .details-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap: 10px; margin: 20px 0; padding: 16px 0; border-top: 1px solid #e5e5e5; border-bottom: 1px solid #e5e5e5; }
+        .details-features .feat { display: flex; align-items: center; gap: 8px; font-weight: 500; color: #374151; }
+        .details-features .feat span:first-child { font-size: 20px; }
+        .details-price-row { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 24px; flex-wrap: wrap; gap: 12px; }
+        .details-price-row .price-label { font-size: 14px; color: #6b7280; }
+        .details-price-row .price-value { font-size: 34px; font-weight: 800; }
+        .details-files-section { margin-top: 24px; padding-top: 20px; border-top: 2px solid #e5e5e5; }
+        .details-files-section h3 { font-size: 18px; margin-bottom: 14px; }
+        .file-download-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; background: #f9faff; border-radius: 10px; border: 1px solid #e5e5e5; margin-top: 8px; transition: 0.2s; }
+        .file-download-item:hover { border-color: #7c3aed; }
+        .file-download-item .file-info { display: flex; align-items: center; gap: 12px; }
+        .file-download-item .file-info .icon { font-size: 22px; }
+        .file-download-item .file-info .name { font-weight: 600; font-size: 14px; }
+        .file-download-item .file-info .size { color: #6b7280; font-size: 13px; }
+        .download-btn { background: #7c3aed; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.2s; }
+        .download-btn:hover { background: #6d28d9; transform: scale(1.02); }
+
+        /* ===== CART ===== */
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #e5e5e5; }
+        .cart-item .name { font-weight: 600; }
+        .cart-item .price { font-weight: 700; }
+        .cart-item .remove { background: none; border: none; cursor: pointer; font-size: 18px; color: #dc2626; transition: 0.2s; }
+        .cart-item .remove:hover { transform: scale(1.2); }
+        .cart-total { display: flex; justify-content: space-between; font-size: 22px; font-weight: 800; margin: 20px 0 24px; padding-top: 16px; border-top: 2px solid #e5e5e5; }
+        .checkout-btn { width: 100%; padding: 16px; background: #16a34a; color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.2s; }
+        .checkout-btn:hover { background: #15803d; transform: scale(1.01); }
+
+        /* ===== PASSWORD MODAL ===== */
+        .password-input { width: 100%; padding: 14px 16px; border: 2px solid #e5e5e5; border-radius: 10px; font-size: 16px; transition: 0.2s; }
+        .password-input:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 4px rgba(124,58,237,0.08); }
+
+        /* ===== GALLERY ZOOM ===== */
+        .gallery-modal { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.92); align-items: center; justify-content: center; padding: 30px; }
+        .gallery-modal.show { display: flex; }
+        .gallery-image { max-width: 90vw; max-height: 82vh; object-fit: contain; border-radius: 8px; animation: modalIn 0.25s ease; }
+        .gallery-close { position: absolute; top: 20px; right: 25px; width: 48px; height: 48px; border: none; border-radius: 50%; background: white; font-size: 28px; cursor: pointer; transition: 0.2s; }
+        .gallery-close:hover { transform: scale(1.08); }
+        .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border: none; border-radius: 50%; background: white; font-size: 26px; cursor: pointer; transition: 0.2s; }
+        .gallery-nav:hover { transform: translateY(-50%) scale(1.08); }
+        .gallery-prev { left: 25px; }
+        .gallery-next { right: 25px; }
+        .gallery-counter { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); color: white; background: rgba(0,0,0,0.6); padding: 8px 18px; border-radius: 20px; font-size: 14px; }
+
+        /* ===== FOOTER ===== */
+        footer { margin-top: 60px; background: #1a1a2e; color: white; padding: 40px 5%; }
+        .footer-inner { max-width: 1100px; margin: auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-inner p { color: #9ca3af; }
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width: 768px) {
+            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .details-gallery { grid-template-columns: repeat(2, 1fr); }
+            .details-gallery img { height: 80px; }
+            .preview-grid { grid-template-columns: repeat(2, 1fr); }
+            .details-features { grid-template-columns: 1fr 1fr; }
+            .modal-content { padding: 20px; }
+            .hero h1 { font-size: 36px; }
+        }
+        @media(max-width: 480px) {
+            .products-grid { grid-template-columns: 1fr; }
+            .hero { padding: 50px 16px; }
+            .hero h1 { font-size: 30px; }
+            header { flex-wrap: wrap; gap: 10px; }
+            nav { flex-wrap: wrap; }
+            .section-title { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .details-price-row { flex-direction: column; align-items: flex-start; }
+            .details-price-row button { width: 100%; }
+            .file-download-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .file-download-item .download-btn { width: 100%; text-align: center; }
+            .details-features { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
 <header>
-
-    <div class="logo">
-        Nex<span>ora</span>
-    </div>
-
+    <div class="logo">Nex<span>ora</span></div>
     <nav>
-
-        <a href="#products">
-            Marketplace
-        </a>
-
-        <a href="#products">
-            Découvrir
-        </a>
-
-        <button
-            class="sell-button"
-            onclick="openCreateModal()"
-        >
-            + Vendre
-        </button>
-
-        <button
-            class="cart-button"
-            onclick="openCart()"
-        >
-            🛒
-
-            <span id="cartCount">
-                0
-            </span>
-
-        </button>
-
+        <button class="btn btn-admin" id="adminBtn" onclick="toggleAdmin()">🔐 Admin</button>
+        <button class="btn btn-dark admin-hidden" id="sellBtn" onclick="openCreateModal()">+ Vendre</button>
+        <button class="cart-btn" onclick="openCart()">🛒 <span id="cartCount">0</span></button>
     </nav>
-
 </header>
 
-<!-- =====================================================
-     HERO
-===================================================== -->
+<!-- ===== MODAL PASSWORD ===== -->
+<div class="modal" id="passwordModal">
+    <div class="modal-content" style="max-width:420px;">
+        <button class="close" onclick="closePasswordModal()">×</button>
+        <h2>🔐 Mode Admin</h2>
+        <p style="color:#6b7280; margin-bottom:18px;">Entre le mot de passe pour gérer les produits.</p>
+        <div class="form-group">
+            <input type="password" id="passwordInput" class="password-input" placeholder="Mot de passe" onkeydown="if(event.key==='Enter') checkPassword()">
+        </div>
+        <button class="publish-btn" onclick="checkPassword()">🔓 Valider</button>
+        <button class="cancel-btn" onclick="closePasswordModal()">Annuler</button>
+    </div>
+</div>
 
+<!-- ===== HERO ===== -->
 <section class="hero">
-
-    <div class="badge">
-        🚀 Marketplace de produits numériques
-    </div>
-
-    <h1>
-        Crée. Vends.<br>
-        <span>Gagne.</span>
-    </h1>
-
-    <p>
-        Vends tes templates HTML, designs, ebooks,
-        ressources, logiciels et fichiers numériques.
-    </p>
-
+    <h1>Crée. Vends.<br><span>Télécharge.</span></h1>
+    <p>La marketplace pour vendre tes créations numériques en toute simplicité.</p>
     <div class="hero-buttons">
-
-        <button
-            class="primary-button"
-            onclick="openCreateModal()"
-        >
-            Commencer à vendre
-        </button>
-
-        <button
-            class="secondary-button"
-            onclick="document.getElementById('products').scrollIntoView()"
-        >
-            Explorer les produits
-        </button>
-
+        <button class="btn btn-primary" onclick="document.getElementById('products').scrollIntoView()">Explorer</button>
     </div>
-
 </section>
 
-<!-- =====================================================
-     SEARCH
-===================================================== -->
-
+<!-- ===== SEARCH ===== -->
 <div class="search-container">
-
-    <input
-        class="search"
-        id="search"
-        type="text"
-        placeholder="🔎 Rechercher un produit..."
-        oninput="renderProducts()"
-    >
-
+    <input class="search" id="search" type="text" placeholder="🔎 Rechercher un produit..." oninput="renderProducts()">
 </div>
 
-<!-- =====================================================
-     CATEGORIES
-===================================================== -->
-
-<div class="categories">
-
-    <button
-        class="category active"
-        onclick="filterCategory('Tous', this)"
-    >
-        Tous
-    </button>
-
-    <button
-        class="category"
-        onclick="filterCategory('HTML', this)"
-    >
-        HTML
-    </button>
-
-    <button
-        class="category"
-        onclick="filterCategory('Design', this)"
-    >
-        Design
-    </button>
-
-    <button
-        class="category"
-        onclick="filterCategory('Ebook', this)"
-    >
-        Ebook
-    </button>
-
-    <button
-        class="category"
-        onclick="filterCategory('Marketing', this)"
-    >
-        Marketing
-    </button>
-
-    <button
-        class="category"
-        onclick="filterCategory('Code', this)"
-    >
-        Code
-    </button>
-
+<!-- ===== CATEGORIES ===== -->
+<div class="categories" id="categoriesContainer">
+    <button class="category active" onclick="filterCategory('Tous', this)">Tous</button>
+    <button class="category" onclick="filterCategory('HTML', this)">HTML</button>
+    <button class="category" onclick="filterCategory('Design', this)">Design</button>
+    <button class="category" onclick="filterCategory('Ebook', this)">Ebook</button>
+    <button class="category" onclick="filterCategory('Code', this)">Code</button>
+    <button class="category" onclick="filterCategory('Logiciel', this)">Logiciel</button>
+    <button class="category" onclick="filterCategory('Musique', this)">Musique</button>
+    <button class="category" onclick="filterCategory('Vidéo', this)">Vidéo</button>
 </div>
 
-<!-- =====================================================
-     PRODUCTS
-===================================================== -->
-
-<main
-    class="products-section"
-    id="products"
->
-
+<!-- ===== PRODUCTS ===== -->
+<main class="products-section" id="products">
     <div class="section-title">
-
-        <h2>
-            Produits populaires
-        </h2>
-
+        <h2>Nos produits</h2>
         <span id="productCount"></span>
-
     </div>
-
-    <div
-        class="products-grid"
-        id="productsGrid"
-    ></div>
-
+    <div class="products-grid" id="productsGrid"></div>
 </main>
 
-<!-- =====================================================
-     MODAL CREATION / MODIFICATION
-===================================================== -->
-
-<div
-    class="modal"
-    id="productModal"
->
-
-    <div class="modal-content">
-
-        <button
-            class="close"
-            onclick="closeProductModal()"
-        >
-            ×
-        </button>
-
-        <h2 id="productModalTitle">
-            🚀 Publier un produit
-        </h2>
-
+<!-- ===== MODAL CREATION ===== -->
+<div class="modal" id="productModal">
+    <div class="modal-content wide">
+        <button class="close" onclick="closeProductModal()">×</button>
+        <h2 id="modalTitle">🚀 Publier un produit</h2>
         <form id="productForm">
-
             <div class="form-group">
-
-                <label>
-                    Nom du produit
-                </label>
-
-                <input
-                    type="text"
-                    id="productName"
-                    placeholder="Ex : Portfolio HTML Premium"
-                    required
-                >
-
+                <label>Nom du produit</label>
+                <input type="text" id="pName" placeholder="Ex: Mon super produit" required>
             </div>
-
             <div class="form-group">
-
-                <label>
-                    Description
-                </label>
-
-                <textarea
-                    id="productDescription"
-                    placeholder="Décris ton produit..."
-                    required
-                ></textarea>
-
+                <label>Description</label>
+                <textarea id="pDesc" placeholder="Décris ton produit... Utilise **gras**, *italique*, - listes, [liens](url)" required></textarea>
+                <small style="color:#6b7280;">Astuce: **gras**, *italique*, - listes à puces, [liens](url)</small>
             </div>
-
             <div class="form-group">
-
-                <label>
-                    Prix (€)
-                </label>
-
-                <input
-                    type="number"
-                    id="productPrice"
-                    placeholder="19.99"
-                    min="0"
-                    step="0.01"
-                    required
-                >
-
+                <label>Prix (€)</label>
+                <input type="number" id="pPrice" placeholder="29.90" min="0" step="0.01" required>
             </div>
-
             <div class="form-group">
-
-                <label>
-                    Catégorie
-                </label>
-
-                <select id="productCategory">
-
-                    <option value="HTML">
-                        HTML
-                    </option>
-
-                    <option value="Design">
-                        Design
-                    </option>
-
-                    <option value="Ebook">
-                        Ebook
-                    </option>
-
-                    <option value="Marketing">
-                        Marketing
-                    </option>
-
-                    <option value="Code">
-                        Code
-                    </option>
-
+                <label>Catégorie</label>
+                <select id="pCategory">
+                    <option value="HTML">HTML</option>
+                    <option value="Design">Design</option>
+                    <option value="Ebook">Ebook</option>
+                    <option value="Code">Code</option>
+                    <option value="Logiciel" selected>Logiciel</option>
+                    <option value="Musique">Musique</option>
+                    <option value="Vidéo">Vidéo</option>
                 </select>
-
             </div>
-
-            <!-- PHOTOS -->
-
             <div class="form-group">
-
-                <label>
-                    🖼️ Photos du produit
-                </label>
-
-                <div class="image-upload">
-
-                    <div class="image-upload-icon">
-                        📸
-                    </div>
-
-                    <strong>
-                        Ajoute plusieurs photos
-                    </strong>
-
-                    <p>
-                        JPG, PNG ou WEBP
-                    </p>
-
-                    <input
-                        type="file"
-                        id="productImages"
-                        accept="image/png,image/jpeg,image/webp"
-                        multiple
-                    >
-
-                    <div
-                        class="images-preview"
-                        id="imagesPreview"
-                    ></div>
-
+                <label>🖼️ Images (sélectionne plusieurs fichiers)</label>
+                <div class="upload-zone">
+                    <div style="font-size:36px; margin-bottom:6px;">📸</div>
+                    <strong>Clique pour choisir tes images</strong>
+                    <p style="color:#6b7280; font-size:13px;">JPG, PNG, WEBP</p>
+                    <input type="file" id="pImageFiles" accept="image/*" multiple>
+                    <div class="preview-grid" id="imagePreview"></div>
                 </div>
-
             </div>
-
-            <!-- FICHIERS -->
-
             <div class="form-group">
-
-                <label>
-                    📦 Fichiers du produit
-                </label>
-
-                <div class="file-upload">
-
-                    <div class="file-upload-icon">
-                        📁
-                    </div>
-
-                    <strong>
-                        Ajoute tous les fichiers
-                    </strong>
-
-                    <p>
-                        HTML, CSS, JS, README, LICENSE,
-                        PDF, ZIP, images, etc.
-                    </p>
-
-                    <input
-                        type="file"
-                        id="productFiles"
-                        multiple
-                    >
-
-                    <div
-                        class="files-list"
-                        id="filesList"
-                    ></div>
-
+                <label>📦 Fichiers à vendre (sélectionne plusieurs fichiers)</label>
+                <div class="upload-zone">
+                    <div style="font-size:36px; margin-bottom:6px;">📁</div>
+                    <strong>Clique pour choisir tes fichiers</strong>
+                    <p style="color:#6b7280; font-size:13px;">ZIP, PDF, HTML, EXE, etc.</p>
+                    <input type="file" id="pFileFiles" multiple>
+                    <div class="file-list" id="fileList"></div>
                 </div>
-
             </div>
-
-            <button
-                type="submit"
-                class="publish-button"
-                id="saveProductButton"
-            >
-                🚀 Publier le produit
-            </button>
-
-            <button
-                type="button"
-                class="cancel-button"
-                onclick="closeProductModal()"
-            >
-                Annuler
-            </button>
-
+            <button type="submit" class="publish-btn" id="saveBtn">🚀 Publier</button>
+            <button type="button" class="cancel-btn" onclick="closeProductModal()">Annuler</button>
         </form>
-
     </div>
-
 </div>
 
-<!-- =====================================================
-     DETAILS PRODUIT
-===================================================== -->
-
-<div
-    class="modal"
-    id="detailsModal"
->
-
-    <div class="modal-content">
-
-        <button
-            class="close"
-            onclick="closeDetailsModal()"
-        >
-            ×
-        </button>
-
+<!-- ===== MODAL DETAILS ===== -->
+<div class="modal" id="detailsModal">
+    <div class="modal-content wide">
+        <button class="close" onclick="closeDetailsModal()">×</button>
         <div id="detailsContent"></div>
-
     </div>
-
 </div>
 
-<!-- =====================================================
-     ZOOM IMAGE
-===================================================== -->
-
-<div
-    class="gallery-modal"
-    id="galleryModal"
->
-
-    <button
-        class="gallery-close"
-        onclick="closeGallery()"
-    >
-        ×
-    </button>
-
-    <button
-        class="gallery-prev"
-        onclick="previousImage()"
-    >
-        ‹
-    </button>
-
-    <img
-        class="gallery-image"
-        id="galleryImage"
-        src=""
-        alt="Image du produit"
-    >
-
-    <button
-        class="gallery-next"
-        onclick="nextImage()"
-    >
-        ›
-    </button>
-
-    <div
-        class="gallery-counter"
-        id="galleryCounter"
-    >
-        1 / 1
-    </div>
-
+<!-- ===== GALERIE ZOOM ===== -->
+<div class="gallery-modal" id="galleryModal">
+    <button class="gallery-close" onclick="closeGallery()">×</button>
+    <button class="gallery-nav gallery-prev" onclick="prevImage()">‹</button>
+    <img class="gallery-image" id="galleryImg" src="">
+    <button class="gallery-nav gallery-next" onclick="nextImage()">›</button>
+    <div class="gallery-counter" id="galleryCounter">1 / 1</div>
 </div>
 
-<!-- =====================================================
-     CART
-===================================================== -->
-
-<div
-    class="modal"
-    id="cartModal"
->
-
+<!-- ===== PANIER ===== -->
+<div class="modal" id="cartModal">
     <div class="modal-content">
-
-        <button
-            class="close"
-            onclick="closeCart()"
-        >
-            ×
-        </button>
-
-        <h2>
-            🛒 Ton panier
-        </h2>
-
+        <button class="close" onclick="closeCart()">×</button>
+        <h2>🛒 Panier</h2>
         <div id="cartItems"></div>
-
-        <div class="cart-total">
-
-            <span>
-                Total
-            </span>
-
-            <span id="cartTotal">
-                0.00 €
-            </span>
-
-        </div>
-
-        <button
-            class="checkout"
-            onclick="checkout()"
-        >
-            💳 Passer au paiement
-        </button>
-
+        <div class="cart-total"><span>Total</span><span id="cartTotal">0.00 €</span></div>
+        <button class="checkout-btn" onclick="checkout()">💳 Payer</button>
+        <p style="text-align:center; color:#6b7280; font-size:13px; margin-top:12px;">🔧 Paiement simulation — Connecte Stripe ou PayPal</p>
     </div>
-
 </div>
 
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
+<!-- ===== FOOTER ===== -->
 <footer>
-
     <div class="footer-inner">
-
-        <div class="logo">
-            Nex<span>ora</span>
-        </div>
-
-        <p>
-            Ta marketplace pour vendre des produits numériques.
-        </p>
-
+        <div class="logo" style="color:white;">Nex<span style="color:#7c3aed;">ora</span></div>
+        <p>© 2026 — Vends tes créations numériques</p>
     </div>
-
 </footer>
 
 <script>
-
-/* =====================================================
-   PRODUITS
-===================================================== */
-
-let products = [
-
-    {
-        id: 1,
-
-        name: "Portfolio HTML Premium",
-
-        description:
-            "Un portfolio moderne et responsive.",
-
-        price: 19.99,
-
-        category: "HTML",
-
-        images: [
-            "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80",
-            "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=900&q=80",
-            "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=900&q=80"
-        ],
-
-        files: []
-    },
-
-    {
-        id: 2,
-
-        name: "Landing Page SaaS",
-
-        description:
-            "Landing page professionnelle pour startup.",
-
-        price: 24.99,
-
-        category: "HTML",
-
-        images: [
-            "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=900&q=80",
-            "https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=900&q=80"
-        ],
-
-        files: []
-    },
-
-    {
-        id: 3,
-
-        name: "Pack UI Design",
-
-        description:
-            "Ressources UI modernes pour tes projets.",
-
-        price: 14.99,
-
-        category: "Design",
-
-        images: [
-            "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=900&q=80",
-            "https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=900&q=80"
-        ],
-
-        files: []
-    },
-
-    {
-        id: 4,
-
-        name: "Guide Marketing Digital",
-
-        description:
-            "Guide pour développer ton business en ligne.",
-
-        price: 9.99,
-
-        category: "Ebook",
-
-        images: [
-            "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=900&q=80"
-        ],
-
-        files: []
-    }
-
-];
-
-let cart = [];
-
-let currentCategory = "Tous";
-
-let editingProductId = null;
-
-let galleryImages = [];
-
-let galleryIndex = 0;
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHTML(text) {
-
-    return String(text)
-
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
-
-/* =====================================================
-   FORMAT TAILLE
-===================================================== */
-
-function formatFileSize(bytes) {
-
-    if (!bytes) {
-        return "0 octet";
-    }
-
-    const units = [
-        "octets",
-        "Ko",
-        "Mo",
-        "Go"
-    ];
-
-    const i = Math.floor(
-        Math.log(bytes) /
-        Math.log(1024)
-    );
-
-    return (
-        (bytes / Math.pow(1024, i))
-        .toFixed(1)
-        +
-        " "
-        +
-        units[i]
-    );
-}
-
-/* =====================================================
-   ICON FICHIER
-===================================================== */
-
-function getFileIcon(filename) {
-
-    const extension =
-        filename
-            .split(".")
-            .pop()
-            .toLowerCase();
-
-    if (
-        extension === "html" ||
-        extension === "htm"
-    ) return "🌐";
-
-    if (extension === "css")
-        return "🎨";
-
-    if (extension === "js")
-        return "⚡";
-
-    if (extension === "pdf")
-        return "📕";
-
-    if (
-        extension === "zip" ||
-        extension === "rar" ||
-        extension === "7z"
-    ) return "📦";
-
-    if (
-        extension === "png" ||
-        extension === "jpg" ||
-        extension === "jpeg" ||
-        extension === "webp"
-    ) return "🖼️";
-
-    if (
-        extension === "md" ||
-        extension === "txt"
-    ) return "📝";
-
-    return "📄";
-}
-
-/* =====================================================
-   AFFICHER PRODUITS
-===================================================== */
-
-function renderProducts() {
-
-    const grid =
-        document.getElementById("productsGrid");
-
-    const search =
-        document
-            .getElementById("search")
-            .value
-            .toLowerCase()
-            .trim();
-
-    const filtered =
-        products.filter(product => {
-
-            const matchesSearch =
-                product.name
-                    .toLowerCase()
-                    .includes(search)
-                ||
-                product.description
-                    .toLowerCase()
-                    .includes(search);
-
-            const matchesCategory =
-                currentCategory === "Tous"
-                ||
-                product.category === currentCategory;
-
-            return (
-                matchesSearch &&
-                matchesCategory
-            );
+    // =====================================================
+    // CONFIGURATION
+    // =====================================================
+    const ADMIN_PASSWORD = 'admin123';
+    let isAdmin = false;
+
+    // =====================================================
+    // CONVERSION FICHIER -> BASE64
+    // =====================================================
+    function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
         });
+    }
 
-    grid.innerHTML = "";
+    // =====================================================
+    // PRODUITS (localStorage)
+    // =====================================================
+    let products = [];
+    let cart = [];
+    let currentCategory = "Tous";
+    let editingId = null;
+    let galleryImages = [];
+    let galleryIndex = 0;
+    let tempImages = [];
+    let tempFiles = [];
 
-    document.getElementById("productCount")
-        .textContent =
-        filtered.length + " produits";
-
-    filtered.forEach(product => {
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "product-card";
-
-        const images =
-            product.images || [];
-
-        const files =
-            product.files || [];
-
-        const mainImage =
-            images.length
-                ? images[0]
-                : "";
-
-        let thumbnails = "";
-
-        if (images.length > 1) {
-
-            thumbnails = `
-
-                <div class="product-thumbnails">
-
-                    ${images.map((image, index) => `
-
-                        <img
-                            src="${image}"
-                            alt="Photo ${index + 1}"
-                            onclick="openGallery(${product.id}, ${index})"
-                        >
-
-                    `).join("")}
-
-                </div>
-
-            `;
+    function loadProducts() {
+        const saved = localStorage.getItem('nexora_products');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed.length > 0) { products = parsed; return; }
+            } catch(e) {}
         }
-
-        card.innerHTML = `
-
-            <div
-                class="product-image"
-                onclick="openGallery(${product.id}, 0)"
-            >
-
-                ${
-                    mainImage
-
-                    ?
-
-                    `
-                    <img
-                        src="${mainImage}"
-                        alt="${escapeHTML(product.name)}"
-                    >
-                    `
-
-                    :
-
-                    `
-                    <div class="no-image">
-                        📦
-                    </div>
-                    `
-                }
-
-            </div>
-
-            ${thumbnails}
-
-            <div class="product-info">
-
-                <div class="product-category">
-                    ${escapeHTML(product.category)}
-                </div>
-
-                <div class="product-name">
-                    ${escapeHTML(product.name)}
-                </div>
-
-                <div class="product-description">
-                    ${escapeHTML(product.description)}
-                </div>
-
-                <div class="product-files-count">
-                    📦 ${files.length}
-                    fichier(s) inclus
-                    • 🖼️ ${images.length}
-                    photo(s)
-                </div>
-
-                <div class="product-bottom">
-
-                    <div class="price">
-                        ${Number(product.price).toFixed(2)} €
-                    </div>
-
-                    <button
-                        class="buy-button"
-                        onclick="addToCart(${product.id})"
-                    >
-                        Acheter
-                    </button>
-
-                </div>
-
-                <div class="product-actions">
-
-                    <button
-                        class="product-action view-button"
-                        onclick="viewProduct(${product.id})"
-                    >
-                        👁️ Voir
-                    </button>
-
-                    <button
-                        class="product-action edit-button"
-                        onclick="editProduct(${product.id})"
-                    >
-                        ✏️ Modifier
-                    </button>
-
-                </div>
-
-                <button
-                    class="product-action delete-button"
-                    onclick="deleteProduct(${product.id})"
-                >
-                    🗑️ Supprimer
-                </button>
-
-            </div>
-
-        `;
-
-        grid.appendChild(card);
-
-    });
-}
-
-/* =====================================================
-   CATEGORIE
-===================================================== */
-
-function filterCategory(category, button) {
-
-    currentCategory = category;
-
-    document
-        .querySelectorAll(".category")
-        .forEach(btn => {
-            btn.classList.remove("active");
-        });
-
-    button.classList.add("active");
-
-    renderProducts();
-}
-
-/* =====================================================
-   MODAL CREATION
-===================================================== */
-
-function openCreateModal() {
-
-    editingProductId = null;
-
-    document.getElementById("productModalTitle")
-        .textContent =
-        "🚀 Publier un produit";
-
-    document.getElementById("saveProductButton")
-        .textContent =
-        "🚀 Publier le produit";
-
-    document.getElementById("productForm").reset();
-
-    document.getElementById("imagesPreview")
-        .innerHTML = "";
-
-    document.getElementById("filesList")
-        .innerHTML = "";
-
-    document.getElementById("productModal")
-        .classList.add("show");
-}
-
-/* =====================================================
-   FERMER MODAL
-===================================================== */
-
-function closeProductModal() {
-
-    document.getElementById("productModal")
-        .classList.remove("show");
-
-    editingProductId = null;
-}
-
-/* =====================================================
-   MODIFIER PRODUIT
-===================================================== */
-
-function editProduct(id) {
-
-    const product =
-        products.find(
-            p => p.id === id
-        );
-
-    if (!product) return;
-
-    editingProductId = id;
-
-    document.getElementById("productModalTitle")
-        .textContent =
-        "✏️ Modifier le produit";
-
-    document.getElementById("saveProductButton")
-        .textContent =
-        "💾 Enregistrer les modifications";
-
-    document.getElementById("productName")
-        .value =
-        product.name;
-
-    document.getElementById("productDescription")
-        .value =
-        product.description;
-
-    document.getElementById("productPrice")
-        .value =
-        product.price;
-
-    document.getElementById("productCategory")
-        .value =
-        product.category;
-
-    renderExistingImages(product);
-
-    renderExistingFiles(product);
-
-    document.getElementById("productModal")
-        .classList.add("show");
-}
-
-/* =====================================================
-   PHOTOS EXISTANTES
-===================================================== */
-
-function renderExistingImages(product) {
-
-    const preview =
-        document.getElementById("imagesPreview");
-
-    preview.innerHTML = "";
-
-    (product.images || [])
-        .forEach((image, index) => {
-
-            const item =
-                document.createElement("div");
-
-            item.className =
-                "preview-item";
-
-            item.innerHTML = `
-
-                <img
-                    src="${image}"
-                    alt="Photo ${index + 1}"
-                    onclick="openGallery(${product.id}, ${index})"
-                >
-
-                <span class="preview-number">
-                    ${index + 1}
-                </span>
-
-                ${
-                    index === 0
-                    ?
-                    `
-                    <span class="main-photo-label">
-                        PRINCIPALE
-                    </span>
-                    `
-                    :
-                    ""
-                }
-
-                <button
-                    type="button"
-                    class="preview-remove"
-                    onclick="removeExistingImage(${product.id}, ${index})"
-                >
-                    ×
-                </button>
-
-            `;
-
-            preview.appendChild(item);
-        });
-}
-
-/* =====================================================
-   SUPPRIMER PHOTO EXISTANTE
-===================================================== */
-
-function removeExistingImage(productId, imageIndex) {
-
-    const product =
-        products.find(
-            p => p.id === productId
-        );
-
-    if (!product) return;
-
-    if (product.images.length <= 1) {
-
-        alert(
-            "📸 Le produit doit garder au moins une photo."
-        );
-
-        return;
+        // Produits par défaut
+        products = [
+            {
+                id: 1,
+                name: "Template HTML Premium",
+                description: "Un template moderne et responsive pour sites vitrines.\n\n- **100% responsive**\n- **Optimisé SEO**\n- **Animations fluides**\n- **Documentation incluse**\n\n[Voir la démo](https://exemple.com/demo)",
+                price: 19.99,
+                category: "HTML",
+                images: ["https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=900&q=80"],
+                files: []
+            },
+            {
+                id: 2,
+                name: "Pack UI Design",
+                description: "Ressources UI modernes pour tes projets.\n\n- **500+ composants**\n- **Système de design**\n- **Fichiers Figma**\n- **Licence commerciale**\n\nParfait pour les designers et développeurs.",
+                price: 14.99,
+                category: "Design",
+                images: ["https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=900&q=80"],
+                files: []
+            },
+            {
+                id: 3,
+                name: "Ebook Marketing Digital",
+                description: "Guide complet pour développer ton business en ligne.\n\n- **Stratégies éprouvées**\n- **Études de cas**\n- **Templates inclus**\n- **Bonus : checklist 100 points**",
+                price: 9.99,
+                category: "Ebook",
+                images: ["https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=900&q=80"],
+                files: []
+            }
+        ];
+        saveProducts();
     }
 
-    product.images.splice(
-        imageIndex,
-        1
-    );
-
-    renderExistingImages(product);
-
-    renderProducts();
-}
-
-/* =====================================================
-   AJOUTER NOUVELLES PHOTOS
-===================================================== */
-
-const productImagesInput =
-    document.getElementById("productImages");
-
-const imagesPreview =
-    document.getElementById("imagesPreview");
-
-productImagesInput.addEventListener(
-    "change",
-    function() {
-
-        const files =
-            Array.from(this.files);
-
-        files.forEach(file => {
-
-            if (!file.type.startsWith("image/"))
-                return;
-
-            const url =
-                URL.createObjectURL(file);
-
-            imagesPreview.innerHTML += `
-
-                <div class="preview-item">
-
-                    <img
-                        src="${url}"
-                        alt="Nouvelle photo"
-                    >
-
-                    <span class="main-photo-label">
-                        NOUVELLE
-                    </span>
-
-                </div>
-
-            `;
-
-        });
-    }
-);
-
-/* =====================================================
-   FICHIERS EXISTANTS
-===================================================== */
-
-function renderExistingFiles(product) {
-
-    const list =
-        document.getElementById("filesList");
-
-    list.innerHTML = "";
-
-    const files =
-        product.files || [];
-
-    files.forEach(
-        (file, index) => {
-
-            const item =
-                document.createElement("div");
-
-            item.className =
-                "file-item";
-
-            const name =
-                typeof file === "string"
-                    ? file
-                    : file.name;
-
-            const size =
-                typeof file === "string"
-                    ? ""
-                    : formatFileSize(file.size);
-
-            item.innerHTML = `
-
-                <div class="file-info">
-
-                    <div class="file-icon">
-                        ${getFileIcon(name)}
-                    </div>
-
-                    <div class="file-details">
-
-                        <div class="file-name">
-                            ${escapeHTML(name)}
-                        </div>
-
-                        <div class="file-size">
-                            ${size}
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="remove-file"
-                    onclick="removeExistingFile(${product.id}, ${index})"
-                >
-                    ×
-                </button>
-
-            `;
-
-            list.appendChild(item);
-        }
-    );
-}
-
-/* =====================================================
-   SUPPRIMER FICHIER EXISTANT
-===================================================== */
-
-function removeExistingFile(productId, fileIndex) {
-
-    const product =
-        products.find(
-            p => p.id === productId
-        );
-
-    if (!product) return;
-
-    if (product.files.length <= 1) {
-
-        alert(
-            "📦 Le produit doit garder au moins un fichier."
-        );
-
-        return;
+    function saveProducts() {
+        localStorage.setItem('nexora_products', JSON.stringify(products));
     }
 
-    product.files.splice(
-        fileIndex,
-        1
-    );
-
-    renderExistingFiles(product);
-
-    renderProducts();
-}
-
-/* =====================================================
-   AJOUT NOUVEAUX FICHIERS
-===================================================== */
-
-const productFilesInput =
-    document.getElementById("productFiles");
-
-productFilesInput.addEventListener(
-    "change",
-    function() {
-
-        renderNewFiles();
-
-    }
-);
-
-function renderNewFiles() {
-
-    const list =
-        document.getElementById("filesList");
-
-    const newFiles =
-        Array.from(
-            productFilesInput.files
-        );
-
-    newFiles.forEach(file => {
-
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "file-item";
-
-        item.innerHTML = `
-
-            <div class="file-info">
-
-                <div class="file-icon">
-                    ${getFileIcon(file.name)}
-                </div>
-
-                <div class="file-details">
-
-                    <div class="file-name">
-                        ${escapeHTML(file.name)}
-                    </div>
-
-                    <div class="file-size">
-                        ${formatFileSize(file.size)}
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-        list.appendChild(item);
-    });
-}
-
-/* =====================================================
-   ENREGISTRER PRODUIT
-===================================================== */
-
-document
-    .getElementById("productForm")
-    .addEventListener(
-        "submit",
-        function(event) {
-
-            event.preventDefault();
-
-            const name =
-                document.getElementById(
-                    "productName"
-                ).value.trim();
-
-            const description =
-                document.getElementById(
-                    "productDescription"
-                ).value.trim();
-
-            const price =
-                parseFloat(
-                    document.getElementById(
-                        "productPrice"
-                    ).value
-                );
-
-            const category =
-                document.getElementById(
-                    "productCategory"
-                ).value;
-
-            if (
-                !name ||
-                !description ||
-                isNaN(price) ||
-                price < 0
-            ) {
-
-                alert(
-                    "⚠️ Vérifie les informations du produit."
-                );
-
-                return;
-            }
-
-            /* =========================================
-               MODIFICATION
-            ========================================= */
-
-            if (editingProductId !== null) {
-
-                const product =
-                    products.find(
-                        p =>
-                            p.id ===
-                            editingProductId
-                    );
-
-                if (!product) return;
-
-                product.name =
-                    name;
-
-                product.description =
-                    description;
-
-                product.price =
-                    price;
-
-                product.category =
-                    category;
-
-                /* Ajouter nouvelles photos */
-
-                const newImages =
-                    Array.from(
-                        productImagesInput.files
-                    );
-
-                newImages.forEach(file => {
-
-                    if (
-                        file.type.startsWith(
-                            "image/"
-                        )
-                    ) {
-
-                        product.images.push(
-                            URL.createObjectURL(file)
-                        );
-
-                    }
-
-                });
-
-                /* Ajouter nouveaux fichiers */
-
-                const newFiles =
-                    Array.from(
-                        productFilesInput.files
-                    );
-
-                product.files.push(
-                    ...newFiles
-                );
-
-                renderProducts();
-
-                closeProductModal();
-
-                alert(
-                    "✅ Produit modifié avec succès !"
-                );
-
-                return;
-            }
-
-            /* =========================================
-               NOUVEAU PRODUIT
-            ========================================= */
-
-            const imageFiles =
-                Array.from(
-                    productImagesInput.files
-                );
-
-            const productFiles =
-                Array.from(
-                    productFilesInput.files
-                );
-
-            if (imageFiles.length === 0) {
-
-                alert(
-                    "📸 Ajoute au moins une photo."
-                );
-
-                return;
-            }
-
-            if (productFiles.length === 0) {
-
-                alert(
-                    "📦 Ajoute au moins un fichier."
-                );
-
-                return;
-            }
-
-            const imageURLs =
-                imageFiles.map(
-                    file =>
-                        URL.createObjectURL(file)
-                );
-
-            const newProduct = {
-
-                id: Date.now(),
-
-                name,
-
-                description,
-
-                price,
-
-                category,
-
-                images:
-                    imageURLs,
-
-                files:
-                    productFiles
-            };
-
-            products.unshift(
-                newProduct
-            );
-
+    loadProducts();
+
+    // =====================================================
+    // MODE ADMIN
+    // =====================================================
+    function toggleAdmin() {
+        if (isAdmin) {
+            isAdmin = false;
+            document.getElementById('adminBtn').textContent = '🔐 Admin';
+            document.getElementById('adminBtn').classList.remove('active');
+            document.getElementById('sellBtn').classList.add('admin-hidden');
             renderProducts();
-
-            closeProductModal();
-
-            this.reset();
-
-            imagesPreview.innerHTML = "";
-
-            document.getElementById("filesList")
-                .innerHTML = "";
-
-            alert(
-                "🎉 Produit publié !"
-            );
+        } else {
+            document.getElementById('passwordModal').classList.add('show');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
         }
-    );
-
-/* =====================================================
-   VOIR PRODUIT
-===================================================== */
-
-function viewProduct(id) {
-
-    const product =
-        products.find(
-            p => p.id === id
-        );
-
-    if (!product) return;
-
-    const details =
-        document.getElementById(
-            "detailsContent"
-        );
-
-    const images =
-        product.images || [];
-
-    const files =
-        product.files || [];
-
-    details.innerHTML = `
-
-        <div class="details-gallery">
-
-            ${
-                images.map(
-                    (image, index) => `
-
-                        <img
-                            src="${image}"
-                            alt="Photo ${index + 1}"
-                            onclick="openGallery(${product.id}, ${index})"
-                        >
-
-                    `
-                ).join("")
-            }
-
-        </div>
-
-        <div class="details-category">
-            ${escapeHTML(product.category)}
-        </div>
-
-        <div class="details-name">
-            ${escapeHTML(product.name)}
-        </div>
-
-        <div class="details-description">
-            ${escapeHTML(product.description)}
-        </div>
-
-        <div class="details-price">
-            ${Number(product.price).toFixed(2)} €
-        </div>
-
-        <div class="details-files">
-
-            <h3>
-                📦 Fichiers inclus (${files.length})
-            </h3>
-
-            ${
-                files.length
-                ?
-
-                files.map(file => {
-
-                    const name =
-                        typeof file === "string"
-                            ? file
-                            : file.name;
-
-                    const size =
-                        typeof file === "string"
-                            ? ""
-                            : formatFileSize(file.size);
-
-                    return `
-
-                        <div class="details-file">
-
-                            <span>
-                                ${getFileIcon(name)}
-                            </span>
-
-                            <div>
-
-                                <strong>
-                                    ${escapeHTML(name)}
-                                </strong>
-
-                                <br>
-
-                                <small>
-                                    ${size}
-                                </small>
-
-                            </div>
-
-                        </div>
-
-                    `;
-
-                }).join("")
-
-                :
-
-                `
-                <p>
-                    Aucun fichier disponible dans la démo.
-                </p>
-                `
-            }
-
-        </div>
-
-        <button
-            class="publish-button"
-            onclick="addToCart(${product.id}); closeDetailsModal();"
-        >
-            🛒 Acheter — ${Number(product.price).toFixed(2)} €
-        </button>
-
-    `;
-
-    document.getElementById("detailsModal")
-        .classList.add("show");
-}
-
-/* =====================================================
-   FERMER DETAILS
-===================================================== */
-
-function closeDetailsModal() {
-
-    document.getElementById("detailsModal")
-        .classList.remove("show");
-}
-
-/* =====================================================
-   GALERIE / ZOOM
-===================================================== */
-
-function openGallery(productId, index) {
-
-    const product =
-        products.find(
-            p => p.id === productId
-        );
-
-    if (!product) return;
-
-    galleryImages =
-        product.images || [];
-
-    galleryIndex =
-        index || 0;
-
-    updateGallery();
-
-    document.getElementById("galleryModal")
-        .classList.add("show");
-}
-
-function updateGallery() {
-
-    if (!galleryImages.length)
-        return;
-
-    document.getElementById("galleryImage")
-        .src =
-        galleryImages[galleryIndex];
-
-    document.getElementById("galleryCounter")
-        .textContent =
-        (galleryIndex + 1)
-        +
-        " / "
-        +
-        galleryImages.length;
-}
-
-function nextImage() {
-
-    if (!galleryImages.length)
-        return;
-
-    galleryIndex++;
-
-    if (
-        galleryIndex >=
-        galleryImages.length
-    ) {
-        galleryIndex = 0;
     }
 
-    updateGallery();
-}
-
-function previousImage() {
-
-    if (!galleryImages.length)
-        return;
-
-    galleryIndex--;
-
-    if (galleryIndex < 0) {
-
-        galleryIndex =
-            galleryImages.length - 1;
+    function checkPassword() {
+        const input = document.getElementById('passwordInput').value;
+        if (input === ADMIN_PASSWORD) {
+            isAdmin = true;
+            document.getElementById('adminBtn').textContent = '🔓 Admin ON';
+            document.getElementById('adminBtn').classList.add('active');
+            document.getElementById('sellBtn').classList.remove('admin-hidden');
+            closePasswordModal();
+            renderProducts();
+        } else {
+            alert('❌ Mot de passe incorrect.');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
     }
 
-    updateGallery();
-}
+    function closePasswordModal() {
+        document.getElementById('passwordModal').classList.remove('show');
+    }
 
-function closeGallery() {
+    // =====================================================
+    // FORMATAGE DE DESCRIPTION (Markdown léger)
+    // =====================================================
+    function formatDescription(text) {
+        if (!text) return '';
+        let html = text;
+        // Échapper les caractères HTML
+        html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        // Gras: **texte**
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        // Italique: *texte*
+        html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        // Liens: [texte](url)
+        html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color:#7c3aed; text-decoration:underline;">$1</a>');
+        // Listes à puces: - texte ou • texte
+        const lines = html.split('\n');
+        let result = [];
+        let inList = false;
+        for (let line of lines) {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('- ') || trimmed.startsWith('• ')) {
+                if (!inList) {
+                    result.push('<ul style="margin:10px 0; padding-left:24px; list-style-type:disc;">');
+                    inList = true;
+                }
+                result.push(`<li style="margin:6px 0;">${trimmed.substring(2)}</li>`);
+            } else {
+                if (inList) {
+                    result.push('</ul>');
+                    inList = false;
+                }
+                if (trimmed) {
+                    result.push(`<p style="margin:6px 0;">${line}</p>`);
+                } else {
+                    result.push('<br>');
+                }
+            }
+        }
+        if (inList) result.push('</ul>');
+        return result.join('');
+    }
 
-    document.getElementById("galleryModal")
-        .classList.remove("show");
-}
+    // =====================================================
+    // ICONE DE FICHIER
+    // =====================================================
+    function getFileIcon(filename) {
+        const ext = filename.split('.').pop().toLowerCase();
+        const icons = {
+            'html': '🌐', 'htm': '🌐', 'css': '🎨', 'js': '⚡',
+            'pdf': '📕', 'zip': '📦', 'rar': '📦', '7z': '📦',
+            'png': '🖼️', 'jpg': '🖼️', 'jpeg': '🖼️', 'webp': '🖼️',
+            'md': '📝', 'txt': '📝', 'exe': '⚙️', 'msi': '⚙️',
+            'mp4': '🎬', 'avi': '🎬', 'mov': '🎬',
+            'mp3': '🎵', 'wav': '🎵', 'flac': '🎵'
+        };
+        return icons[ext] || '📄';
+    }
 
-/* =====================================================
-   SUPPRIMER PRODUIT
-===================================================== */
+    // =====================================================
+    // AFFICHAGE DES PRODUITS
+    // =====================================================
+    function renderProducts() {
+        const grid = document.getElementById('productsGrid');
+        const search = document.getElementById('search').value.toLowerCase().trim();
 
-function deleteProduct(id) {
+        const filtered = products.filter(p => {
+            const matchSearch = p.name.toLowerCase().includes(search) || p.description.toLowerCase().includes(search);
+            const matchCat = currentCategory === 'Tous' || p.category === currentCategory;
+            return matchSearch && matchCat;
+        });
 
-    const product =
-        products.find(
-            p => p.id === id
-        );
+        grid.innerHTML = '';
+        document.getElementById('productCount').textContent = filtered.length + ' produits';
 
-    if (!product) return;
-
-    const confirmation =
-        confirm(
-            "🗑️ Supprimer définitivement « " +
-            product.name +
-            " » ?"
-        );
-
-    if (!confirmation)
-        return;
-
-    products =
-        products.filter(
-            p => p.id !== id
-        );
-
-    cart =
-        cart.filter(
-            p => p.id !== id
-        );
-
-    renderProducts();
-
-    updateCart();
-
-    alert(
-        "✅ Produit supprimé."
-    );
-}
-
-/* =====================================================
-   PANIER
-===================================================== */
-
-function addToCart(id) {
-
-    const product =
-        products.find(
-            p => p.id === id
-        );
-
-    if (!product)
-        return;
-
-    cart.push(product);
-
-    updateCart();
-
-    alert(
-        "🛒 " +
-        product.name +
-        " ajouté au panier !"
-    );
-}
-
-function updateCart() {
-
-    document.getElementById("cartCount")
-        .textContent =
-        cart.length;
-
-    const container =
-        document.getElementById(
-            "cartItems"
-        );
-
-    container.innerHTML = "";
-
-    let total = 0;
-
-    cart.forEach(
-        (product, index) => {
-
-            total +=
-                Number(
-                    product.price
-                );
-
-            const item =
-                document.createElement(
-                    "div"
-                );
-
-            item.className =
-                "cart-item";
-
-            item.innerHTML = `
-
-                <div>
-
-                    <strong>
-                        ${escapeHTML(product.name)}
-                    </strong>
-
-                    <br>
-
-                    <small>
-                        ${Number(product.price).toFixed(2)} €
-                    </small>
-
+        if (filtered.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:#6b7280;">
+                    <div style="font-size:56px; margin-bottom:16px;">🔍</div>
+                    <h3 style="font-size:20px; margin-bottom:8px;">Aucun produit trouvé</h3>
+                    <p>${isAdmin ? 'Clique sur "+ Vendre" pour ajouter ton premier produit !' : 'Reviens plus tard, de nouveaux produits arrivent.'}</p>
                 </div>
-
-                <button
-                    class="remove-cart"
-                    onclick="removeFromCart(${index})"
-                >
-                    🗑️
-                </button>
-
             `;
-
-            container.appendChild(item);
-
-        }
-    );
-
-    document.getElementById("cartTotal")
-        .textContent =
-        total.toFixed(2) +
-        " €";
-}
-
-function removeFromCart(index) {
-
-    cart.splice(
-        index,
-        1
-    );
-
-    updateCart();
-}
-
-function openCart() {
-
-    updateCart();
-
-    document.getElementById("cartModal")
-        .classList.add("show");
-}
-
-function closeCart() {
-
-    document.getElementById("cartModal")
-        .classList.remove("show");
-}
-
-function checkout() {
-
-    if (cart.length === 0) {
-
-        alert(
-            "🛒 Ton panier est vide."
-        );
-
-        return;
-    }
-
-    alert(
-        "💳 Le paiement sera connecté ici."
-    );
-}
-
-/* =====================================================
-   FERMER MODALS
-===================================================== */
-
-window.addEventListener(
-    "click",
-    function(event) {
-
-        const productModal =
-            document.getElementById(
-                "productModal"
-            );
-
-        const detailsModal =
-            document.getElementById(
-                "detailsModal"
-            );
-
-        const cartModal =
-            document.getElementById(
-                "cartModal"
-            );
-
-        const galleryModal =
-            document.getElementById(
-                "galleryModal"
-            );
-
-        if (
-            event.target ===
-            productModal
-        ) {
-            closeProductModal();
-        }
-
-        if (
-            event.target ===
-            detailsModal
-        ) {
-            closeDetailsModal();
-        }
-
-        if (
-            event.target ===
-            cartModal
-        ) {
-            closeCart();
-        }
-
-        if (
-            event.target ===
-            galleryModal
-        ) {
-            closeGallery();
-        }
-
-    }
-);
-
-/* =====================================================
-   CLAVIER POUR GALERIE
-===================================================== */
-
-document.addEventListener(
-    "keydown",
-    function(event) {
-
-        const gallery =
-            document.getElementById(
-                "galleryModal"
-            );
-
-        if (
-            !gallery.classList.contains("show")
-        ) {
             return;
         }
 
-        if (event.key === "Escape") {
-            closeGallery();
-        }
+        filtered.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            const images = p.images || [];
+            const files = p.files || [];
+            const mainImg = images.length > 0 ? images[0] : '';
 
-        if (event.key === "ArrowRight") {
-            nextImage();
-        }
+            let thumbs = '';
+            if (images.length > 1) {
+                thumbs = `<div class="product-thumbnails">${images.map((img,i) => 
+                    `<img src="${img}" onclick="openGallery(${p.id}, ${i})" alt="Miniature ${i+1}">`
+                ).join('')}</div>`;
+            }
 
-        if (event.key === "ArrowLeft") {
-            previousImage();
-        }
+            // Affichage conditionnel des boutons admin
+            const adminActions = isAdmin ? `
+                <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+                    <button class="action-btn edit-btn" onclick="editProduct(${p.id})">✏️ Modifier</button>
+                    <button class="delete-btn" onclick="deleteProduct(${p.id})">🗑️ Supprimer</button>
+                </div>
+            ` : '';
+
+            card.innerHTML = `
+                <div class="product-image" onclick="openGallery(${p.id}, 0)">
+                    ${mainImg ? `<img src="${mainImg}" alt="${p.name}">` : `<div class="no-image">📦</div>`}
+                </div>
+                ${thumbs}
+                <div class="product-info">
+                    <div class="product-category">${p.category}</div>
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-desc">${p.description.replace(/\n/g, ' ').substring(0, 100)}${p.description.length > 100 ? '...' : ''}</div>
+                    <div class="product-meta">📦 ${files.length} fichier(s) • 🖼️ ${images.length} photo(s)</div>
+                    <div class="product-bottom">
+                        <div class="price">${p.price.toFixed(2)} €</div>
+                        <button class="buy-btn" onclick="addToCart(${p.id})">Acheter</button>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-top:10px;">
+                        <button class="action-btn view-btn" style="flex:1;" onclick="viewProduct(${p.id})">👁️ Voir</button>
+                    </div>
+                    ${adminActions}
+                </div>
+            `;
+            grid.appendChild(card);
+        });
     }
-);
 
-/* =====================================================
-   INITIALISATION
-===================================================== */
+    // =====================================================
+    // CATEGORIES
+    // =====================================================
+    function filterCategory(cat, btn) {
+        currentCategory = cat;
+        document.querySelectorAll('.category').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        renderProducts();
+    }
 
-renderProducts();
+    // =====================================================
+    // MODAL CREATION / MODIFICATION
+    // =====================================================
+    function openCreateModal() {
+        if (!isAdmin) { alert('🔐 Mode admin requis pour ajouter des produits.'); return; }
+        editingId = null;
+        tempImages = [];
+        tempFiles = [];
+        document.getElementById('modalTitle').textContent = '🚀 Publier un produit';
+        document.getElementById('saveBtn').textContent = '🚀 Publier';
+        document.getElementById('productForm').reset();
+        document.getElementById('imagePreview').innerHTML = '';
+        document.getElementById('fileList').innerHTML = '';
+        document.getElementById('productModal').classList.add('show');
+    }
 
-updateCart();
+    function closeProductModal() {
+        document.getElementById('productModal').classList.remove('show');
+        editingId = null;
+    }
 
+    function editProduct(id) {
+        if (!isAdmin) { alert('🔐 Mode admin requis pour modifier.'); return; }
+        const p = products.find(x => x.id === id);
+        if (!p) return;
+        editingId = id;
+        tempImages = p.images || [];
+        tempFiles = p.files || [];
+        document.getElementById('modalTitle').textContent = '✏️ Modifier le produit';
+        document.getElementById('saveBtn').textContent = '💾 Enregistrer';
+        document.getElementById('pName').value = p.name;
+        document.getElementById('pDesc').value = p.description;
+        document.getElementById('pPrice').value = p.price;
+        document.getElementById('pCategory').value = p.category;
+        renderTempImages();
+        renderTempFiles();
+        document.getElementById('productModal').classList.add('show');
+    }
+
+    // =====================================================
+    // GESTION DES IMAGES TEMPORAIRES
+    // =====================================================
+    document.getElementById('pImageFiles').addEventListener('change', async function(e) {
+        const files = Array.from(this.files);
+        for (const file of files) {
+            if (!file.type.startsWith('image/')) continue;
+            const base64 = await fileToBase64(file);
+            tempImages.push(base64);
+        }
+        this.value = '';
+        renderTempImages();
+    });
+
+    function renderTempImages() {
+        const container = document.getElementById('imagePreview');
+        container.innerHTML = '';
+        tempImages.forEach((img, index) => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `
+                <img src="${img}" alt="Image ${index+1}">
+                <button class="remove" onclick="removeTempImage(${index})">×</button>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function removeTempImage(index) {
+        tempImages.splice(index, 1);
+        renderTempImages();
+    }
+
+    // =====================================================
+    // GESTION DES FICHIERS TEMPORAIRES
+    // =====================================================
+    document.getElementById('pFileFiles').addEventListener('change', async function(e) {
+        const files = Array.from(this.files);
+        for (const file of files) {
+            const base64 = await fileToBase64(file);
+            tempFiles.push({
+                name: file.name,
+                size: file.size,
+                data: base64
+            });
+        }
+        this.value = '';
+        renderTempFiles();
+    });
+
+    function renderTempFiles() {
+        const container = document.getElementById('fileList');
+        container.innerHTML = '';
+        tempFiles.forEach((file, index) => {
+            const div = document.createElement('div');
+            div.className = 'file-item';
+            div.innerHTML = `
+                <div>
+                    <span class="name">${file.name}</span>
+                    <span class="size">${(file.size / 1024).toFixed(1)} Ko</span>
+                </div>
+                <button class="remove" onclick="removeTempFile(${index})">×</button>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function removeTempFile(index) {
+        tempFiles.splice(index, 1);
+        renderTempFiles();
+    }
+
+    // =====================================================
+    // ENREGISTRER PRODUIT
+    // =====================================================
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (!isAdmin) { alert('🔐 Mode admin requis.'); return; }
+
+        const name = document.getElementById('pName').value.trim();
+        const desc = document.getElementById('pDesc').value.trim();
+        const price = parseFloat(document.getElementById('pPrice').value);
+        const category = document.getElementById('pCategory').value;
+
+        if (!name || !desc || isNaN(price) || price < 0) {
+            alert('⚠️ Remplis tous les champs.');
+            return;
+        }
+        if (tempImages.length === 0) {
+            alert('📸 Ajoute au moins une image.');
+            return;
+        }
+
+        const productData = {
+            name, description: desc, price, category,
+            images: tempImages.slice(),
+            files: tempFiles.slice()
+        };
+
+        if (editingId !== null) {
+            const p = products.find(x => x.id === editingId);
+            if (p) {
+                Object.assign(p, productData);
+                saveProducts();
+                renderProducts();
+                closeProductModal();
+                alert('✅ Produit modifié !');
+            }
+        } else {
+            const newProduct = { id: Date.now(), ...productData };
+            products.unshift(newProduct);
+            saveProducts();
+            renderProducts();
+            closeProductModal();
+            document.getElementById('productForm').reset();
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('fileList').innerHTML = '';
+            alert('🎉 Produit publié !');
+        }
+    });
+
+    // =====================================================
+    // SUPPRIMER
+    // =====================================================
+    function deleteProduct(id) {
+        if (!isAdmin) { alert('🔐 Mode admin requis.'); return; }
+        const p = products.find(x => x.id === id);
+        if (!p || !confirm('Supprimer "' + p.name + '" ?')) return;
+        products = products.filter(x => x.id !== id);
+        cart = cart.filter(x => x.id !== id);
+        saveProducts();
+        renderProducts();
+        updateCart();
+    }
+
+    // =====================================================
+    // VOIR DETAILS - VERSION PRO
+    // =====================================================
+    function viewProduct(id) {
+        const p = products.find(x => x.id === id);
+        if (!p) return;
+        const images = p.images || [];
+        const files = p.files || [];
+        const content = document.getElementById('detailsContent');
+
+        const descHTML = formatDescription(p.description);
+
+        let filesHTML = '';
+        if (files.length > 0) {
+            filesHTML = `
+                <div class="details-files-section">
+                    <h3>📦 Fichiers inclus (${files.length})</h3>
+                    ${files.map((file, index) => `
+                        <div class="file-download-item">
+                            <div class="file-info">
+                                <span class="icon">${getFileIcon(file.name)}</span>
+                                <div>
+                                    <div class="name">${file.name}</div>
+                                    <div class="size">${(file.size / 1024).toFixed(1)} Ko</div>
+                                </div>
+                            </div>
+                            <button class="download-btn" onclick="downloadFile(${p.id}, ${index})">⬇️ Télécharger</button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            filesHTML = '<p style="color:#6b7280; margin-top:16px;">Aucun fichier disponible pour ce produit.</p>';
+        }
+
+        content.innerHTML = `
+            <!-- GALERIE -->
+            <div class="details-gallery">
+                ${images.map((img,i) => `
+                    <img src="${img}" onclick="openGallery(${p.id}, ${i})" alt="Photo ${i+1}">
+                `).join('')}
+            </div>
+
+            <!-- CATÉGORIE + NOM -->
+            <span class="details-category">${p.category}</span>
+            <div class="details-name">${p.name}</div>
+
+            <!-- DESCRIPTION -->
+            <div class="details-desc">${descHTML}</div>
+
+            <!-- CARACTÉRISTIQUES -->
+            <div class="details-features">
+                <div class="feat"><span>✅</span> Téléchargement immédiat</div>
+                <div class="feat"><span>🔒</span> Paiement sécurisé</div>
+                <div class="feat"><span>🔄</span> Mises à jour incluses</div>
+                <div class="feat"><span>💬</span> Support 24/7</div>
+            </div>
+
+            <!-- PRIX + ACHAT -->
+            <div class="details-price-row">
+                <div>
+                    <div class="price-label">Prix</div>
+                    <div class="price-value">${p.price.toFixed(2)} €</div>
+                </div>
+                <button class="btn btn-primary" style="padding:14px 36px; font-size:17px; border-radius:60px;" onclick="addToCart(${p.id}); closeDetailsModal();">
+                    🛒 Acheter maintenant
+                </button>
+            </div>
+
+            <!-- FICHIERS -->
+            ${filesHTML}
+        `;
+        document.getElementById('detailsModal').classList.add('show');
+    }
+
+    // =====================================================
+    // TÉLÉCHARGER UN FICHIER
+    // =====================================================
+    function downloadFile(productId, fileIndex) {
+        const p = products.find(x => x.id === productId);
+        if (!p) return;
+        const file = p.files[fileIndex];
+        if (!file) return;
+        const link = document.createElement('a');
+        link.href = file.data;
+        link.download = file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function closeDetailsModal() {
+        document.getElementById('detailsModal').classList.remove('show');
+    }
+
+    // =====================================================
+    // GALERIE ZOOM
+    // =====================================================
+    function openGallery(id, index) {
+        const p = products.find(x => x.id === id);
+        if (!p) return;
+        galleryImages = p.images || [];
+        galleryIndex = index || 0;
+        updateGallery();
+        document.getElementById('galleryModal').classList.add('show');
+    }
+
+    function updateGallery() {
+        if (!galleryImages.length) return;
+        document.getElementById('galleryImg').src = galleryImages[galleryIndex];
+        document.getElementById('galleryCounter').textContent = (galleryIndex+1) + ' / ' + galleryImages.length;
+    }
+
+    function nextImage() { if (!galleryImages.length) return; galleryIndex = (galleryIndex+1) % galleryImages.length; updateGallery(); }
+    function prevImage() { if (!galleryImages.length) return; galleryIndex = (galleryIndex-1+galleryImages.length) % galleryImages.length; updateGallery(); }
+    function closeGallery() { document.getElementById('galleryModal').classList.remove('show'); }
+
+    // =====================================================
+    // PANIER
+    // =====================================================
+    function addToCart(id) {
+        const p = products.find(x => x.id === id);
+        if (!p) return;
+        cart.push(p);
+        updateCart();
+        alert('🛒 ' + p.name + ' ajouté au panier !');
+    }
+
+    function updateCart() {
+        document.getElementById('cartCount').textContent = cart.length;
+        const container = document.getElementById('cartItems');
+        container.innerHTML = '';
+        let total = 0;
+        cart.forEach((p, i) => {
+            total += p.price;
+            container.innerHTML += `
+                <div class="cart-item">
+                    <div>
+                        <div class="name">${p.name}</div>
+                        <div class="price">${p.price.toFixed(2)} €</div>
+                    </div>
+                    <button class="remove" onclick="removeFromCart(${i})">🗑️</button>
+                </div>
+            `;
+        });
+        document.getElementById('cartTotal').textContent = total.toFixed(2) + ' €';
+    }
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCart();
+    }
+
+    function openCart() { updateCart(); document.getElementById('cartModal').classList.add('show'); }
+    function closeCart() { document.getElementById('cartModal').classList.remove('show'); }
+    function checkout() {
+        if (cart.length === 0) { alert('🛒 Panier vide.'); return; }
+        const total = cart.reduce((s,p) => s + p.price, 0);
+        alert('💳 Paiement de ' + total.toFixed(2) + ' €\n\n🔧 Connecte Stripe ou PayPal ici.');
+    }
+
+    // =====================================================
+    // FERMER MODALS
+    // =====================================================
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            if (e.target.id === 'productModal') closeProductModal();
+            if (e.target.id === 'detailsModal') closeDetailsModal();
+            if (e.target.id === 'cartModal') closeCart();
+            if (e.target.id === 'galleryModal') closeGallery();
+            if (e.target.id === 'passwordModal') closePasswordModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeProductModal();
+            closeDetailsModal();
+            closeCart();
+            closeGallery();
+            closePasswordModal();
+        }
+        if (e.key === 'ArrowRight' && document.getElementById('galleryModal').classList.contains('show')) nextImage();
+        if (e.key === 'ArrowLeft' && document.getElementById('galleryModal').classList.contains('show')) prevImage();
+    });
+
+    // =====================================================
+    // INIT
+    // =====================================================
+    renderProducts();
+    updateCart();
+    console.log('✅ Nexora prête !');
+    console.log('🔐 Mot de passe admin : ' + ADMIN_PASSWORD);
+    console.log('📦 ' + products.length + ' produits disponibles');
 </script>
-
 </body>
 </html>
