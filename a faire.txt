@@ -1,12 +1,58 @@
-Pour une vraie version de Nexora, je mettrais au minimum :
+🔴 Obligatoire
+Sécuriser l’espace admin avec Supabase RLS
+seuls les admins peuvent ajouter/modifier/supprimer des produits
+ne pas compter uniquement sur currentUser dans le JavaScript
+Créer la table orders dans Supabase
+commande
+client
+produits achetés
+montant
+statut
+identifiant du paiement
+Mettre les fichiers payants en privé
+product-images → public
+product-files → privé
+générer un lien temporaire après paiement
+Ajouter PayPal
+bouton PayPal dans le checkout
+paiement
+confirmation du paiement côté serveur avec une Edge Function Supabase
 
-🔒 HTTPS — GitHub Pages fournit HTTPS.
-👤 Comptes utilisateurs sécurisés avec authentification.
-🗄️ Base de données avec règles d'accès.
-📁 Fichiers privés : les fichiers achetés ne doivent pas être accessibles avec une URL publique.
-💳 Aucune donnée bancaire sensible dans le site.
-🧾 Commandes avec identifiant unique et statut en attente / payé.
-✅ Validation du virement avant téléchargement.
-🔑 Liens de téléchargement temporaires ou protégés.
-🛡️ Protection contre les injections, accès non autorisés et modification des commandes.
-🔐 Secrets/API keys jamais dans GitHub.
+Relier PayPal aux commandes
+
+Paiement PayPal
+     ↓
+Vérification
+     ↓
+orders = "paid"
+     ↓
+téléchargement autorisé
+🟡 Ensuite
+Créer une page/section “Mes commandes”
+historique des achats
+statut
+bouton télécharger
+Email de confirmation
+confirmation d'achat
+lien de téléchargement
+Tester la sécurité
+utilisateur normal → impossible de modifier les produits
+admin → gestion complète
+paiement non confirmé → aucun téléchargement
+En résumé
+
+Tu as déjà :
+
+✅ Frontend
+✅ Supabase
+✅ Auth admin
+✅ Produits
+✅ Images
+✅ Fichiers
+✅ Panier
+
+Il te reste :
+
+🔐 RLS → 📦 Orders → 💳 PayPal → 🔒 téléchargements sécurisés → 📧 éventuellement emails
+
+👉 La prochaine étape que je ferais est RLS + orders dans Supabase, puis PayPal. C'est l'ordre le plus propre.
