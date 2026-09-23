@@ -1,55 +1,3760 @@
-async function updateAdmin() {
+<!DOCTYPE html>
 
-    const adminPanel = document.getElementById("adminPanel");
-    const adminButton = document.getElementById("adminButton");
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    // Par défaut : tout cacher
-    if (adminPanel) {
-        adminPanel.style.display = "none";
+<title>Nexora — Marketplace</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="https://www.paypal.com/sdk/js?client-id=BAAOeW-DEuo2fwuR6UfE3bK2jJe77X2i11R6rED2jBLbn3EF2-acIjA7N2M84voDMIxoN5gtE_n3E6A-ls&currency=EUR&intent=capture"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #111827;
+}
+
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 11px 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.primary {
+    background: #6366f1;
+    color: white;
+}
+
+.secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.danger {
+    background: #ef4444;
+    color: white;
+}
+
+.success {
+    background: #10b981;
+    color: white;
+}
+
+header {
+    background: #111827;
+    color: white;
+    padding: 16px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.logo span {
+    color: #6366f1;
+}
+
+nav {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.hero {
+    background: linear-gradient(135deg, #111827, #312e81);
+    color: white;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    color: #d1d5db;
+    font-size: 18px;
+}
+
+.controls {
+    padding: 25px 5%;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.controls input,
+.controls select {
+    padding: 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 15px;
+    background: white;
+}
+
+.search {
+    width: 450px;
+    max-width: 100%;
+}
+
+.category {
+    width: 220px;
+}
+
+.admin {
+    display: none;
+    background: white;
+    padding: 25px 5%;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin.active {
+    display: block;
+}
+
+.admin-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.admin-user {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.admin-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.products {
+    padding: 20px 5% 100px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+    transition: transform .2s, box-shadow .2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,0,0,.12);
+}
+
+.card-image {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    background: #e5e7eb;
+    display: block;
+}
+
+.card-content {
+    padding: 18px;
+}
+
+.card h3 {
+    margin-bottom: 8px;
+}
+
+.card-description {
+    color: #6b7280;
+    min-height: 45px;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.price {
+    color: #6366f1;
+    font-size: 23px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.actions button {
+    flex: 1;
+}
+
+.admin-actions {
+    margin-top: 10px;
+}
+
+.empty,
+.loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 70px 20px;
+    color: #6b7280;
+}
+
+.loading {
+    font-size: 18px;
+}
+
+.error-box {
+    grid-column: 1 / -1;
+    padding: 25px;
+    background: #fee2e2;
+    color: #991b1b;
+    border-radius: 15px;
+}
+
+.cart-button {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 900;
+    background: #6366f1;
+    color: white;
+    padding: 15px 22px;
+    border-radius: 50px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.25);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.65);
+    z-index: 2000;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-box {
+    background: white;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 650px;
+    padding: 25px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-box h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: white;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.help {
+    display: block;
+    margin-top: 6px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.detail-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 12px;
+    background: #f3f4f6;
+}
+
+.gallery {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin: 15px 0;
+}
+
+.gallery img {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.cart-item {
+    border-bottom: 1px solid #ddd;
+    padding: 15px 0;
+}
+
+.cart-item:last-child {
+    border-bottom: 0;
+}
+
+footer {
+    background: #111827;
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.status {
+    display: none;
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 3000;
+    max-width: 400px;
+    padding: 15px 20px;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 8px 30px rgba(0,0,0,.2);
+}
+
+.status.show {
+    display: block;
+}
+
+.status.success {
+    color: #065f46;
+    border-left: 5px solid #10b981;
+}
+
+.status.error {
+    color: #991b1b;
+    border-left: 5px solid #ef4444;
+}
+
+@media(max-width:600px) {
+
+    header {
+        flex-direction: column;
+        gap: 15px;
     }
 
-    if (adminButton) {
-        adminButton.style.display = "none";
+    nav {
+        width: 100%;
+        justify-content: center;
     }
 
-    // Aucun utilisateur connecté
+    .hero {
+        padding: 60px 20px;
+    }
+
+    .hero h1 {
+        font-size: 35px;
+    }
+
+    .products {
+        grid-template-columns: 1fr;
+    }
+
+    .cart-button {
+        right: 12px;
+        bottom: 12px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="status" class="status"></div>
+
+<header>
+
+```
+<div class="logo">
+    Nex<span>ora</span>
+</div>
+
+<nav>
+
+    <button class="secondary" onclick="openCart()">
+        🛒 Panier (<span id="cartCount">0</span>)
+    </button>
+
+    <!--
+        IMPORTANT :
+        Ce bouton est caché par défaut.
+        Il n'apparaît que si le compte connecté
+        possède role = admin dans profiles.
+    -->
+    <button
+        id="adminButton"
+        class="primary"
+        onclick="openLogin()"
+        style="display:none;"
+    >
+        ⚙️ Admin
+    </button>
+
+</nav>
+```
+
+</header>
+
+<section class="hero">
+
+```
+<h1>Bienvenue sur Nexora</h1>
+
+<p>
+    Découvrez nos meilleurs produits numériques
+</p>
+```
+
+</section>
+
+<section class="controls">
+
+```
+<input
+    id="search"
+    class="search"
+    type="text"
+    placeholder="🔎 Rechercher..."
+>
+
+<select id="category" class="category">
+
+    <option value="">
+        Toutes les catégories
+    </option>
+
+</select>
+```
+
+</section>
+
+<!-- ADMIN -->
+
+<section
+    id="adminPanel"
+    class="admin"
+    style="display:none;"
+>
+
+```
+<div class="admin-title">
+
+    <div>
+
+        <h2>
+            ⚙️ Administration Nexora
+        </h2>
+
+        <div
+            id="adminUser"
+            class="admin-user"
+        ></div>
+
+    </div>
+
+</div>
+
+<div class="admin-buttons">
+
+    <button
+        class="primary"
+        onclick="openProductForm()"
+    >
+        ➕ Ajouter un produit
+    </button>
+
+    <button
+        class="danger"
+        onclick="logout()"
+    >
+        Déconnexion
+    </button>
+
+</div>
+```
+
+</section>
+
+<main
+    id="products"
+    class="products"
+>
+
+```
+<div class="loading">
+    Chargement des produits...
+</div>
+```
+
+</main>
+
+<button
+class="cart-button"
+onclick="openCart()"
+
+>
+
+```
+🛒 <span id="cartTotal">0.00 €</span>
+```
+
+</button>
+
+<footer>
+
+```
+<p>
+    © 2026 Nexora — Marketplace numérique
+</p>
+```
+
+</footer>
+
+<!-- LOGIN ADMIN -->
+
+<div
+    id="loginModal"
+    class="modal"
+>
+
+```
+<div class="modal-box">
+
+    <h2>
+        🔐 Connexion administrateur
+    </h2>
+
+    <div class="form-group">
+
+        <label>
+            Email
+        </label>
+
+        <input
+            id="adminEmail"
+            type="email"
+            autocomplete="email"
+            placeholder="ton@email.com"
+        >
+
+    </div>
+
+    <div class="form-group">
+
+        <label>
+            Mot de passe
+        </label>
+
+        <input
+            id="adminPassword"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Mot de passe"
+        >
+
+    </div>
+
+    <div class="actions">
+
+        <button
+            id="loginButton"
+            class="primary"
+            onclick="login()"
+        >
+            Se connecter
+        </button>
+
+        <button
+            class="secondary"
+            onclick="closeModal('loginModal')"
+        >
+            Annuler
+        </button>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<!-- PRODUIT -->
+
+<div
+    id="productModal"
+    class="modal"
+>
+
+```
+<div class="modal-box">
+
+    <h2 id="productTitle">
+        Ajouter un produit
+    </h2>
+
+    <input
+        id="productId"
+        type="hidden"
+    >
+
+    <div class="form-group">
+
+        <label>
+            Nom du produit
+        </label>
+
+        <input
+            id="productName"
+            type="text"
+            placeholder="Nom du produit"
+        >
+
+    </div>
+
+    <div class="form-group">
+
+        <label>
+            Description
+        </label>
+
+        <textarea
+            id="productDescription"
+            rows="5"
+            placeholder="Description..."
+        ></textarea>
+
+    </div>
+
+    <div class="form-group">
+
+        <label>
+            Prix (€)
+        </label>
+
+        <input
+            id="productPrice"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="9.99"
+        >
+
+    </div>
+
+    <div class="form-group">
+
+        <label>
+            Catégorie
+        </label>
+
+        <input
+            id="productCategory"
+            type="text"
+            placeholder="Templates"
+        >
+
+    </div>
+
+    <div class="form-group">
+
+        <label>
+            Images
+        </label>
+
+        <input
+            id="productImages"
+            type="file"
+            accept="image/*"
+            multiple
+        >
+
+        <small class="help">
+            Sélectionne une ou plusieurs images.
+        </small>
+
+    </div>
+
+    <div class="form-group">
+
+        <label>
+            Fichiers numériques
+        </label>
+
+        <input
+            id="productFiles"
+            type="file"
+            multiple
+        >
+
+        <small class="help">
+            PDF, ZIP, PSD, etc.
+        </small>
+
+    </div>
+
+    <div class="actions">
+
+        <button
+            id="saveProductButton"
+            class="primary"
+            onclick="saveProduct()"
+        >
+            💾 Enregistrer
+        </button>
+
+        <button
+            class="secondary"
+            onclick="closeModal('productModal')"
+        >
+            Annuler
+        </button>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<!-- DETAIL -->
+
+<div
+    id="detailModal"
+    class="modal"
+>
+
+```
+<div class="modal-box">
+
+    <div id="detailContent"></div>
+
+    <br>
+
+    <button
+        class="secondary"
+        onclick="closeModal('detailModal')"
+    >
+        Fermer
+    </button>
+
+</div>
+```
+
+</div>
+
+<!-- PANIER -->
+
+<div
+    id="cartModal"
+    class="modal"
+>
+
+```
+<div class="modal-box">
+
+    <h2>
+        🛒 Mon panier
+    </h2>
+
+    <div id="cartContent"></div>
+
+    <br>
+
+    <button
+        class="primary"
+        onclick="checkout()"
+    >
+        💳 Commander
+    </button>
+
+    <button
+        class="secondary"
+        onclick="closeModal('cartModal')"
+    >
+        Fermer
+    </button>
+
+    <div
+        id="paypal-button-container"
+        style="margin-top:15px;"
+    ></div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+/* =====================================================
+   1. SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+    "https://lqaqfzpsilxctrvazatp.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_f1eSE1egBbwf1keuk0Qlyg_fmKgquq7";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+/* =====================================================
+   2. CONFIGURATION
+===================================================== */
+
+const IMAGE_BUCKET =
+    "product-images";
+
+const FILE_BUCKET =
+    "product-files";
+
+
+/* =====================================================
+   3. VARIABLES
+===================================================== */
+
+let products = [];
+
+let cart = [];
+
+let currentUser = null;
+
+/*
+ * IMPORTANT :
+ * isAdmin est séparé de currentUser.
+ *
+ * Être connecté ≠ être administrateur.
+ */
+let isAdmin = false;
+
+let savingProduct = false;
+
+let deletingProduct = false;
+
+let paypalButtonsRendered = false;
+
+
+/* =====================================================
+   4. DEMARRAGE
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+        document
+            .getElementById("search")
+            .addEventListener(
+                "input",
+                renderProducts
+            );
+
+        document
+            .getElementById("category")
+            .addEventListener(
+                "change",
+                renderProducts
+            );
+
+        await checkUser();
+
+        await loadProducts();
+
+        updateCart();
+
+    }
+);
+
+
+/* =====================================================
+   5. MESSAGE
+===================================================== */
+
+function showStatus(
+    message,
+    type = "success"
+) {
+
+    const box =
+        document.getElementById(
+            "status"
+        );
+
+    box.textContent =
+        message;
+
+    box.className =
+        "status show " +
+        type;
+
+    clearTimeout(
+        window.statusTimer
+    );
+
+    window.statusTimer =
+        setTimeout(
+            () => {
+
+                box.classList.remove(
+                    "show"
+                );
+
+            },
+            5000
+        );
+
+}
+
+
+/* =====================================================
+   6. AUTHENTIFICATION
+===================================================== */
+
+async function checkUser() {
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .auth
+                .getSession();
+
+        if (error) {
+
+            console.error(
+                "Erreur session :",
+                error
+            );
+
+            currentUser = null;
+
+            isAdmin = false;
+
+            updateAdmin();
+
+            return;
+
+        }
+
+        currentUser =
+            data.session
+                ? data.session.user
+                : null;
+
+        /*
+         * On vérifie le rôle réel dans profiles.
+         */
+        await checkAdminRole();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Erreur vérification utilisateur :",
+            error
+        );
+
+        currentUser = null;
+
+        isAdmin = false;
+
+        updateAdmin();
+
+    }
+
+}
+
+
+/* =====================================================
+   VERIFICATION ROLE ADMIN
+===================================================== */
+
+async function checkAdminRole() {
+
+    /*
+     * Par défaut :
+     * personne n'est admin côté interface.
+     */
+    isAdmin = false;
+
     if (!currentUser) {
+
+        updateAdmin();
+
         return;
+
     }
 
     try {
 
-        const { data, error } = await supabaseClient
-            .from("profiles")
-            .select("role")
-            .eq("id", currentUser.id)
-            .maybeSingle();
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("profiles")
+                .select("role")
+                .eq(
+                    "id",
+                    currentUser.id
+                )
+                .maybeSingle();
 
         if (error) {
+
             console.error(
-                "Erreur vérification rôle admin:",
+                "Erreur vérification rôle :",
                 error
             );
+
+            isAdmin = false;
+
+            updateAdmin();
+
             return;
+
         }
 
-        // Seul un profil avec role = admin peut voir l'Admin
-        if (data && data.role === "admin") {
+        if (
+            data &&
+            data.role === "admin"
+        ) {
 
-            if (adminPanel) {
-                adminPanel.style.display = "";
-            }
+            isAdmin = true;
 
-            if (adminButton) {
-                adminButton.style.display = "";
-            }
+        } else {
+
+            isAdmin = false;
+
         }
 
-    } catch (error) {
+    }
+    catch (error) {
+
+        console.error(error);
+
+        isAdmin = false;
+
+    }
+
+    updateAdmin();
+
+}
+
+
+/* =====================================================
+   LOGIN ADMIN
+===================================================== */
+
+async function login() {
+
+    const email =
+        document
+            .getElementById(
+                "adminEmail"
+            )
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById(
+                "adminPassword"
+            )
+            .value;
+
+    if (!email || !password) {
+
+        showStatus(
+            "Entre ton email et ton mot de passe.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    const button =
+        document.getElementById(
+            "loginButton"
+        );
+
+    button.disabled = true;
+
+    button.textContent =
+        "Connexion...";
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .auth
+                .signInWithPassword({
+                    email,
+                    password
+                });
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        currentUser =
+            data.user;
+
+        /*
+         * TRÈS IMPORTANT :
+         * une connexion normale ne donne
+         * pas automatiquement accès à l'Admin.
+         */
+        await checkAdminRole();
+
+        if (!isAdmin) {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+            currentUser = null;
+
+            updateAdmin();
+
+            throw new Error(
+                "Ce compte n'a pas les droits administrateur."
+            );
+
+        }
+
+        document
+            .getElementById(
+                "adminPassword"
+            )
+            .value = "";
+
+        closeModal(
+            "loginModal"
+        );
+
+        updateAdmin();
+
+        renderProducts();
+
+        showStatus(
+            "✅ Connexion administrateur réussie.",
+            "success"
+        );
+
+    }
+    catch (error) {
 
         console.error(
-            "Erreur vérification admin:",
+            "Erreur login :",
             error
         );
+
+        showStatus(
+            "❌ " +
+            getErrorMessage(error),
+            "error"
+        );
+
     }
+    finally {
+
+        button.disabled = false;
+
+        button.textContent =
+            "Se connecter";
+
+    }
+
 }
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout() {
+
+    try {
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .auth
+                .signOut();
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        currentUser = null;
+
+        isAdmin = false;
+
+        updateAdmin();
+
+        renderProducts();
+
+        showStatus(
+            "Déconnexion réussie.",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        showStatus(
+            "Erreur de déconnexion : " +
+            getErrorMessage(error),
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
+supabaseClient
+    .auth
+    .onAuthStateChange(
+        async (_event, session) => {
+
+            currentUser =
+                session
+                    ? session.user
+                    : null;
+
+            await checkAdminRole();
+
+            renderProducts();
+
+        }
+    );
+
+
+/* =====================================================
+   AFFICHAGE ADMIN
+===================================================== */
+
+function updateAdmin() {
+
+    const panel =
+        document.getElementById(
+            "adminPanel"
+        );
+
+    const button =
+        document.getElementById(
+            "adminButton"
+        );
+
+    const userText =
+        document.getElementById(
+            "adminUser"
+        );
+
+    /*
+     * PAR DEFAUT :
+     * tout est caché.
+     */
+    panel.style.display =
+        "none";
+
+    button.style.display =
+        "none";
+
+    userText.textContent =
+        "";
+
+    /*
+     * SEUL un vrai admin voit l'interface.
+     */
+    if (
+        currentUser &&
+        isAdmin
+    ) {
+
+        panel.style.display =
+            "block";
+
+        button.style.display =
+            "inline-block";
+
+        button.textContent =
+            "⚙️ Administration";
+
+        userText.textContent =
+            "Connecté : " +
+            (
+                currentUser.email ||
+                ""
+            );
+
+    }
+
+}
+
+
+/* =====================================================
+   7. PRODUITS
+===================================================== */
+
+async function loadProducts() {
+
+    const container =
+        document.getElementById(
+            "products"
+        );
+
+    container.innerHTML = `
+        <div class="loading">
+            Chargement des produits...
+        </div>
+    `;
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("products")
+                .select("*")
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
+
+        if (error) {
+
+            throw error;
+
+        }
+
+        products =
+            Array.isArray(data)
+                ? data
+                : [];
+
+        updateCategories();
+
+        renderProducts();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Erreur produits :",
+            error
+        );
+
+        container.innerHTML = `
+            <div class="error-box">
+                <strong>
+                    ❌ Impossible de charger les produits.
+                </strong>
+
+                <br><br>
+
+                ${escapeHTML(
+                    getErrorMessage(error)
+                )}
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* =====================================================
+   8. CATEGORIES
+===================================================== */
+
+function updateCategories() {
+
+    const select =
+        document.getElementById(
+            "category"
+        );
+
+    const current =
+        select.value;
+
+    const categories =
+        [
+            ...new Set(
+                products
+                    .map(
+                        product =>
+                            product.category
+                    )
+                    .filter(Boolean)
+            )
+        ]
+        .sort(
+            (a, b) =>
+                String(a)
+                    .localeCompare(
+                        String(b),
+                        "fr"
+                    )
+        );
+
+    select.innerHTML = `
+        <option value="">
+            Toutes les catégories
+        </option>
+    `;
+
+    categories.forEach(
+        category => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                category;
+
+            option.textContent =
+                category;
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+    if (
+        categories.includes(
+            current
+        )
+    ) {
+
+        select.value =
+            current;
+
+    }
+
+}
+
+
+/* =====================================================
+   9. AFFICHAGE PRODUITS
+===================================================== */
+
+function renderProducts() {
+
+    const container =
+        document.getElementById(
+            "products"
+        );
+
+    const search =
+        document
+            .getElementById(
+                "search"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
+    const category =
+        document
+            .getElementById(
+                "category"
+            )
+            .value;
+
+    const filtered =
+        products.filter(
+            product => {
+
+                const name =
+                    String(
+                        product.name ||
+                        ""
+                    )
+                    .toLowerCase();
+
+                const description =
+                    String(
+                        product.description ||
+                        ""
+                    )
+                    .toLowerCase();
+
+                const categoryName =
+                    String(
+                        product.category ||
+                        ""
+                    );
+
+                const searchOK =
+                    !search ||
+                    name.includes(
+                        search
+                    ) ||
+                    description.includes(
+                        search
+                    );
+
+                const categoryOK =
+                    !category ||
+                    categoryName ===
+                        category;
+
+                return (
+                    searchOK &&
+                    categoryOK
+                );
+
+            }
+        );
+
+    if (!filtered.length) {
+
+        container.innerHTML = `
+            <div class="empty">
+                Aucun produit trouvé.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML =
+        filtered
+            .map(
+                product =>
+                    createProductCard(
+                        product
+                    )
+            )
+            .join("");
+
+}
+
+
+/* =====================================================
+   CARTE PRODUIT
+===================================================== */
+
+function createProductCard(
+    product
+) {
+
+    const image =
+        Array.isArray(
+            product.images
+        ) &&
+        product.images.length
+            ? product.images[0]
+            : placeholderImage();
+
+    /*
+     * IMPORTANT :
+     * Les boutons Modifier/Supprimer
+     * ne sont générés que pour un ADMIN.
+     */
+    const adminHTML =
+        isAdmin
+            ? `
+                <div class="actions admin-actions">
+
+                    <button
+                        class="secondary"
+                        onclick="editProduct('${escapeAttribute(product.id)}')"
+                    >
+                        ✏️ Modifier
+                    </button>
+
+                    <button
+                        class="danger"
+                        onclick="deleteProduct('${escapeAttribute(product.id)}')"
+                    >
+                        🗑️ Supprimer
+                    </button>
+
+                </div>
+            `
+            : "";
+
+    return `
+        <article class="card">
+
+            <img
+                class="card-image"
+                src="${escapeAttribute(image)}"
+                alt="${escapeAttribute(
+                    product.name ||
+                    "Produit"
+                )}"
+                onerror="this.src=placeholderImage()"
+            >
+
+            <div class="card-content">
+
+                <h3>
+                    ${escapeHTML(
+                        product.name ||
+                        "Sans nom"
+                    )}
+                </h3>
+
+                <p class="card-description">
+                    ${escapeHTML(
+                        String(
+                            product.description ||
+                            ""
+                        ).substring(
+                            0,
+                            110
+                        )
+                    )}
+                </p>
+
+                <div class="price">
+                    ${formatPrice(
+                        product.price
+                    )}
+                </div>
+
+                <div class="actions">
+
+                    <button
+                        class="primary"
+                        onclick="showProduct('${escapeAttribute(product.id)}')"
+                    >
+                        Voir
+                    </button>
+
+                    <button
+                        class="secondary"
+                        onclick="addToCart('${escapeAttribute(product.id)}')"
+                    >
+                        🛒
+                    </button>
+
+                </div>
+
+                ${adminHTML}
+
+            </div>
+
+        </article>
+    `;
+
+}
+
+
+/* =====================================================
+   10. UPLOAD
+===================================================== */
+
+async function uploadFile(
+    bucket,
+    file,
+    folder
+) {
+
+    if (!file) {
+
+        throw new Error(
+            "Fichier manquant."
+        );
+
+    }
+
+    const extension =
+        file.name.includes(".")
+            ? "." +
+              file.name
+                  .split(".")
+                  .pop()
+                  .toLowerCase()
+            : "";
+
+    const filename =
+        crypto.randomUUID() +
+        extension;
+
+    const path =
+        folder +
+        "/" +
+        filename;
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .storage
+            .from(bucket)
+            .upload(
+                path,
+                file,
+                {
+                    cacheControl:
+                        "3600",
+
+                    upsert:
+                        false,
+
+                    contentType:
+                        file.type ||
+                        "application/octet-stream"
+                }
+            );
+
+    if (error) {
+
+        throw error;
+
+    }
+
+    if (
+        bucket ===
+        IMAGE_BUCKET
+    ) {
+
+        const {
+            data
+        } =
+            supabaseClient
+                .storage
+                .from(bucket)
+                .getPublicUrl(
+                    path
+                );
+
+        return {
+            url:
+                data.publicUrl,
+
+            path:
+                path
+        };
+
+    }
+
+    return {
+        path:
+            path
+    };
+
+}
+
+
+/* =====================================================
+   11. AJOUT PRODUIT
+===================================================== */
+
+function openProductForm() {
+
+    if (!isAdmin) {
+
+        showStatus(
+            "Accès administrateur refusé.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    document.getElementById(
+        "productTitle"
+    ).textContent =
+        "Ajouter un produit";
+
+    document.getElementById(
+        "productId"
+    ).value = "";
+
+    document.getElementById(
+        "productName"
+    ).value = "";
+
+    document.getElementById(
+        "productDescription"
+    ).value = "";
+
+    document.getElementById(
+        "productPrice"
+    ).value = "";
+
+    document.getElementById(
+        "productCategory"
+    ).value = "";
+
+    document.getElementById(
+        "productImages"
+    ).value = "";
+
+    document.getElementById(
+        "productFiles"
+    ).value = "";
+
+    openModal(
+        "productModal"
+    );
+
+}
+
+
+/* =====================================================
+   12. MODIFIER PRODUIT
+===================================================== */
+
+function editProduct(id) {
+
+    if (!isAdmin) {
+
+        showStatus(
+            "Accès administrateur refusé.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    const product =
+        products.find(
+            p =>
+                String(p.id) ===
+                String(id)
+        );
+
+    if (!product) {
+
+        showStatus(
+            "Produit introuvable.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    document.getElementById(
+        "productTitle"
+    ).textContent =
+        "Modifier le produit";
+
+    document.getElementById(
+        "productId"
+    ).value =
+        product.id;
+
+    document.getElementById(
+        "productName"
+    ).value =
+        product.name || "";
+
+    document.getElementById(
+        "productDescription"
+    ).value =
+        product.description || "";
+
+    document.getElementById(
+        "productPrice"
+    ).value =
+        product.price ?? "";
+
+    document.getElementById(
+        "productCategory"
+    ).value =
+        product.category || "";
+
+    document.getElementById(
+        "productImages"
+    ).value = "";
+
+    document.getElementById(
+        "productFiles"
+    ).value = "";
+
+    openModal(
+        "productModal"
+    );
+
+}
+
+
+/* =====================================================
+   13. SAUVEGARDER PRODUIT
+===================================================== */
+
+async function saveProduct() {
+
+    if (!isAdmin) {
+
+        showStatus(
+            "Accès administrateur refusé.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if (savingProduct) return;
+
+    const id =
+        document
+            .getElementById(
+                "productId"
+            )
+            .value
+            .trim();
+
+    const name =
+        document
+            .getElementById(
+                "productName"
+            )
+            .value
+            .trim();
+
+    const description =
+        document
+            .getElementById(
+                "productDescription"
+            )
+            .value
+            .trim();
+
+    const priceValue =
+        document
+            .getElementById(
+                "productPrice"
+            )
+            .value;
+
+    const price =
+        Number(
+            priceValue
+        );
+
+    const category =
+        document
+            .getElementById(
+                "productCategory"
+            )
+            .value
+            .trim();
+
+    if (!name) {
+
+        showStatus(
+            "Le nom du produit est obligatoire.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if (
+        priceValue === "" ||
+        !Number.isFinite(price) ||
+        price < 0
+    ) {
+
+        showStatus(
+            "Le prix est invalide.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if (!category) {
+
+        showStatus(
+            "La catégorie est obligatoire.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    const imageFiles =
+        Array.from(
+            document
+                .getElementById(
+                    "productImages"
+                )
+                .files
+        );
+
+    const digitalFiles =
+        Array.from(
+            document
+                .getElementById(
+                    "productFiles"
+                )
+                .files
+        );
+
+    const button =
+        document.getElementById(
+            "saveProductButton"
+        );
+
+    savingProduct = true;
+
+    button.disabled =
+        true;
+
+    button.textContent =
+        "Enregistrement...";
+
+    try {
+
+        let images = [];
+
+        let files = [];
+
+        if (id) {
+
+            const oldProduct =
+                products.find(
+                    p =>
+                        String(p.id) ===
+                        String(id)
+                );
+
+            images =
+                Array.isArray(
+                    oldProduct?.images
+                )
+                    ? [
+                        ...oldProduct.images
+                    ]
+                    : [];
+
+            files =
+                Array.isArray(
+                    oldProduct?.files
+                )
+                    ? [
+                        ...oldProduct.files
+                    ]
+                    : [];
+
+        }
+
+        const folder =
+            id ||
+            crypto.randomUUID();
+
+
+        /* IMAGES */
+
+        for (
+            const file
+            of imageFiles
+        ) {
+
+            const uploaded =
+                await uploadFile(
+                    IMAGE_BUCKET,
+                    file,
+                    folder
+                );
+
+            images.push(
+                uploaded.url
+            );
+
+        }
+
+
+        /* FICHIERS PRIVES */
+
+        for (
+            const file
+            of digitalFiles
+        ) {
+
+            const uploaded =
+                await uploadFile(
+                    FILE_BUCKET,
+                    file,
+                    folder
+                );
+
+            files.push({
+
+                name:
+                    file.name,
+
+                path:
+                    uploaded.path,
+
+                size:
+                    file.size,
+
+                type:
+                    file.type
+
+            });
+
+        }
+
+
+        const productData = {
+
+            name,
+
+            description,
+
+            price,
+
+            category,
+
+            images,
+
+            files,
+
+            updated_at:
+                new Date()
+                    .toISOString()
+
+        };
+
+
+        if (id) {
+
+            const {
+                error
+            } =
+                await supabaseClient
+                    .from(
+                        "products"
+                    )
+                    .update(
+                        productData
+                    )
+                    .eq(
+                        "id",
+                        id
+                    );
+
+            if (error) {
+
+                throw error;
+
+            }
+
+            showStatus(
+                "✅ Produit modifié.",
+                "success"
+            );
+
+        } else {
+
+            const {
+                error
+            } =
+                await supabaseClient
+                    .from(
+                        "products"
+                    )
+                    .insert(
+                        productData
+                    );
+
+            if (error) {
+
+                throw error;
+
+            }
+
+            showStatus(
+                "✅ Produit ajouté.",
+                "success"
+            );
+
+        }
+
+        closeModal(
+            "productModal"
+        );
+
+        await loadProducts();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Erreur sauvegarde :",
+            error
+        );
+
+        showStatus(
+            "❌ " +
+            getErrorMessage(
+                error
+            ),
+            "error"
+        );
+
+    }
+    finally {
+
+        savingProduct =
+            false;
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "💾 Enregistrer";
+
+    }
+
+}
+
+
+/* =====================================================
+   14. SUPPRIMER PRODUIT
+===================================================== */
+
+async function deleteProduct(id) {
+
+    if (!isAdmin) {
+
+        showStatus(
+            "Accès administrateur refusé.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if (deletingProduct) return;
+
+    const product =
+        products.find(
+            p =>
+                String(p.id) ===
+                String(id)
+        );
+
+    if (!product) {
+
+        showStatus(
+            "Produit introuvable.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    const confirmation =
+        window.confirm(
+            `Supprimer "${product.name}" ?\n\nCette action supprimera le produit de la base de données.`
+        );
+
+    if (!confirmation) return;
+
+    deletingProduct =
+        true;
+
+    try {
+
+        const {
+            data: sessionData,
+            error: sessionError
+        } =
+            await supabaseClient
+                .auth
+                .getSession();
+
+        if (sessionError) {
+
+            throw sessionError;
+
+        }
+
+        if (!sessionData.session) {
+
+            throw new Error(
+                "Ta session administrateur a expiré. Reconnecte-toi."
+            );
+
+        }
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from("products")
+                .delete()
+                .eq(
+                    "id",
+                    id
+                )
+                .select();
+
+        if (error) {
+
+            console.error(
+                "SUPABASE DELETE ERROR:",
+                error
+            );
+
+            throw error;
+
+        }
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            throw new Error(
+                "Supabase n'a supprimé aucune ligne. Vérifie les politiques RLS DELETE de la table products."
+            );
+
+        }
+
+        try {
+
+            await deleteProductFiles(
+                product
+            );
+
+        }
+        catch (storageError) {
+
+            console.warn(
+                "Produit supprimé mais fichiers Storage non nettoyés :",
+                storageError
+            );
+
+        }
+
+        products =
+            products.filter(
+                p =>
+                    String(p.id) !==
+                    String(id)
+            );
+
+        updateCategories();
+
+        renderProducts();
+
+        showStatus(
+            "✅ Produit supprimé avec succès.",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "ERREUR SUPPRESSION:",
+            error
+        );
+
+        showStatus(
+            "❌ Suppression impossible : " +
+            getErrorMessage(
+                error
+            ),
+            "error"
+        );
+
+    }
+    finally {
+
+        deletingProduct =
+            false;
+
+    }
+
+}
+
+
+/* =====================================================
+   15. SUPPRIMER FICHIERS STORAGE
+===================================================== */
+
+async function deleteProductFiles(
+    product
+) {
+
+    const imagePaths =
+        extractStoragePaths(
+            product.images,
+            IMAGE_BUCKET
+        );
+
+    const filePaths =
+        Array.isArray(
+            product.files
+        )
+            ? product.files
+                .map(
+                    file =>
+                        file &&
+                        file.path
+                            ? file.path
+                            : null
+                )
+                .filter(Boolean)
+            : [];
+
+    if (
+        imagePaths.length
+    ) {
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .storage
+                .from(
+                    IMAGE_BUCKET
+                )
+                .remove(
+                    imagePaths
+                );
+
+        if (error) {
+
+            throw error;
+
+        }
+
+    }
+
+    if (
+        filePaths.length
+    ) {
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .storage
+                .from(
+                    FILE_BUCKET
+                )
+                .remove(
+                    filePaths
+                );
+
+        if (error) {
+
+            throw error;
+
+        }
+
+    }
+
+}
+
+
+function extractStoragePaths(
+    values,
+    bucket
+) {
+
+    if (
+        !Array.isArray(values)
+    ) {
+
+        return [];
+
+    }
+
+    return values
+        .map(
+            value => {
+
+                if (
+                    typeof value !==
+                    "string"
+                ) {
+
+                    return null;
+
+                }
+
+                const marker =
+                    `/storage/v1/object/public/${bucket}/`;
+
+                const index =
+                    value.indexOf(
+                        marker
+                    );
+
+                if (
+                    index === -1
+                ) {
+
+                    return null;
+
+                }
+
+                return decodeURIComponent(
+                    value.substring(
+                        index +
+                        marker.length
+                    )
+                );
+
+            }
+        )
+        .filter(Boolean);
+
+}
+
+
+/* =====================================================
+   16. DETAIL PRODUIT
+===================================================== */
+
+function showProduct(id) {
+
+    const product =
+        products.find(
+            p =>
+                String(p.id) ===
+                String(id)
+        );
+
+    if (!product) {
+
+        showStatus(
+            "Produit introuvable.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    const images =
+        Array.isArray(
+            product.images
+        )
+            ? product.images
+            : [];
+
+    const mainImage =
+        images.length
+            ? images[0]
+            : placeholderImage();
+
+    let galleryHTML =
+        "";
+
+    if (images.length) {
+
+        galleryHTML = `
+            <div class="gallery">
+
+                ${images
+                    .map(
+                        image => `
+                            <img
+                                src="${escapeAttribute(image)}"
+                                alt="Image"
+                                onclick="changeDetailImage('${escapeAttribute(image)}')"
+                                onerror="this.style.display='none'"
+                            >
+                        `
+                    )
+                    .join("")
+                }
+
+            </div>
+        `;
+
+    }
+
+    document.getElementById(
+        "detailContent"
+    ).innerHTML = `
+
+        <h2>
+            ${escapeHTML(
+                product.name ||
+                ""
+            )}
+        </h2>
+
+        <br>
+
+        <img
+            id="detailMainImage"
+            class="detail-image"
+            src="${escapeAttribute(mainImage)}"
+            alt="${escapeAttribute(
+                product.name ||
+                ""
+            )}"
+        >
+
+        ${galleryHTML}
+
+        <p>
+            ${escapeHTML(
+                product.description ||
+                ""
+            )}
+        </p>
+
+        <br>
+
+        <div class="price">
+            ${formatPrice(
+                product.price
+            )}
+        </div>
+
+        <button
+            class="primary"
+            onclick="addToCart('${escapeAttribute(product.id)}')"
+        >
+            🛒 Ajouter au panier
+        </button>
+
+    `;
+
+    openModal(
+        "detailModal"
+    );
+
+}
+
+
+function changeDetailImage(
+    url
+) {
+
+    const image =
+        document.getElementById(
+            "detailMainImage"
+        );
+
+    if (image) {
+
+        image.src =
+            url;
+
+    }
+
+}
+
+
+/* =====================================================
+   17. PANIER
+===================================================== */
+
+function addToCart(id) {
+
+    const product =
+        products.find(
+            p =>
+                String(p.id) ===
+                String(id)
+        );
+
+    if (!product) return;
+
+    const existing =
+        cart.find(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
+
+    if (existing) {
+
+        existing.quantity++;
+
+    } else {
+
+        cart.push({
+
+            id:
+                product.id,
+
+            name:
+                product.name,
+
+            price:
+                Number(
+                    product.price
+                ) || 0,
+
+            quantity:
+                1
+
+        });
+
+    }
+
+    updateCart();
+
+    showStatus(
+        `${product.name} ajouté au panier.`,
+        "success"
+    );
+
+}
+
+
+function removeFromCart(id) {
+
+    cart =
+        cart.filter(
+            item =>
+                String(item.id) !==
+                String(id)
+        );
+
+    updateCart();
+
+    openCart();
+
+}
+
+
+function changeCartQuantity(
+    id,
+    amount
+) {
+
+    const item =
+        cart.find(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
+
+    if (!item) return;
+
+    item.quantity +=
+        amount;
+
+    if (
+        item.quantity <= 0
+    ) {
+
+        cart =
+            cart.filter(
+                item =>
+                    String(item.id) !==
+                    String(id)
+            );
+
+    }
+
+    updateCart();
+
+    openCart();
+
+}
+
+
+function updateCart() {
+
+    const count =
+        cart.reduce(
+            (
+                total,
+                item
+            ) =>
+                total +
+                item.quantity,
+            0
+        );
+
+    const total =
+        cart.reduce(
+            (
+                total,
+                item
+            ) =>
+                total +
+                item.price *
+                item.quantity,
+            0
+        );
+
+    document.getElementById(
+        "cartCount"
+    ).textContent =
+        count;
+
+    document.getElementById(
+        "cartTotal"
+    ).textContent =
+        total.toFixed(2) +
+        " €";
+
+}
+
+
+function openCart() {
+
+    const container =
+        document.getElementById(
+            "cartContent"
+        );
+
+    if (!cart.length) {
+
+        container.innerHTML = `
+            <p>
+                Ton panier est vide.
+            </p>
+        `;
+
+        openModal(
+            "cartModal"
+        );
+
+        return;
+
+    }
+
+    container.innerHTML =
+        cart
+            .map(
+                item => `
+
+                    <div class="cart-item">
+
+                        <strong>
+                            ${escapeHTML(
+                                item.name
+                            )}
+                        </strong>
+
+                        <br><br>
+
+                        ${item.price.toFixed(2)}
+                        €
+                        ×
+                        ${item.quantity}
+
+                        <br><br>
+
+                        <div class="actions">
+
+                            <button
+                                class="secondary"
+                                onclick="changeCartQuantity('${escapeAttribute(item.id)}', -1)"
+                            >
+                                −
+                            </button>
+
+                            <button
+                                class="secondary"
+                                onclick="changeCartQuantity('${escapeAttribute(item.id)}', 1)"
+                            >
+                                +
+                            </button>
+
+                            <button
+                                class="danger"
+                                onclick="removeFromCart('${escapeAttribute(item.id)}')"
+                            >
+                                Supprimer
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `
+            )
+            .join("");
+
+    const total =
+        cart.reduce(
+            (
+                sum,
+                item
+            ) =>
+                sum +
+                item.price *
+                item.quantity,
+            0
+        );
+
+    container.innerHTML += `
+
+        <br>
+
+        <h3>
+            Total :
+            ${total.toFixed(2)} €
+        </h3>
+
+    `;
+
+    openModal(
+        "cartModal"
+    );
+
+}
+
+
+/* =====================================================
+   18. PAIEMENT PAYPAL
+===================================================== */
+
+/*
+ * IMPORTANT :
+ *
+ * Il n'y a PLUS de :
+ *
+ * if (!currentUser) ...
+ *
+ * Un client peut donc commencer le paiement
+ * sans être connecté.
+ *
+ * MAIS :
+ *
+ * Tes fonctions Edge Supabase actuelles
+ * demandent encore un utilisateur connecté.
+ *
+ * Elles devront être adaptées ensuite
+ * pour accepter les paiements invités.
+ */
+
+async function checkout() {
+
+    if (!cart.length) {
+
+        showStatus(
+            "Ton panier est vide.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    const container =
+        document.getElementById(
+            "paypal-button-container"
+        );
+
+    if (!container) {
+
+        showStatus(
+            "❌ Conteneur PayPal introuvable.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if (
+        typeof window.paypal ===
+        "undefined"
+    ) {
+
+        showStatus(
+            "❌ PayPal n'est pas chargé. Vérifie ta connexion internet.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if (
+        paypalButtonsRendered
+    ) {
+
+        container.scrollIntoView({
+            behavior:
+                "smooth",
+
+            block:
+                "center"
+        });
+
+        return;
+
+    }
+
+    container.innerHTML =
+        "";
+
+    showStatus(
+        "💳 Chargement de PayPal...",
+        "success"
+    );
+
+    try {
+
+        const buttons =
+            window.paypal.Buttons({
+
+                style: {
+
+                    layout:
+                        "vertical",
+
+                    shape:
+                        "rect",
+
+                    label:
+                        "paypal"
+
+                },
+
+
+                /* =========================
+                   CREATION COMMANDE
+                ========================= */
+
+                createOrder:
+                    async function () {
+
+                        /*
+                         * On récupère la session
+                         * si elle existe.
+                         *
+                         * Un client invité peut
+                         * continuer sans session.
+                         */
+
+                        const {
+                            data:
+                                sessionData
+                        } =
+                            await supabaseClient
+                                .auth
+                                .getSession();
+
+                        const session =
+                            sessionData
+                                ? sessionData.session
+                                : null;
+
+                        const items =
+                            cart.map(
+                                item => ({
+
+                                    product_id:
+                                        item.id,
+
+                                    quantity:
+                                        item.quantity
+
+                                })
+                            );
+
+                        const headers = {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "apikey":
+                                SUPABASE_ANON_KEY
+
+                        };
+
+                        /*
+                         * Si quelqu'un est connecté,
+                         * on transmet sa session.
+                         *
+                         * Sinon, aucun compte
+                         * n'est obligatoire côté frontend.
+                         */
+
+                        if (session) {
+
+                            headers.Authorization =
+                                `Bearer ${session.access_token}`;
+
+                        }
+
+
+                        const response =
+                            await fetch(
+                                `${SUPABASE_URL}/functions/v1/paypal-create-order`,
+                                {
+
+                                    method:
+                                        "POST",
+
+                                    headers,
+
+                                    body:
+                                        JSON.stringify({
+                                            items
+                                        })
+
+                                }
+                            );
+
+
+                        const result =
+                            await response.json();
+
+
+                        if (!response.ok) {
+
+                            console.error(
+                                "Erreur paypal-create-order:",
+                                result
+                            );
+
+                            throw new Error(
+                                result.error ||
+                                "Impossible de créer la commande PayPal."
+                            );
+
+                        }
+
+
+                        if (
+                            !result.paypal_order_id
+                        ) {
+
+                            throw new Error(
+                                "PayPal n'a pas retourné d'identifiant de commande."
+                            );
+
+                        }
+
+
+                        return result.paypal_order_id;
+
+                    },
+
+
+                /* =========================
+                   PAIEMENT APPROUVE
+                ========================= */
+
+                onApprove:
+                    async function (
+                        data
+                    ) {
+
+                        try {
+
+                            showStatus(
+                                "⏳ Confirmation du paiement...",
+                                "success"
+                            );
+
+
+                            const {
+                                data:
+                                    sessionData
+                            } =
+                                await supabaseClient
+                                    .auth
+                                    .getSession();
+
+                            const session =
+                                sessionData
+                                    ? sessionData.session
+                                    : null;
+
+                            const headers = {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "apikey":
+                                    SUPABASE_ANON_KEY
+
+                            };
+
+                            if (session) {
+
+                                headers.Authorization =
+                                    `Bearer ${session.access_token}`;
+
+                            }
+
+
+                            const response =
+                                await fetch(
+                                    `${SUPABASE_URL}/functions/v1/paypal-capture-order`,
+                                    {
+
+                                        method:
+                                            "POST",
+
+                                        headers,
+
+                                        body:
+                                            JSON.stringify({
+
+                                                paypal_order_id:
+                                                    data.orderID
+
+                                            })
+
+                                    }
+                                );
+
+
+                            const result =
+                                await response.json();
+
+
+                            if (!response.ok) {
+
+                                console.error(
+                                    "Erreur paypal-capture-order:",
+                                    result
+                                );
+
+                                throw new Error(
+                                    result.error ||
+                                    "Impossible de confirmer le paiement."
+                                );
+
+                            }
+
+
+                            if (
+                                !result.success
+                            ) {
+
+                                throw new Error(
+                                    "Le paiement n'a pas pu être confirmé."
+                                );
+
+                            }
+
+
+                            cart = [];
+
+                            updateCart();
+
+                            paypalButtonsRendered =
+                                false;
+
+                            container.innerHTML =
+                                "";
+
+                            closeModal(
+                                "cartModal"
+                            );
+
+                            showStatus(
+                                "✅ Paiement confirmé ! Merci pour ta commande.",
+                                "success"
+                            );
+
+                        }
+                        catch (error) {
+
+                            console.error(
+                                "Erreur confirmation PayPal:",
+                                error
+                            );
+
+                            showStatus(
+                                "❌ " +
+                                getErrorMessage(
+                                    error
+                                ),
+                                "error"
+                            );
+
+                        }
+
+                    },
+
+
+                /* =========================
+                   ANNULATION
+                ========================= */
+
+                onCancel:
+                    function () {
+
+                        showStatus(
+                            "Paiement annulé.",
+                            "error"
+                        );
+
+                    },
+
+
+                /* =========================
+                   ERREUR
+                ========================= */
+
+                onError:
+                    function (
+                        error
+                    ) {
+
+                        console.error(
+                            "Erreur PayPal:",
+                            error
+                        );
+
+                        showStatus(
+                            "❌ Une erreur PayPal est survenue.",
+                            "error"
+                        );
+
+                    }
+
+            });
+
+
+        if (
+            !buttons.isEligible()
+        ) {
+
+            throw new Error(
+                "Les boutons PayPal ne sont pas disponibles."
+            );
+
+        }
+
+
+        await buttons.render(
+            "#paypal-button-container"
+        );
+
+
+        paypalButtonsRendered =
+            true;
+
+
+        container.scrollIntoView({
+            behavior:
+                "smooth",
+
+            block:
+                "center"
+        });
+
+
+        showStatus(
+            "💳 Choisis ton mode de paiement PayPal.",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Erreur initialisation PayPal:",
+            error
+        );
+
+        paypalButtonsRendered =
+            false;
+
+        container.innerHTML =
+            "";
+
+        showStatus(
+            "❌ " +
+            getErrorMessage(
+                error
+            ),
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   19. MODALS
+===================================================== */
+
+function openModal(id) {
+
+    const modal =
+        document.getElementById(
+            id
+        );
+
+    if (modal) {
+
+        modal.classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+
+function closeModal(id) {
+
+    const modal =
+        document.getElementById(
+            id
+        );
+
+    if (modal) {
+
+        modal.classList.remove(
+            "active"
+        );
+
+    }
+
+}
+
+
+function openLogin() {
+
+    /*
+     * Personne ne peut ouvrir l'Admin
+     * sauf si le bouton est réellement
+     * affiché pour un administrateur.
+     */
+
+    if (
+        currentUser &&
+        isAdmin
+    ) {
+
+        document
+            .getElementById(
+                "adminPanel"
+            )
+            .scrollIntoView({
+                behavior:
+                    "smooth"
+            });
+
+        return;
+
+    }
+
+    openModal(
+        "loginModal"
+    );
+
+}
+
+
+document.addEventListener(
+    "click",
+    event => {
+
+        if (
+            event.target.classList.contains(
+                "modal"
+            )
+        ) {
+
+            event.target.classList.remove(
+                "active"
+            );
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key !==
+            "Escape"
+        ) {
+
+            return;
+
+        }
+
+        document
+            .querySelectorAll(
+                ".modal.active"
+            )
+            .forEach(
+                modal =>
+                    modal.classList.remove(
+                        "active"
+                    )
+            );
+
+    }
+);
+
+
+/* =====================================================
+   20. OUTILS
+===================================================== */
+
+function formatPrice(value) {
+
+    const number =
+        Number(value);
+
+    return (
+        Number.isFinite(
+            number
+        )
+            ? number
+            : 0
+    )
+    .toFixed(2) +
+    " €";
+
+}
+
+
+function placeholderImage() {
+
+    return (
+        "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(`
+
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="600"
+                height="400"
+                viewBox="0 0 600 400"
+            >
+
+                <rect
+                    width="600"
+                    height="400"
+                    fill="#e5e7eb"
+                />
+
+                <text
+                    x="300"
+                    y="205"
+                    text-anchor="middle"
+                    font-family="Arial"
+                    font-size="30"
+                    fill="#6b7280"
+                >
+                    Nexora
+                </text>
+
+            </svg>
+
+        `)
+    );
+
+}
+
+
+function escapeHTML(
+    value
+) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+function escapeAttribute(
+    value
+) {
+
+    return escapeHTML(
+        value
+    );
+
+}
+
+
+function getErrorMessage(
+    error
+) {
+
+    if (!error) {
+
+        return "Erreur inconnue.";
+
+    }
+
+    if (
+        error.code ===
+        "42501"
+    ) {
+
+        return (
+            "Permission refusée par Supabase. " +
+            "Les politiques RLS bloquent cette opération."
+        );
+
+    }
+
+    if (
+        error.code ===
+        "PGRST116"
+    ) {
+
+        return (
+            "Aucune ligne trouvée."
+        );
+
+    }
+
+    if (
+        error.message
+    ) {
+
+        return error.message;
+
+    }
+
+    return String(
+        error
+    );
+
+}
+
+</script>
+
+</body>
+</html>
