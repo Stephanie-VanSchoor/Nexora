@@ -11,7 +11,6 @@
 <script src="https://www.paypal.com/sdk/js?client-id=BAAOeW-DEuo2fwuR6UfE3bK2jJe77X2i11R6rED2jBLbn3EF2-acIjA7N2M84voDMIxoN5gtE_n3E6A-ls&currency=EUR&intent=capture"></script>
 
 <style>
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -37,15 +36,8 @@ html {
 }
 
 body {
-    font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
     background:
         radial-gradient(
             circle at top left,
@@ -53,7 +45,6 @@ body {
             transparent 30%
         ),
         var(--bg);
-
     color: var(--text);
     line-height: 1.6;
 }
@@ -130,24 +121,14 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-
-    background:
-        rgba(17,24,39,.94);
-
+    background: rgba(17,24,39,.94);
     backdrop-filter: blur(16px);
-
     color: white;
-
-    padding:
-        16px
-        max(5%, calc((100% - 1250px) / 2));
-
+    padding: 16px max(5%, calc((100% - 1250px) / 2));
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    border-bottom:
-        1px solid rgba(255,255,255,.08);
+    border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
 .logo {
@@ -182,15 +163,9 @@ nav .secondary:hover {
 .hero {
     position: relative;
     overflow: hidden;
-
     color: white;
-
-    padding:
-        105px 20px
-        115px;
-
+    padding: 105px 20px 115px;
     text-align: center;
-
     background:
         radial-gradient(
             circle at 20% 20%,
@@ -221,32 +196,20 @@ nav .secondary:hover {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-
     padding: 8px 14px;
     margin-bottom: 20px;
-
     border-radius: 999px;
-
-    background:
-        rgba(255,255,255,.10);
-
-    border:
-        1px solid rgba(255,255,255,.15);
-
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.15);
     color: #e9e7ff;
-
     font-size: 14px;
     font-weight: 700;
 }
 
 .hero h1 {
-    font-size:
-        clamp(40px, 7vw, 72px);
-
+    font-size: clamp(40px, 7vw, 72px);
     line-height: 1.03;
-
     letter-spacing: -3px;
-
     margin-bottom: 22px;
 }
 
@@ -257,16 +220,12 @@ nav .secondary:hover {
 .hero p {
     max-width: 680px;
     margin: auto;
-
     color: #c9cbd8;
-
-    font-size:
-        clamp(17px, 2vw, 20px);
+    font-size: clamp(17px, 2vw, 20px);
 }
 
 .hero-stats {
     margin-top: 38px;
-
     display: flex;
     justify-content: center;
     gap: 12px;
@@ -275,15 +234,9 @@ nav .secondary:hover {
 
 .hero-stat {
     padding: 10px 15px;
-
     border-radius: 999px;
-
-    background:
-        rgba(255,255,255,.08);
-
-    border:
-        1px solid rgba(255,255,255,.10);
-
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.10);
     font-size: 14px;
 }
 
@@ -301,17 +254,10 @@ nav .secondary:hover {
 
 .controls {
     background: white;
-
     padding: 18px;
-
     border-radius: 18px;
-
-    box-shadow:
-        0 20px 50px rgba(17,24,39,.10);
-
-    border:
-        1px solid rgba(17,24,39,.05);
-
+    box-shadow: 0 20px 50px rgba(17,24,39,.10);
+    border: 1px solid rgba(17,24,39,.05);
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
@@ -320,26 +266,17 @@ nav .secondary:hover {
 .controls input,
 .controls select {
     border: 1px solid var(--border);
-
     background: #fafbfe;
-
     padding: 13px 15px;
-
     border-radius: 12px;
-
     outline: none;
-
-    transition:
-        border .2s,
-        box-shadow .2s;
+    transition: border .2s, box-shadow .2s;
 }
 
 .controls input:focus,
 .controls select:focus {
     border-color: var(--primary);
-
-    box-shadow:
-        0 0 0 4px rgba(99,91,255,.10);
+    box-shadow: 0 0 0 4px rgba(99,91,255,.10);
 }
 
 .search {
@@ -357,14 +294,9 @@ nav .secondary:hover {
 
 .admin {
     display: none;
-
     max-width: 1250px;
-
-    margin:
-        30px auto 0;
-
-    padding:
-        0 20px;
+    margin: 30px auto 0;
+    padding: 0 20px;
 }
 
 .admin.active {
@@ -373,23 +305,16 @@ nav .secondary:hover {
 
 .admin-inner {
     background: white;
-
-    border:
-        1px solid var(--border);
-
+    border: 1px solid var(--border);
     border-radius: 20px;
-
     padding: 22px;
-
-    box-shadow:
-        0 10px 35px rgba(17,24,39,.06);
+    box-shadow: 0 10px 35px rgba(17,24,39,.06);
 }
 
 .admin-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     gap: 15px;
     flex-wrap: wrap;
 }
@@ -425,7 +350,6 @@ nav .secondary:hover {
     justify-content: space-between;
     align-items: end;
     gap: 20px;
-
     margin-bottom: 28px;
 }
 
@@ -441,41 +365,23 @@ nav .secondary:hover {
 
 .products {
     display: grid;
-
-    grid-template-columns:
-        repeat(
-            auto-fill,
-            minmax(260px, 1fr)
-        );
-
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 24px;
 }
 
 .card {
     position: relative;
-
     background: var(--card);
-
     border-radius: var(--radius);
-
     overflow: hidden;
-
-    border:
-        1px solid rgba(17,24,39,.06);
-
-    box-shadow:
-        0 8px 30px rgba(17,24,39,.06);
-
-    transition:
-        transform .25s,
-        box-shadow .25s;
+    border: 1px solid rgba(17,24,39,.06);
+    box-shadow: 0 8px 30px rgba(17,24,39,.06);
+    transition: transform .25s, box-shadow .25s;
 }
 
 .card:hover {
     transform: translateY(-7px);
-
-    box-shadow:
-        0 18px 45px rgba(17,24,39,.12);
+    box-shadow: 0 18px 45px rgba(17,24,39,.12);
 }
 
 .card-image-wrapper {
@@ -486,15 +392,10 @@ nav .secondary:hover {
 .card-image {
     width: 100%;
     height: 225px;
-
     object-fit: cover;
-
     display: block;
-
     background: #eef0f5;
-
-    transition:
-        transform .45s;
+    transition: transform .45s;
 }
 
 .card:hover .card-image {
@@ -503,21 +404,13 @@ nav .secondary:hover {
 
 .category-badge {
     position: absolute;
-
     left: 14px;
     top: 14px;
-
     padding: 6px 10px;
-
     border-radius: 999px;
-
-    background:
-        rgba(17,24,39,.78);
-
+    background: rgba(17,24,39,.78);
     backdrop-filter: blur(8px);
-
     color: white;
-
     font-size: 12px;
     font-weight: 700;
 }
@@ -529,39 +422,28 @@ nav .secondary:hover {
 .card h3 {
     font-size: 19px;
     margin-bottom: 7px;
-
     letter-spacing: -.3px;
 }
 
 .card-description {
     color: var(--muted);
-
     min-height: 49px;
-
     font-size: 14px;
-
     line-height: 1.55;
-
     margin-bottom: 18px;
 }
 
 .card-bottom {
     display: flex;
-
     align-items: end;
-
     justify-content: space-between;
-
     gap: 12px;
 }
 
 .price {
     color: var(--primary);
-
     font-size: 23px;
-
     font-weight: 900;
-
     letter-spacing: -.5px;
 }
 
@@ -581,11 +463,8 @@ nav .secondary:hover {
 .empty,
 .loading {
     grid-column: 1 / -1;
-
     text-align: center;
-
     padding: 80px 20px;
-
     color: var(--muted);
 }
 
@@ -595,13 +474,9 @@ nav .secondary:hover {
 
 .error-box {
     grid-column: 1 / -1;
-
     padding: 25px;
-
     background: #fee2e2;
-
     color: #991b1b;
-
     border-radius: 15px;
 }
 
@@ -611,37 +486,19 @@ nav .secondary:hover {
 
 .cart-button {
     position: fixed;
-
     right: 22px;
     bottom: 22px;
-
     z-index: 900;
-
     display: flex;
     align-items: center;
     gap: 10px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #635bff,
-            #7c3aed
-        );
-
+    background: linear-gradient(135deg, #635bff, #7c3aed);
     color: white;
-
-    padding:
-        14px 20px;
-
+    padding: 14px 20px;
     border-radius: 999px;
-
-    box-shadow:
-        0 12px 30px rgba(99,91,255,.35);
-
+    box-shadow: 0 12px 30px rgba(99,91,255,.35);
     font-weight: 800;
-
-    transition:
-        transform .2s;
+    transition: transform .2s;
 }
 
 .cart-button:hover {
@@ -654,26 +511,17 @@ nav .secondary:hover {
 
 .modal {
     display: none;
-
     position: fixed;
-
     inset: 0;
-
-    background:
-        rgba(3,7,18,.72);
-
+    background: rgba(3,7,18,.72);
     backdrop-filter: blur(7px);
-
     z-index: 2000;
-
     padding: 20px;
-
     overflow-y: auto;
 }
 
 .modal.active {
     display: flex;
-
     justify-content: center;
     align-items: center;
 }
@@ -681,26 +529,16 @@ nav .secondary:hover {
 .modal-box {
     width: 100%;
     max-width: 700px;
-
     background: white;
-
     border-radius: 24px;
-
     padding: 28px;
-
     max-height: 90vh;
-
     overflow-y: auto;
-
-    box-shadow:
-        0 30px 80px rgba(0,0,0,.25);
-
-    animation:
-        modalIn .2s ease;
+    box-shadow: 0 30px 80px rgba(0,0,0,.25);
+    animation: modalIn .2s ease;
 }
 
 @keyframes modalIn {
-
     from {
         opacity: 0;
         transform: translateY(15px) scale(.98);
@@ -710,7 +548,6 @@ nav .secondary:hover {
         opacity: 1;
         transform: none;
     }
-
 }
 
 .modal-box h2 {
@@ -727,9 +564,7 @@ nav .secondary:hover {
 
 .form-group label {
     display: block;
-
     font-weight: 800;
-
     margin-bottom: 7px;
 }
 
@@ -737,16 +572,10 @@ nav .secondary:hover {
 .form-group textarea,
 .form-group select {
     width: 100%;
-
     padding: 13px 14px;
-
-    border:
-        1px solid var(--border);
-
+    border: 1px solid var(--border);
     border-radius: 12px;
-
     background: #fafbfe;
-
     outline: none;
 }
 
@@ -754,9 +583,7 @@ nav .secondary:hover {
 .form-group textarea:focus,
 .form-group select:focus {
     border-color: var(--primary);
-
-    box-shadow:
-        0 0 0 4px rgba(99,91,255,.10);
+    box-shadow: 0 0 0 4px rgba(99,91,255,.10);
 }
 
 .form-group textarea {
@@ -765,11 +592,8 @@ nav .secondary:hover {
 
 .help {
     display: block;
-
     margin-top: 6px;
-
     color: var(--muted);
-
     font-size: 13px;
 }
 
@@ -783,64 +607,43 @@ nav .secondary:hover {
 
 .product-detail-header h2 {
     font-size: 31px;
-
     line-height: 1.15;
-
     letter-spacing: -1px;
 }
 
 .product-detail-category {
     display: inline-block;
-
     margin-bottom: 10px;
-
     padding: 6px 10px;
-
     border-radius: 999px;
-
     background: #efedff;
-
     color: var(--primary);
-
     font-size: 12px;
-
     font-weight: 800;
 }
 
 .detail-image {
     width: 100%;
-
     max-height: 430px;
-
     object-fit: cover;
-
     border-radius: 18px;
-
     background: #f3f4f6;
 }
 
 .gallery {
     display: flex;
-
     gap: 10px;
-
     overflow-x: auto;
-
     margin: 14px 0 22px;
 }
 
 .gallery img {
     width: 75px;
     height: 75px;
-
     object-fit: cover;
-
     border-radius: 10px;
-
     cursor: pointer;
-
     flex-shrink: 0;
-
     border: 2px solid transparent;
 }
 
@@ -850,27 +653,20 @@ nav .secondary:hover {
 
 .detail-description {
     color: #4b5563;
-
     line-height: 1.8;
-
     margin: 20px 0;
 }
 
 .detail-price {
     font-size: 31px;
-
     color: var(--primary);
-
     font-weight: 900;
-
     margin-bottom: 18px;
 }
 
 .detail-actions {
     display: flex;
-
     gap: 10px;
-
     flex-wrap: wrap;
 }
 
@@ -880,9 +676,7 @@ nav .secondary:hover {
 
 .cart-item {
     padding: 18px 0;
-
-    border-bottom:
-        1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 }
 
 .cart-item:last-child {
@@ -895,33 +689,22 @@ nav .secondary:hover {
 
 .cart-item-price {
     color: var(--muted);
-
     font-size: 14px;
-
     margin-top: 3px;
 }
 
 .cart-total {
-    margin:
-        20px 0;
-
-    padding:
-        18px;
-
+    margin: 20px 0;
+    padding: 18px;
     border-radius: 15px;
-
     background: #f6f7fb;
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
 }
 
 .cart-total strong {
     font-size: 24px;
-
     color: var(--primary);
 }
 
@@ -931,26 +714,15 @@ nav .secondary:hover {
 
 .status {
     display: none;
-
     position: fixed;
-
     top: 85px;
     right: 20px;
-
     z-index: 3000;
-
     max-width: 420px;
-
-    padding:
-        15px 20px;
-
+    padding: 15px 20px;
     border-radius: 14px;
-
     background: white;
-
-    box-shadow:
-        0 15px 45px rgba(0,0,0,.18);
-
+    box-shadow: 0 15px 45px rgba(0,0,0,.18);
     border-left: 5px solid var(--primary);
 }
 
@@ -960,16 +732,12 @@ nav .secondary:hover {
 
 .status.success {
     color: #065f46;
-
-    border-left-color:
-        var(--success);
+    border-left-color: var(--success);
 }
 
 .status.error {
     color: #991b1b;
-
-    border-left-color:
-        var(--danger);
+    border-left-color: var(--danger);
 }
 
 /* ================================
@@ -978,20 +746,14 @@ nav .secondary:hover {
 
 footer {
     background: #0b1020;
-
     color: white;
-
     text-align: center;
-
-    padding:
-        50px 20px;
+    padding: 50px 20px;
 }
 
 .footer-logo {
     font-size: 26px;
-
     font-weight: 900;
-
     margin-bottom: 8px;
 }
 
@@ -1010,11 +772,8 @@ footer p {
 @media (max-width: 700px) {
 
     header {
-        padding:
-            14px 18px;
-
+        padding: 14px 18px;
         flex-direction: column;
-
         gap: 14px;
     }
 
@@ -1024,8 +783,7 @@ footer p {
     }
 
     .hero {
-        padding:
-            75px 20px 90px;
+        padding: 75px 20px 90px;
     }
 
     .hero h1 {
@@ -1071,9 +829,7 @@ footer p {
         right: 12px;
         bottom: 12px;
     }
-
 }
-
 </style>
 </head>
 
@@ -1090,6 +846,7 @@ footer p {
     <nav>
 
         <button
+            type="button"
             class="secondary"
             onclick="openCart()"
         >
@@ -1099,6 +856,7 @@ footer p {
 
         <button
             id="adminButton"
+            type="button"
             class="primary"
             onclick="openLogin()"
             style="display:none;"
@@ -1173,10 +931,7 @@ footer p {
 
 </div>
 
-<section
-    id="adminPanel"
-    class="admin"
->
+<section id="adminPanel" class="admin">
 
     <div class="admin-inner">
 
@@ -1200,6 +955,7 @@ footer p {
         <div class="admin-buttons">
 
             <button
+                type="button"
                 class="primary"
                 onclick="openProductForm()"
             >
@@ -1207,6 +963,7 @@ footer p {
             </button>
 
             <button
+                type="button"
                 class="danger"
                 onclick="logout()"
             >
@@ -1251,6 +1008,7 @@ footer p {
 </section>
 
 <button
+    type="button"
     class="cart-button"
     onclick="openCart()"
 >
@@ -1289,9 +1047,7 @@ footer p {
 
         <div class="form-group">
 
-            <label>
-                Email
-            </label>
+            <label>Email</label>
 
             <input
                 id="adminEmail"
@@ -1304,9 +1060,7 @@ footer p {
 
         <div class="form-group">
 
-            <label>
-                Mot de passe
-            </label>
+            <label>Mot de passe</label>
 
             <input
                 id="adminPassword"
@@ -1321,6 +1075,7 @@ footer p {
 
             <button
                 id="loginButton"
+                type="button"
                 class="primary"
                 onclick="login()"
             >
@@ -1328,6 +1083,7 @@ footer p {
             </button>
 
             <button
+                type="button"
                 class="secondary"
                 onclick="closeModal('loginModal')"
             >
@@ -1362,9 +1118,7 @@ footer p {
 
         <div class="form-group">
 
-            <label>
-                Nom du produit
-            </label>
+            <label>Nom du produit</label>
 
             <input
                 id="productName"
@@ -1376,9 +1130,7 @@ footer p {
 
         <div class="form-group">
 
-            <label>
-                Description
-            </label>
+            <label>Description</label>
 
             <textarea
                 id="productDescription"
@@ -1390,9 +1142,7 @@ footer p {
 
         <div class="form-group">
 
-            <label>
-                Prix (€)
-            </label>
+            <label>Prix (€)</label>
 
             <input
                 id="productPrice"
@@ -1406,9 +1156,7 @@ footer p {
 
         <div class="form-group">
 
-            <label>
-                Catégorie
-            </label>
+            <label>Catégorie</label>
 
             <input
                 id="productCategory"
@@ -1420,9 +1168,7 @@ footer p {
 
         <div class="form-group">
 
-            <label>
-                Images
-            </label>
+            <label>Images</label>
 
             <input
                 id="productImages"
@@ -1439,9 +1185,7 @@ footer p {
 
         <div class="form-group">
 
-            <label>
-                Fichiers numériques
-            </label>
+            <label>Fichiers numériques</label>
 
             <input
                 id="productFiles"
@@ -1459,6 +1203,7 @@ footer p {
 
             <button
                 id="saveProductButton"
+                type="button"
                 class="primary"
                 onclick="saveProduct()"
             >
@@ -1466,6 +1211,7 @@ footer p {
             </button>
 
             <button
+                type="button"
                 class="secondary"
                 onclick="closeModal('productModal')"
             >
@@ -1520,6 +1266,7 @@ footer p {
         <br>
 
         <button
+            type="button"
             class="secondary"
             onclick="closeModal('cartModal')"
         >
@@ -1553,11 +1300,8 @@ const supabaseClient =
    CONFIGURATION
 ========================================== */
 
-const IMAGE_BUCKET =
-    "product-images";
-
-const FILE_BUCKET =
-    "product-files";
+const IMAGE_BUCKET = "product-images";
+const FILE_BUCKET = "product-files";
 
 
 /* ==========================================
@@ -1565,17 +1309,11 @@ const FILE_BUCKET =
 ========================================== */
 
 let products = [];
-
 let cart = [];
-
 let currentUser = null;
-
 let isAdmin = false;
-
 let savingProduct = false;
-
 let deletingProduct = false;
-
 let paypalButtonsRendered = false;
 
 
@@ -1602,10 +1340,54 @@ document.addEventListener(
             );
 
         await checkUser();
-
         await loadProducts();
-
         updateCart();
+
+    }
+);
+
+
+/* ==========================================
+   CLIC SUR LES BOUTONS PRODUIT
+========================================== */
+
+/*
+   IMPORTANT :
+
+   On utilise ici un écouteur JavaScript
+   au lieu de onclick directement dans la carte.
+
+   Cela rend le bouton "Découvrir"
+   beaucoup plus fiable.
+*/
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const button =
+            event.target.closest(
+                ".discover-product-button"
+            );
+
+        if (!button) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const id =
+            button.getAttribute(
+                "data-product-id"
+            );
+
+        console.log(
+            "Bouton Découvrir cliqué :",
+            id
+        );
+
+        showProduct(id);
 
     }
 );
@@ -1621,12 +1403,13 @@ function showStatus(
 ) {
 
     const box =
-        document.getElementById(
-            "status"
-        );
+        document.getElementById("status");
 
-    box.textContent =
-        message;
+    if (!box) {
+        return;
+    }
+
+    box.textContent = message;
 
     box.className =
         "status show " + type;
@@ -1638,11 +1421,7 @@ function showStatus(
     window.statusTimer =
         setTimeout(
             () => {
-
-                box.classList.remove(
-                    "show"
-                );
-
+                box.classList.remove("show");
             },
             5000
         );
@@ -1651,7 +1430,7 @@ function showStatus(
 
 
 /* ==========================================
-   UTILITAIRE ERREUR
+   ERREUR
 ========================================== */
 
 function getErrorMessage(error) {
@@ -1661,17 +1440,11 @@ function getErrorMessage(error) {
     }
 
     if (error.code === "42501") {
-
-        return (
-            "Permission refusée par Supabase."
-        );
-
+        return "Permission refusée par Supabase.";
     }
 
     if (error.message) {
-
         return error.message;
-
     }
 
     return String(error);
@@ -1680,7 +1453,7 @@ function getErrorMessage(error) {
 
 
 /* ==========================================
-   AUTHENTIFICATION
+   AUTH
 ========================================== */
 
 async function checkUser() {
@@ -1696,9 +1469,7 @@ async function checkUser() {
                 .getSession();
 
         if (error) {
-
             throw error;
-
         }
 
         currentUser =
@@ -1717,7 +1488,6 @@ async function checkUser() {
         );
 
         currentUser = null;
-
         isAdmin = false;
 
         updateAdmin();
@@ -1728,7 +1498,7 @@ async function checkUser() {
 
 
 /* ==========================================
-   VERIFICATION ADMIN
+   ADMIN
 ========================================== */
 
 async function checkAdminRole() {
@@ -1759,18 +1529,14 @@ async function checkAdminRole() {
                 .maybeSingle();
 
         if (error) {
-
             throw error;
-
         }
 
         if (
             data &&
             data.role === "admin"
         ) {
-
             isAdmin = true;
-
         }
 
     }
@@ -1798,17 +1564,13 @@ async function login() {
 
     const email =
         document
-            .getElementById(
-                "adminEmail"
-            )
+            .getElementById("adminEmail")
             .value
             .trim();
 
     const password =
         document
-            .getElementById(
-                "adminPassword"
-            )
+            .getElementById("adminPassword")
             .value;
 
     if (!email || !password) {
@@ -1828,9 +1590,7 @@ async function login() {
         );
 
     button.disabled = true;
-
-    button.textContent =
-        "Connexion...";
+    button.textContent = "Connexion...";
 
     try {
 
@@ -1846,13 +1606,10 @@ async function login() {
                 });
 
         if (error) {
-
             throw error;
-
         }
 
-        currentUser =
-            data.user;
+        currentUser = data.user;
 
         await checkAdminRole();
 
@@ -1872,15 +1629,11 @@ async function login() {
 
         }
 
-        document
-            .getElementById(
-                "adminPassword"
-            )
-            .value = "";
+        document.getElementById(
+            "adminPassword"
+        ).value = "";
 
-        closeModal(
-            "loginModal"
-        );
+        closeModal("loginModal");
 
         showStatus(
             "✅ Connexion administrateur réussie.",
@@ -1895,8 +1648,7 @@ async function login() {
         console.error(error);
 
         showStatus(
-            "❌ " +
-            getErrorMessage(error),
+            "❌ " + getErrorMessage(error),
             "error"
         );
 
@@ -1904,9 +1656,7 @@ async function login() {
     finally {
 
         button.disabled = false;
-
-        button.textContent =
-            "Se connecter";
+        button.textContent = "Se connecter";
 
     }
 
@@ -1926,11 +1676,9 @@ async function logout() {
             .signOut();
 
         currentUser = null;
-
         isAdmin = false;
 
         updateAdmin();
-
         renderProducts();
 
         showStatus(
@@ -1994,32 +1742,21 @@ function updateAdmin() {
             "adminUser"
         );
 
-    panel.style.display =
-        "none";
-
-    button.style.display =
-        "none";
-
-    userText.textContent =
-        "";
+    panel.style.display = "none";
+    button.style.display = "none";
+    userText.textContent = "";
 
     if (
         currentUser &&
         isAdmin
     ) {
 
-        panel.style.display =
-            "block";
-
-        button.style.display =
-            "inline-block";
+        panel.style.display = "block";
+        button.style.display = "inline-block";
 
         userText.textContent =
             "Connecté : " +
-            (
-                currentUser.email ||
-                ""
-            );
+            (currentUser.email || "");
 
     }
 
@@ -2027,7 +1764,7 @@ function updateAdmin() {
 
 
 /* ==========================================
-   PRODUITS
+   CHARGEMENT PRODUITS
 ========================================== */
 
 async function loadProducts() {
@@ -2060,9 +1797,7 @@ async function loadProducts() {
                 );
 
         if (error) {
-
             throw error;
-
         }
 
         products =
@@ -2071,7 +1806,6 @@ async function loadProducts() {
                 : [];
 
         updateCategories();
-
         renderProducts();
 
     }
@@ -2121,11 +1855,10 @@ function updateCategories() {
         ]
         .sort(
             (a, b) =>
-                String(a)
-                    .localeCompare(
-                        String(b),
-                        "fr"
-                    )
+                String(a).localeCompare(
+                    String(b),
+                    "fr"
+                )
         );
 
     select.innerHTML = `
@@ -2142,35 +1875,23 @@ function updateCategories() {
                     "option"
                 );
 
-            option.value =
-                category;
+            option.value = category;
+            option.textContent = category;
 
-            option.textContent =
-                category;
-
-            select.appendChild(
-                option
-            );
+            select.appendChild(option);
 
         }
     );
 
-    if (
-        categories.includes(
-            current
-        )
-    ) {
-
-        select.value =
-            current;
-
+    if (categories.includes(current)) {
+        select.value = current;
     }
 
 }
 
 
 /* ==========================================
-   AFFICHAGE
+   AFFICHAGE PRODUITS
 ========================================== */
 
 function renderProducts() {
@@ -2182,18 +1903,14 @@ function renderProducts() {
 
     const search =
         document
-            .getElementById(
-                "search"
-            )
+            .getElementById("search")
             .value
             .trim()
             .toLowerCase();
 
     const category =
         document
-            .getElementById(
-                "category"
-            )
+            .getElementById("category")
             .value;
 
     const filtered =
@@ -2202,20 +1919,17 @@ function renderProducts() {
 
                 const name =
                     String(
-                        product.name ||
-                        ""
+                        product.name || ""
                     ).toLowerCase();
 
                 const description =
                     String(
-                        product.description ||
-                        ""
+                        product.description || ""
                     ).toLowerCase();
 
                 const productCategory =
                     String(
-                        product.category ||
-                        ""
+                        product.category || ""
                     );
 
                 return (
@@ -2270,21 +1984,26 @@ function createProductCard(product) {
         product.category ||
         "Produit numérique";
 
+    const productId =
+        String(product.id);
+
     const adminHTML =
         isAdmin
             ? `
                 <div class="actions admin-actions">
 
                     <button
+                        type="button"
                         class="secondary"
-                        onclick="editProduct('${escapeAttribute(product.id)}')"
+                        onclick="editProduct('${escapeJS(productId)}')"
                     >
                         ✏️ Modifier
                     </button>
 
                     <button
+                        type="button"
                         class="danger"
-                        onclick="deleteProduct('${escapeAttribute(product.id)}')"
+                        onclick="deleteProduct('${escapeJS(productId)}')"
                     >
                         🗑️ Supprimer
                     </button>
@@ -2336,10 +2055,15 @@ function createProductCard(product) {
                         ${formatPrice(product.price)}
                     </div>
 
+                    <!--
+                        PLUS DE onclick ICI.
+                        Le clic est géré par le JavaScript.
+                    -->
+
                     <button
                         type="button"
-                        class="primary"
-                        onclick="showProduct('${escapeAttribute(product.id)}')"
+                        class="primary discover-product-button"
+                        data-product-id="${escapeAttribute(productId)}"
                     >
                         Découvrir
                     </button>
@@ -2362,6 +2086,11 @@ function createProductCard(product) {
 
 function showProduct(id) {
 
+    console.log(
+        "showProduct() appelé avec :",
+        id
+    );
+
     const product =
         products.find(
             p =>
@@ -2370,6 +2099,13 @@ function showProduct(id) {
         );
 
     if (!product) {
+
+        console.error(
+            "Produit introuvable. ID :",
+            id,
+            "Produits :",
+            products
+        );
 
         showStatus(
             "Produit introuvable.",
@@ -2390,14 +2126,29 @@ function showProduct(id) {
             "detailContent"
         );
 
-    if (!detailModal || !detailContent) {
+    if (!detailModal) {
 
         console.error(
-            "detailModal ou detailContent introuvable."
+            "ERREUR : detailModal absent."
         );
 
         showStatus(
-            "Erreur : fenêtre du produit introuvable.",
+            "Erreur : fenêtre du produit absente.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if (!detailContent) {
+
+        console.error(
+            "ERREUR : detailContent absent."
+        );
+
+        showStatus(
+            "Erreur : contenu du produit absent.",
             "error"
         );
 
@@ -2415,25 +2166,31 @@ function showProduct(id) {
             ? images[0]
             : placeholderImage();
 
-    const gallery =
-        images.length
-            ? `
-                <div class="gallery">
+    let gallery = "";
 
-                    ${images.map(
+    if (images.length > 0) {
+
+        gallery = `
+            <div class="gallery">
+
+                ${images
+                    .map(
                         image => `
                             <img
                                 src="${escapeAttribute(image)}"
                                 alt="Aperçu"
-                                onclick="changeDetailImage('${escapeAttribute(image)}')"
+                                class="detail-gallery-image"
+                                data-image-url="${escapeAttribute(image)}"
                                 onerror="this.style.display='none'"
                             >
                         `
-                    ).join("")}
+                    )
+                    .join("")}
 
-                </div>
-            `
-            : "";
+            </div>
+        `;
+
+    }
 
     detailContent.innerHTML = `
 
@@ -2467,14 +2224,9 @@ function showProduct(id) {
         ${gallery}
 
         <div class="detail-description">
-
             ${escapeHTML(
                 product.description || ""
-            ).replace(
-                /\n/g,
-                "<br>"
-            )}
-
+            ).replace(/\n/g, "<br>")}
         </div>
 
         <div class="detail-price">
@@ -2486,7 +2238,7 @@ function showProduct(id) {
             <button
                 type="button"
                 class="primary"
-                onclick="addToCart('${escapeAttribute(product.id)}')"
+                onclick="addToCart('${escapeJS(String(product.id))}')"
             >
                 🛒 Ajouter au panier
             </button>
@@ -2503,11 +2255,37 @@ function showProduct(id) {
 
     `;
 
-    openModal(
-        "detailModal"
-    );
+    openModal("detailModal");
 
 }
+
+
+/* ==========================================
+   GALERIE
+========================================== */
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const image =
+            event.target.closest(
+                ".detail-gallery-image"
+            );
+
+        if (!image) {
+            return;
+        }
+
+        const url =
+            image.getAttribute(
+                "data-image-url"
+            );
+
+        changeDetailImage(url);
+
+    }
+);
 
 
 function changeDetailImage(url) {
@@ -2517,10 +2295,8 @@ function changeDetailImage(url) {
             "detailMainImage"
         );
 
-    if (image) {
-
+    if (image && url) {
         image.src = url;
-
     }
 
 }
@@ -2539,7 +2315,16 @@ function addToCart(id) {
                 String(id)
         );
 
-    if (!product) return;
+    if (!product) {
+
+        showStatus(
+            "Produit introuvable.",
+            "error"
+        );
+
+        return;
+
+    }
 
     const existing =
         cart.find(
@@ -2590,7 +2375,6 @@ function removeFromCart(id) {
         );
 
     updateCart();
-
     openCart();
 
 }
@@ -2621,7 +2405,6 @@ function changeCartQuantity(
     }
 
     updateCart();
-
     openCart();
 
 }
@@ -2653,17 +2436,19 @@ function updateCart() {
 
     document.getElementById(
         "cartCount"
-    ).textContent =
-        count;
+    ).textContent = count;
 
     document.getElementById(
         "cartTotal"
     ).textContent =
-        total.toFixed(2) +
-        " €";
+        total.toFixed(2) + " €";
 
 }
 
+
+/* ==========================================
+   OUVRIR PANIER
+========================================== */
 
 function openCart() {
 
@@ -2687,12 +2472,9 @@ function openCart() {
 
         paypalContainer.innerHTML = "";
 
-        paypalButtonsRendered =
-            false;
+        paypalButtonsRendered = false;
 
-        openModal(
-            "cartModal"
-        );
+        openModal("cartModal");
 
         return;
 
@@ -2722,7 +2504,7 @@ function openCart() {
                             <button
                                 type="button"
                                 class="secondary"
-                                onclick="changeCartQuantity('${escapeAttribute(item.id)}', -1)"
+                                onclick="changeCartQuantity('${escapeJS(String(item.id))}', -1)"
                             >
                                 −
                             </button>
@@ -2730,7 +2512,7 @@ function openCart() {
                             <button
                                 type="button"
                                 class="secondary"
-                                onclick="changeCartQuantity('${escapeAttribute(item.id)}', 1)"
+                                onclick="changeCartQuantity('${escapeJS(String(item.id))}', 1)"
                             >
                                 +
                             </button>
@@ -2738,7 +2520,7 @@ function openCart() {
                             <button
                                 type="button"
                                 class="danger"
-                                onclick="removeFromCart('${escapeAttribute(item.id)}')"
+                                onclick="removeFromCart('${escapeJS(String(item.id))}')"
                             >
                                 Supprimer
                             </button>
@@ -2746,7 +2528,6 @@ function openCart() {
                         </div>
 
                     </div>
-
                 `
             )
             .join("");
@@ -2782,28 +2563,26 @@ function openCart() {
             font-size:13px;
             margin-bottom:15px;
         ">
-            💳 Le paiement peut être effectué
-            via PayPal.
+            💳 Le paiement peut être effectué via PayPal.
         </p>
 
     `;
 
-    openModal(
-        "cartModal"
-    );
+    openModal("cartModal");
 
     /*
-       On affiche PayPal automatiquement
-       après ouverture du panier.
+        On repart d'un conteneur propre
+        avant de recréer PayPal.
     */
+
+    paypalContainer.innerHTML = "";
+    paypalButtonsRendered = false;
 
     setTimeout(
         () => {
-
             checkout();
-
         },
-        100
+        150
     );
 
 }
@@ -2816,9 +2595,7 @@ function openCart() {
 async function checkout() {
 
     if (!cart.length) {
-
         return;
-
     }
 
     const container =
@@ -2827,9 +2604,7 @@ async function checkout() {
         );
 
     if (!container) {
-
         return;
-
     }
 
     if (
@@ -2847,17 +2622,10 @@ async function checkout() {
     }
 
     if (paypalButtonsRendered) {
-
         return;
-
     }
 
     container.innerHTML = "";
-
-    showStatus(
-        "💳 Chargement de PayPal...",
-        "success"
-    );
 
     try {
 
@@ -2871,11 +2639,10 @@ async function checkout() {
                 },
 
                 createOrder:
-                    async function () {
+                    async function() {
 
                         const {
-                            data:
-                                sessionData
+                            data: sessionData
                         } =
                             await supabaseClient
                                 .auth
@@ -2891,7 +2658,6 @@ async function checkout() {
                                 item => ({
                                     product_id:
                                         item.id,
-
                                     quantity:
                                         item.quantity
                                 })
@@ -2919,9 +2685,7 @@ async function checkout() {
                                 `${SUPABASE_URL}/functions/v1/paypal-create-order`,
                                 {
                                     method: "POST",
-
                                     headers,
-
                                     body:
                                         JSON.stringify({
                                             items
@@ -2933,11 +2697,6 @@ async function checkout() {
                             await response.json();
 
                         if (!response.ok) {
-
-                            console.error(
-                                "paypal-create-order:",
-                                result
-                            );
 
                             throw new Error(
                                 result.error ||
@@ -2971,8 +2730,7 @@ async function checkout() {
                         try {
 
                             const {
-                                data:
-                                    sessionData
+                                data: sessionData
                             } =
                                 await supabaseClient
                                     .auth
@@ -3004,19 +2762,13 @@ async function checkout() {
                                 await fetch(
                                     `${SUPABASE_URL}/functions/v1/paypal-capture-order`,
                                     {
-
                                         method: "POST",
-
                                         headers,
-
                                         body:
                                             JSON.stringify({
-
                                                 paypal_order_id:
                                                     data.orderID
-
                                             })
-
                                     }
                                 );
 
@@ -3024,11 +2776,6 @@ async function checkout() {
                                 await response.json();
 
                             if (!response.ok) {
-
-                                console.error(
-                                    "paypal-capture-order:",
-                                    result
-                                );
 
                                 throw new Error(
                                     result.error ||
@@ -3049,15 +2796,11 @@ async function checkout() {
 
                             updateCart();
 
-                            paypalButtonsRendered =
-                                false;
+                            paypalButtonsRendered = false;
 
-                            container.innerHTML =
-                                "";
+                            container.innerHTML = "";
 
-                            closeModal(
-                                "cartModal"
-                            );
+                            closeModal("cartModal");
 
                             showStatus(
                                 "✅ Paiement confirmé ! Merci pour ta commande.",
@@ -3067,9 +2810,7 @@ async function checkout() {
                         }
                         catch (error) {
 
-                            console.error(
-                                error
-                            );
+                            console.error(error);
 
                             showStatus(
                                 "❌ " +
@@ -3111,9 +2852,7 @@ async function checkout() {
 
             });
 
-        if (
-            !buttons.isEligible()
-        ) {
+        if (!buttons.isEligible()) {
 
             throw new Error(
                 "Les boutons PayPal ne sont pas disponibles."
@@ -3125,13 +2864,7 @@ async function checkout() {
             "#paypal-button-container"
         );
 
-        paypalButtonsRendered =
-            true;
-
-        showStatus(
-            "💳 Choisis ton mode de paiement.",
-            "success"
-        );
+        paypalButtonsRendered = true;
 
     }
     catch (error) {
@@ -3141,11 +2874,9 @@ async function checkout() {
             error
         );
 
-        paypalButtonsRendered =
-            false;
+        paypalButtonsRendered = false;
 
-        container.innerHTML =
-            "";
+        container.innerHTML = "";
 
         showStatus(
             "❌ " +
@@ -3208,9 +2939,7 @@ function openProductForm() {
         "productFiles"
     ).value = "";
 
-    openModal(
-        "productModal"
-    );
+    openModal("productModal");
 
 }
 
@@ -3284,9 +3013,7 @@ function editProduct(id) {
         "productFiles"
     ).value = "";
 
-    openModal(
-        "productModal"
-    );
+    openModal("productModal");
 
 }
 
@@ -3335,9 +3062,7 @@ async function uploadFile(
             );
 
     if (error) {
-
         throw error;
-
     }
 
     if (
@@ -3356,7 +3081,6 @@ async function uploadFile(
         return {
             url:
                 data.publicUrl,
-
             path
         };
 
@@ -3390,33 +3114,25 @@ async function saveProduct() {
 
     const id =
         document
-            .getElementById(
-                "productId"
-            )
+            .getElementById("productId")
             .value
             .trim();
 
     const name =
         document
-            .getElementById(
-                "productName"
-            )
+            .getElementById("productName")
             .value
             .trim();
 
     const description =
         document
-            .getElementById(
-                "productDescription"
-            )
+            .getElementById("productDescription")
             .value
             .trim();
 
     const priceValue =
         document
-            .getElementById(
-                "productPrice"
-            )
+            .getElementById("productPrice")
             .value;
 
     const price =
@@ -3424,9 +3140,7 @@ async function saveProduct() {
 
     const category =
         document
-            .getElementById(
-                "productCategory"
-            )
+            .getElementById("productCategory")
             .value
             .trim();
 
@@ -3470,18 +3184,14 @@ async function saveProduct() {
     const imageFiles =
         Array.from(
             document
-                .getElementById(
-                    "productImages"
-                )
+                .getElementById("productImages")
                 .files
         );
 
     const digitalFiles =
         Array.from(
             document
-                .getElementById(
-                    "productFiles"
-                )
+                .getElementById("productFiles")
                 .files
         );
 
@@ -3493,14 +3203,11 @@ async function saveProduct() {
     savingProduct = true;
 
     button.disabled = true;
-
-    button.textContent =
-        "Enregistrement...";
+    button.textContent = "Enregistrement...";
 
     try {
 
         let images = [];
-
         let files = [];
 
         if (id) {
@@ -3513,16 +3220,12 @@ async function saveProduct() {
                 );
 
             images =
-                Array.isArray(
-                    oldProduct?.images
-                )
+                Array.isArray(oldProduct?.images)
                     ? [...oldProduct.images]
                     : [];
 
             files =
-                Array.isArray(
-                    oldProduct?.files
-                )
+                Array.isArray(oldProduct?.files)
                     ? [...oldProduct.files]
                     : [];
 
@@ -3531,7 +3234,6 @@ async function saveProduct() {
         const folder =
             id ||
             crypto.randomUUID();
-
 
         for (
             const file of imageFiles
@@ -3549,7 +3251,6 @@ async function saveProduct() {
             );
 
         }
-
 
         for (
             const file of digitalFiles
@@ -3580,27 +3281,19 @@ async function saveProduct() {
 
         }
 
-
         const productData = {
 
             name,
-
             description,
-
             price,
-
             category,
-
             images,
-
             files,
 
             updated_at:
-                new Date()
-                    .toISOString()
+                new Date().toISOString()
 
         };
-
 
         if (id) {
 
@@ -3613,9 +3306,7 @@ async function saveProduct() {
                     .eq("id", id);
 
             if (error) {
-
                 throw error;
-
             }
 
             showStatus(
@@ -3634,9 +3325,7 @@ async function saveProduct() {
                     .insert(productData);
 
             if (error) {
-
                 throw error;
-
             }
 
             showStatus(
@@ -3646,9 +3335,7 @@ async function saveProduct() {
 
         }
 
-        closeModal(
-            "productModal"
-        );
+        closeModal("productModal");
 
         await loadProducts();
 
@@ -3669,9 +3356,7 @@ async function saveProduct() {
         savingProduct = false;
 
         button.disabled = false;
-
-        button.textContent =
-            "💾 Enregistrer";
+        button.textContent = "💾 Enregistrer";
 
     }
 
@@ -3711,9 +3396,7 @@ async function deleteProduct(id) {
             `Supprimer "${product.name}" ?`
         )
     ) {
-
         return;
-
     }
 
     deletingProduct = true;
@@ -3731,9 +3414,7 @@ async function deleteProduct(id) {
                 .select();
 
         if (error) {
-
             throw error;
-
         }
 
         if (!data || !data.length) {
@@ -3752,7 +3433,6 @@ async function deleteProduct(id) {
             );
 
         updateCategories();
-
         renderProducts();
 
         showStatus(
@@ -3790,13 +3470,18 @@ function openModal(id) {
     const modal =
         document.getElementById(id);
 
-    if (modal) {
+    if (!modal) {
 
-        modal.classList.add(
-            "active"
+        console.error(
+            "Modal introuvable :",
+            id
         );
 
+        return;
+
     }
+
+    modal.classList.add("active");
 
 }
 
@@ -3807,11 +3492,7 @@ function closeModal(id) {
         document.getElementById(id);
 
     if (modal) {
-
-        modal.classList.remove(
-            "active"
-        );
-
+        modal.classList.remove("active");
     }
 
 }
@@ -3825,24 +3506,23 @@ function openLogin() {
     ) {
 
         document
-            .getElementById(
-                "adminPanel"
-            )
+            .getElementById("adminPanel")
             .scrollIntoView({
-                behavior:
-                    "smooth"
+                behavior: "smooth"
             });
 
         return;
 
     }
 
-    openModal(
-        "loginModal"
-    );
+    openModal("loginModal");
 
 }
 
+
+/* ==========================================
+   FERMETURE MODALS
+========================================== */
 
 document.addEventListener(
     "click",
@@ -3869,8 +3549,7 @@ document.addEventListener(
     event => {
 
         if (
-            event.key ===
-            "Escape"
+            event.key === "Escape"
         ) {
 
             document
@@ -3971,31 +3650,28 @@ function placeholderImage() {
 function escapeHTML(value) {
 
     return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+}
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
+/*
+   Pour les valeurs utilisées dans
+   des attributs JavaScript.
+*/
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
+function escapeJS(value) {
 
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    return String(value)
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"')
+        .replace(/\r/g, "\\r")
+        .replace(/\n/g, "\\n");
 
 }
 
