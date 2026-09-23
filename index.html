@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -446,7 +445,6 @@ footer {
 
 </header>
 
-
 <section class="hero">
 
     <h1>Bienvenue sur Nexora</h1>
@@ -456,7 +454,6 @@ footer {
     </p>
 
 </section>
-
 
 <section class="controls">
 
@@ -474,7 +471,6 @@ footer {
     </select>
 
 </section>
-
 
 <section id="adminPanel" class="admin">
 
@@ -508,7 +504,6 @@ footer {
 
 </section>
 
-
 <main id="products" class="products">
 
     <div class="loading">
@@ -517,11 +512,9 @@ footer {
 
 </main>
 
-
 <button class="cart-button" onclick="openCart()">
     🛒 <span id="cartTotal">0.00 €</span>
 </button>
-
 
 <footer>
 
@@ -531,10 +524,7 @@ footer {
 
 </footer>
 
-
-<!-- =========================
-     LOGIN
-========================= -->
+<!-- LOGIN -->
 
 <div id="loginModal" class="modal">
 
@@ -591,10 +581,7 @@ footer {
 
 </div>
 
-
-<!-- =========================
-     PRODUIT
-========================= -->
+<!-- PRODUIT -->
 
 <div id="productModal" class="modal">
 
@@ -712,10 +699,7 @@ footer {
 
 </div>
 
-
-<!-- =========================
-     DETAIL
-========================= -->
+<!-- DETAIL -->
 
 <div id="detailModal" class="modal">
 
@@ -736,10 +720,7 @@ footer {
 
 </div>
 
-
-<!-- =========================
-     PANIER
-========================= -->
+<!-- PANIER -->
 
 <div id="cartModal" class="modal">
 
@@ -769,7 +750,6 @@ footer {
 
 </div>
 
-
 <script>
 
 /* =====================================================
@@ -781,7 +761,6 @@ const SUPABASE_URL =
 
 const SUPABASE_ANON_KEY =
     "sb_publishable_f1eSE1egBbwf1keuk0Qlyg_fmKgquq7";
-
 
 const supabaseClient =
     window.supabase.createClient(
@@ -885,7 +864,6 @@ async function checkUser() {
                 .auth
                 .getSession();
 
-
         if (error) {
 
             console.error(
@@ -933,7 +911,6 @@ async function login() {
             .getElementById("adminPassword")
             .value;
 
-
     if (!email || !password) {
 
         showStatus(
@@ -944,7 +921,6 @@ async function login() {
         return;
     }
 
-
     const button =
         document.getElementById(
             "loginButton"
@@ -952,7 +928,6 @@ async function login() {
 
     button.disabled = true;
     button.textContent = "Connexion...";
-
 
     try {
 
@@ -967,22 +942,18 @@ async function login() {
                     password
                 });
 
-
         if (error) {
 
             throw error;
 
         }
 
-
         currentUser =
             data.user;
-
 
         document.getElementById(
             "adminPassword"
         ).value = "";
-
 
         closeModal(
             "loginModal"
@@ -991,7 +962,6 @@ async function login() {
         updateAdmin();
 
         renderProducts();
-
 
         showStatus(
             "✅ Connexion réussie.",
@@ -1034,20 +1004,17 @@ async function logout() {
                 .auth
                 .signOut();
 
-
         if (error) {
 
             throw error;
 
         }
 
-
         currentUser = null;
 
         updateAdmin();
 
         renderProducts();
-
 
         showStatus(
             "Déconnexion réussie.",
@@ -1105,7 +1072,6 @@ function updateAdmin() {
             "adminUser"
         );
 
-
     if (currentUser) {
 
         panel.classList.add("active");
@@ -1142,13 +1108,11 @@ async function loadProducts() {
             "products"
         );
 
-
     container.innerHTML = `
         <div class="loading">
             Chargement des produits...
         </div>
     `;
-
 
     try {
 
@@ -1166,19 +1130,16 @@ async function loadProducts() {
                     }
                 );
 
-
         if (error) {
 
             throw error;
 
         }
 
-
         products =
             Array.isArray(data)
                 ? data
                 : [];
-
 
         updateCategories();
 
@@ -1191,7 +1152,6 @@ async function loadProducts() {
             "Erreur produits :",
             error
         );
-
 
         container.innerHTML = `
             <div class="error-box">
@@ -1219,10 +1179,8 @@ function updateCategories() {
             "category"
         );
 
-
     const current =
         select.value;
-
 
     const categories =
         [
@@ -1244,13 +1202,11 @@ function updateCategories() {
                     )
         );
 
-
     select.innerHTML = `
         <option value="">
             Toutes les catégories
         </option>
     `;
-
 
     categories.forEach(
         category => {
@@ -1272,7 +1228,6 @@ function updateCategories() {
 
         }
     );
-
 
     if (
         categories.includes(current)
@@ -1296,7 +1251,6 @@ function renderProducts() {
             "products"
         );
 
-
     const search =
         document
             .getElementById("search")
@@ -1304,12 +1258,10 @@ function renderProducts() {
             .trim()
             .toLowerCase();
 
-
     const category =
         document
             .getElementById("category")
             .value;
-
 
     const filtered =
         products.filter(
@@ -1320,29 +1272,24 @@ function renderProducts() {
                         product.name || ""
                     ).toLowerCase();
 
-
                 const description =
                     String(
                         product.description || ""
                     ).toLowerCase();
-
 
                 const categoryName =
                     String(
                         product.category || ""
                     );
 
-
                 const searchOK =
                     !search ||
                     name.includes(search) ||
                     description.includes(search);
 
-
                 const categoryOK =
                     !category ||
                     categoryName === category;
-
 
                 return (
                     searchOK &&
@@ -1351,7 +1298,6 @@ function renderProducts() {
 
             }
         );
-
 
     if (!filtered.length) {
 
@@ -1363,7 +1309,6 @@ function renderProducts() {
 
         return;
     }
-
 
     container.innerHTML =
         filtered
@@ -1383,7 +1328,6 @@ function createProductCard(product) {
         product.images.length
             ? product.images[0]
             : placeholderImage();
-
 
     const adminHTML =
         currentUser
@@ -1407,7 +1351,6 @@ function createProductCard(product) {
                 </div>
             `
             : "";
-
 
     return `
         <article class="card">
@@ -1469,6 +1412,7 @@ function createProductCard(product) {
 
 /* =====================================================
    10. UPLOAD
+   CORRIGE POUR LES FICHIERS PRIVES
 ===================================================== */
 
 async function uploadFile(
@@ -1485,7 +1429,6 @@ async function uploadFile(
 
     }
 
-
     const extension =
         file.name.includes(".")
             ? "." +
@@ -1495,17 +1438,14 @@ async function uploadFile(
                   .toLowerCase()
             : "";
 
-
     const filename =
         crypto.randomUUID() +
         extension;
-
 
     const path =
         folder +
         "/" +
         filename;
-
 
     const {
         error
@@ -1525,26 +1465,50 @@ async function uploadFile(
                 }
             );
 
-
     if (error) {
 
         throw error;
 
     }
 
+    /*
+     * Les images sont dans un bucket PUBLIC.
+     * On peut donc utiliser getPublicUrl().
+     */
 
-    const {
-        data
-    } =
-        supabaseClient
-            .storage
-            .from(bucket)
-            .getPublicUrl(path);
+    if (
+        bucket === IMAGE_BUCKET
+    ) {
 
+        const {
+            data
+        } =
+            supabaseClient
+                .storage
+                .from(bucket)
+                .getPublicUrl(path);
+
+        return {
+            url:
+                data.publicUrl,
+
+            path:
+                path
+        };
+
+    }
+
+    /*
+     * Les fichiers numériques sont dans
+     * un bucket PRIVE.
+     *
+     * IMPORTANT :
+     * aucun lien public n'est créé ici.
+     */
 
     return {
-        url: data.publicUrl,
-        path: path
+        path:
+            path
     };
 
 }
@@ -1568,47 +1532,38 @@ function openProductForm() {
         return;
     }
 
-
     document.getElementById(
         "productTitle"
     ).textContent =
         "Ajouter un produit";
 
-
     document.getElementById(
         "productId"
     ).value = "";
-
 
     document.getElementById(
         "productName"
     ).value = "";
 
-
     document.getElementById(
         "productDescription"
     ).value = "";
-
 
     document.getElementById(
         "productPrice"
     ).value = "";
 
-
     document.getElementById(
         "productCategory"
     ).value = "";
-
 
     document.getElementById(
         "productImages"
     ).value = "";
 
-
     document.getElementById(
         "productFiles"
     ).value = "";
-
 
     openModal(
         "productModal"
@@ -1633,14 +1588,12 @@ function editProduct(id) {
         return;
     }
 
-
     const product =
         products.find(
             p =>
                 String(p.id) ===
                 String(id)
         );
-
 
     if (!product) {
 
@@ -1652,52 +1605,43 @@ function editProduct(id) {
         return;
     }
 
-
     document.getElementById(
         "productTitle"
     ).textContent =
         "Modifier le produit";
-
 
     document.getElementById(
         "productId"
     ).value =
         product.id;
 
-
     document.getElementById(
         "productName"
     ).value =
         product.name || "";
-
 
     document.getElementById(
         "productDescription"
     ).value =
         product.description || "";
 
-
     document.getElementById(
         "productPrice"
     ).value =
         product.price ?? "";
-
 
     document.getElementById(
         "productCategory"
     ).value =
         product.category || "";
 
-
     document.getElementById(
         "productImages"
     ).value = "";
 
-
     document.getElementById(
         "productFiles"
     ).value = "";
-
 
     openModal(
         "productModal"
@@ -1722,9 +1666,7 @@ async function saveProduct() {
         return;
     }
 
-
     if (savingProduct) return;
-
 
     const id =
         document
@@ -1732,13 +1674,11 @@ async function saveProduct() {
             .value
             .trim();
 
-
     const name =
         document
             .getElementById("productName")
             .value
             .trim();
-
 
     const description =
         document
@@ -1746,23 +1686,19 @@ async function saveProduct() {
             .value
             .trim();
 
-
     const priceValue =
         document
             .getElementById("productPrice")
             .value;
 
-
     const price =
         Number(priceValue);
-
 
     const category =
         document
             .getElementById("productCategory")
             .value
             .trim();
-
 
     if (!name) {
 
@@ -1773,7 +1709,6 @@ async function saveProduct() {
 
         return;
     }
-
 
     if (
         priceValue === "" ||
@@ -1789,7 +1724,6 @@ async function saveProduct() {
         return;
     }
 
-
     if (!category) {
 
         showStatus(
@@ -1800,14 +1734,12 @@ async function saveProduct() {
         return;
     }
 
-
     const imageFiles =
         Array.from(
             document
                 .getElementById("productImages")
                 .files
         );
-
 
     const digitalFiles =
         Array.from(
@@ -1816,24 +1748,20 @@ async function saveProduct() {
                 .files
         );
 
-
     const button =
         document.getElementById(
             "saveProductButton"
         );
-
 
     savingProduct = true;
 
     button.disabled = true;
     button.textContent = "Enregistrement...";
 
-
     try {
 
         let images = [];
         let files = [];
-
 
         if (id) {
 
@@ -1844,12 +1772,10 @@ async function saveProduct() {
                         String(id)
                 );
 
-
             images =
                 Array.isArray(oldProduct?.images)
                     ? [...oldProduct.images]
                     : [];
-
 
             files =
                 Array.isArray(oldProduct?.files)
@@ -1858,20 +1784,14 @@ async function saveProduct() {
 
         }
 
-
-        /*
-         * Pour un nouveau produit,
-         * on crée un dossier stable.
-         */
-
         const folder =
             id ||
             crypto.randomUUID();
 
 
-        /*
-         * Images
-         */
+        /* =========================
+           IMAGES
+        ========================= */
 
         for (
             const file
@@ -1885,7 +1805,6 @@ async function saveProduct() {
                     folder
                 );
 
-
             images.push(
                 uploaded.url
             );
@@ -1893,9 +1812,9 @@ async function saveProduct() {
         }
 
 
-        /*
-         * Fichiers numériques
-         */
+        /* =========================
+           FICHIERS NUMERIQUES PRIVES
+        ========================= */
 
         for (
             const file
@@ -1909,14 +1828,16 @@ async function saveProduct() {
                     folder
                 );
 
+            /*
+             * IMPORTANT :
+             * On ne sauvegarde PAS de URL publique.
+             * Seulement le chemin privé du fichier.
+             */
 
             files.push({
 
                 name:
                     file.name,
-
-                url:
-                    uploaded.url,
 
                 path:
                     uploaded.path,
@@ -1962,13 +1883,11 @@ async function saveProduct() {
                     .update(productData)
                     .eq("id", id);
 
-
             if (error) {
 
                 throw error;
 
             }
-
 
             showStatus(
                 "✅ Produit modifié.",
@@ -1986,13 +1905,11 @@ async function saveProduct() {
                         productData
                     );
 
-
             if (error) {
 
                 throw error;
 
             }
-
 
             showStatus(
                 "✅ Produit ajouté.",
@@ -2001,11 +1918,9 @@ async function saveProduct() {
 
         }
 
-
         closeModal(
             "productModal"
         );
-
 
         await loadProducts();
 
@@ -2016,7 +1931,6 @@ async function saveProduct() {
             "Erreur sauvegarde :",
             error
         );
-
 
         showStatus(
             "❌ " +
@@ -2055,9 +1969,7 @@ async function deleteProduct(id) {
         return;
     }
 
-
     if (deletingProduct) return;
-
 
     const product =
         products.find(
@@ -2065,7 +1977,6 @@ async function deleteProduct(id) {
                 String(p.id) ===
                 String(id)
         );
-
 
     if (!product) {
 
@@ -2077,25 +1988,16 @@ async function deleteProduct(id) {
         return;
     }
 
-
     const confirmation =
         window.confirm(
             `Supprimer "${product.name}" ?\n\nCette action supprimera le produit de la base de données.`
         );
 
-
     if (!confirmation) return;
-
 
     deletingProduct = true;
 
-
     try {
-
-        /*
-         * ETAPE 1
-         * Vérification de la session.
-         */
 
         const {
             data: sessionData,
@@ -2105,13 +2007,11 @@ async function deleteProduct(id) {
                 .auth
                 .getSession();
 
-
         if (sessionError) {
 
             throw sessionError;
 
         }
-
 
         if (!sessionData.session) {
 
@@ -2120,15 +2020,6 @@ async function deleteProduct(id) {
             );
 
         }
-
-
-        /*
-         * ETAPE 2
-         * Suppression dans la table products.
-         *
-         * C'est cette requête qui dépend
-         * des politiques RLS Supabase.
-         */
 
         const {
             data,
@@ -2139,7 +2030,6 @@ async function deleteProduct(id) {
                 .delete()
                 .eq("id", id)
                 .select();
-
 
         if (error) {
 
@@ -2152,13 +2042,6 @@ async function deleteProduct(id) {
 
         }
 
-
-        /*
-         * Si aucune ligne n'a été supprimée,
-         * cela indique généralement une RLS
-         * qui bloque silencieusement l'opération.
-         */
-
         if (
             !data ||
             data.length === 0
@@ -2169,15 +2052,6 @@ async function deleteProduct(id) {
             );
 
         }
-
-
-        /*
-         * ETAPE 3
-         * Nettoyage des fichiers Storage.
-         *
-         * On ne bloque pas la suppression du produit
-         * si le nettoyage Storage échoue.
-         */
 
         try {
 
@@ -2195,12 +2069,6 @@ async function deleteProduct(id) {
 
         }
 
-
-        /*
-         * ETAPE 4
-         * Mise à jour locale.
-         */
-
         products =
             products.filter(
                 p =>
@@ -2208,11 +2076,9 @@ async function deleteProduct(id) {
                     String(id)
             );
 
-
         updateCategories();
 
         renderProducts();
-
 
         showStatus(
             "✅ Produit supprimé avec succès.",
@@ -2226,7 +2092,6 @@ async function deleteProduct(id) {
             "ERREUR SUPPRESSION:",
             error
         );
-
 
         showStatus(
             "❌ Suppression impossible : " +
@@ -2250,18 +2115,11 @@ async function deleteProduct(id) {
 
 async function deleteProductFiles(product) {
 
-    /*
-     * Si les anciens produits contiennent
-     * seulement des URLs, on essaie de récupérer
-     * le chemin depuis l'URL.
-     */
-
     const imagePaths =
         extractStoragePaths(
             product.images,
             IMAGE_BUCKET
         );
-
 
     const filePaths =
         Array.isArray(product.files)
@@ -2276,7 +2134,6 @@ async function deleteProductFiles(product) {
                 .filter(Boolean)
             : [];
 
-
     if (imagePaths.length) {
 
         const {
@@ -2289,7 +2146,6 @@ async function deleteProductFiles(product) {
                     imagePaths
                 );
 
-
         if (error) {
 
             throw error;
@@ -2297,7 +2153,6 @@ async function deleteProductFiles(product) {
         }
 
     }
-
 
     if (filePaths.length) {
 
@@ -2310,7 +2165,6 @@ async function deleteProductFiles(product) {
                 .remove(
                     filePaths
                 );
-
 
         if (error) {
 
@@ -2334,7 +2188,6 @@ function extractStoragePaths(
 
     }
 
-
     return values
         .map(
             value => {
@@ -2348,21 +2201,17 @@ function extractStoragePaths(
 
                 }
 
-
                 const marker =
                     `/storage/v1/object/public/${bucket}/`;
 
-
                 const index =
                     value.indexOf(marker);
-
 
                 if (index === -1) {
 
                     return null;
 
                 }
-
 
                 return decodeURIComponent(
                     value.substring(
@@ -2391,7 +2240,6 @@ function showProduct(id) {
                 String(id)
         );
 
-
     if (!product) {
 
         showStatus(
@@ -2402,21 +2250,17 @@ function showProduct(id) {
         return;
     }
 
-
     const images =
         Array.isArray(product.images)
             ? product.images
             : [];
-
 
     const mainImage =
         images.length
             ? images[0]
             : placeholderImage();
 
-
     let galleryHTML = "";
-
 
     if (images.length) {
 
@@ -2441,7 +2285,6 @@ function showProduct(id) {
         `;
 
     }
-
 
     document.getElementById(
         "detailContent"
@@ -2485,7 +2328,6 @@ function showProduct(id) {
 
     `;
 
-
     openModal(
         "detailModal"
     );
@@ -2499,7 +2341,6 @@ function changeDetailImage(url) {
         document.getElementById(
             "detailMainImage"
         );
-
 
     if (image) {
 
@@ -2523,9 +2364,7 @@ function addToCart(id) {
                 String(id)
         );
 
-
     if (!product) return;
-
 
     const existing =
         cart.find(
@@ -2533,7 +2372,6 @@ function addToCart(id) {
                 String(item.id) ===
                 String(id)
         );
-
 
     if (existing) {
 
@@ -2559,9 +2397,7 @@ function addToCart(id) {
 
     }
 
-
     updateCart();
-
 
     showStatus(
         `${product.name} ajouté au panier.`,
@@ -2579,7 +2415,6 @@ function removeFromCart(id) {
                 String(item.id) !==
                 String(id)
         );
-
 
     updateCart();
 
@@ -2600,12 +2435,9 @@ function changeCartQuantity(
                 String(id)
         );
 
-
     if (!item) return;
 
-
     item.quantity += amount;
-
 
     if (item.quantity <= 0) {
 
@@ -2617,7 +2449,6 @@ function changeCartQuantity(
             );
 
     }
-
 
     updateCart();
 
@@ -2636,7 +2467,6 @@ function updateCart() {
             0
         );
 
-
     const total =
         cart.reduce(
             (total, item) =>
@@ -2646,12 +2476,10 @@ function updateCart() {
             0
         );
 
-
     document.getElementById(
         "cartCount"
     ).textContent =
         count;
-
 
     document.getElementById(
         "cartTotal"
@@ -2669,7 +2497,6 @@ function openCart() {
             "cartContent"
         );
 
-
     if (!cart.length) {
 
         container.innerHTML = `
@@ -2684,7 +2511,6 @@ function openCart() {
 
         return;
     }
-
 
     container.innerHTML =
         cart
@@ -2738,7 +2564,6 @@ function openCart() {
             )
             .join("");
 
-
     const total =
         cart.reduce(
             (sum, item) =>
@@ -2747,7 +2572,6 @@ function openCart() {
                 item.quantity,
             0
         );
-
 
     container.innerHTML += `
 
@@ -2759,7 +2583,6 @@ function openCart() {
         </h3>
 
     `;
-
 
     openModal(
         "cartModal"
@@ -2784,9 +2607,8 @@ function checkout() {
         return;
     }
 
-
     showStatus(
-        "💳 Le paiement Stripe sera ajouté ensuite.",
+        "💳 Le paiement PayPal sera ajouté à l'étape suivante.",
         "success"
     );
 
@@ -2802,7 +2624,6 @@ function openModal(id) {
     const modal =
         document.getElementById(id);
 
-
     if (modal) {
 
         modal.classList.add("active");
@@ -2816,7 +2637,6 @@ function closeModal(id) {
 
     const modal =
         document.getElementById(id);
-
 
     if (modal) {
 
@@ -2842,17 +2662,12 @@ function openLogin() {
         return;
     }
 
-
     openModal(
         "loginModal"
     );
 
 }
 
-
-/*
- * Cliquer sur le fond ferme la fenêtre.
- */
 
 document.addEventListener(
     "click",
@@ -2874,16 +2689,11 @@ document.addEventListener(
 );
 
 
-/*
- * ESC ferme les modales.
- */
-
 document.addEventListener(
     "keydown",
     event => {
 
         if (event.key !== "Escape") return;
-
 
         document
             .querySelectorAll(".modal.active")
@@ -2906,7 +2716,6 @@ function formatPrice(value) {
 
     const number =
         Number(value);
-
 
     return (
         Number.isFinite(number)
@@ -2999,7 +2808,6 @@ function getErrorMessage(error) {
 
     }
 
-
     if (
         error.code === "42501"
     ) {
@@ -3011,7 +2819,6 @@ function getErrorMessage(error) {
 
     }
 
-
     if (
         error.code === "PGRST116"
     ) {
@@ -3022,7 +2829,6 @@ function getErrorMessage(error) {
 
     }
 
-
     if (
         error.message
     ) {
@@ -3030,7 +2836,6 @@ function getErrorMessage(error) {
         return error.message;
 
     }
-
 
     return String(error);
 
@@ -3040,5 +2845,3 @@ function getErrorMessage(error) {
 
 </body>
 </html>
-```
-
