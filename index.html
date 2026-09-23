@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Nexora — Marketplace</title>
+<title>Nexora — Marketplace numérique</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -19,201 +18,551 @@
     padding: 0;
 }
 
+:root {
+    --bg: #f7f8fc;
+    --card: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --primary: #635bff;
+    --primary-dark: #5148e8;
+    --border: #e5e7eb;
+    --success: #10b981;
+    --danger: #ef4444;
+    --dark: #111827;
+    --radius: 22px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background: #f5f7fb;
-    color: #111827;
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(99,91,255,.10),
+            transparent 30%
+        ),
+        var(--bg);
+
+    color: var(--text);
+    line-height: 1.6;
 }
 
 button,
 input,
 textarea,
 select {
-    font-family: inherit;
+    font: inherit;
 }
 
 button {
     border: 0;
-    border-radius: 10px;
-    padding: 11px 16px;
     cursor: pointer;
-    font-weight: bold;
 }
 
 button:disabled {
-    opacity: .6;
+    opacity: .55;
     cursor: not-allowed;
 }
 
+/* ================================
+   BOUTONS
+================================ */
+
+.primary,
+.secondary,
+.danger,
+.success {
+    border-radius: 12px;
+    padding: 11px 17px;
+    font-weight: 700;
+    transition:
+        transform .2s,
+        box-shadow .2s,
+        background .2s;
+}
+
 .primary {
-    background: #6366f1;
+    background: var(--primary);
     color: white;
 }
 
+.primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(99,91,255,.25);
+}
+
 .secondary {
-    background: #e5e7eb;
-    color: #111827;
+    background: #eef0f6;
+    color: var(--text);
+}
+
+.secondary:hover {
+    background: #e4e7ef;
 }
 
 .danger {
-    background: #ef4444;
+    background: var(--danger);
     color: white;
 }
 
 .success {
-    background: #10b981;
+    background: var(--success);
     color: white;
 }
 
+/* ================================
+   HEADER
+================================ */
+
 header {
-    background: #111827;
-    color: white;
-    padding: 16px 5%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     position: sticky;
     top: 0;
     z-index: 1000;
+
+    background:
+        rgba(17,24,39,.94);
+
+    backdrop-filter: blur(16px);
+
+    color: white;
+
+    padding:
+        16px
+        max(5%, calc((100% - 1250px) / 2));
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
 }
 
 .logo {
-    font-size: 27px;
-    font-weight: 800;
+    font-size: 29px;
+    font-weight: 900;
+    letter-spacing: -1px;
 }
 
 .logo span {
-    color: #6366f1;
+    color: #7c73ff;
 }
 
 nav {
     display: flex;
-    gap: 10px;
     align-items: center;
+    gap: 10px;
 }
 
-.hero {
-    background: linear-gradient(135deg, #111827, #312e81);
+nav .secondary {
+    background: rgba(255,255,255,.10);
     color: white;
+}
+
+nav .secondary:hover {
+    background: rgba(255,255,255,.17);
+}
+
+/* ================================
+   HERO
+================================ */
+
+.hero {
+    position: relative;
+    overflow: hidden;
+
+    color: white;
+
+    padding:
+        105px 20px
+        115px;
+
     text-align: center;
-    padding: 80px 20px;
+
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(124,115,255,.35),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 80% 30%,
+            rgba(168,85,247,.25),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #0b1020,
+            #17153b 55%,
+            #241b52
+        );
+}
+
+.hero-content {
+    max-width: 900px;
+    margin: auto;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 14px;
+    margin-bottom: 20px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255,255,255,.10);
+
+    border:
+        1px solid rgba(255,255,255,.15);
+
+    color: #e9e7ff;
+
+    font-size: 14px;
+    font-weight: 700;
 }
 
 .hero h1 {
-    font-size: 48px;
-    margin-bottom: 15px;
+    font-size:
+        clamp(40px, 7vw, 72px);
+
+    line-height: 1.03;
+
+    letter-spacing: -3px;
+
+    margin-bottom: 22px;
+}
+
+.hero h1 span {
+    color: #8d86ff;
 }
 
 .hero p {
-    color: #d1d5db;
-    font-size: 18px;
+    max-width: 680px;
+    margin: auto;
+
+    color: #c9cbd8;
+
+    font-size:
+        clamp(17px, 2vw, 20px);
 }
 
-.controls {
-    padding: 25px 5%;
+.hero-stats {
+    margin-top: 38px;
+
     display: flex;
     justify-content: center;
     gap: 12px;
     flex-wrap: wrap;
 }
 
+.hero-stat {
+    padding: 10px 15px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255,255,255,.08);
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    font-size: 14px;
+}
+
+/* ================================
+   CONTROLES
+================================ */
+
+.controls-wrapper {
+    max-width: 1250px;
+    margin: -35px auto 0;
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.controls {
+    background: white;
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 50px rgba(17,24,39,.10);
+
+    border:
+        1px solid rgba(17,24,39,.05);
+
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 .controls input,
 .controls select {
-    padding: 13px;
-    border: 1px solid #d1d5db;
-    border-radius: 10px;
-    font-size: 15px;
-    background: white;
+    border: 1px solid var(--border);
+
+    background: #fafbfe;
+
+    padding: 13px 15px;
+
+    border-radius: 12px;
+
+    outline: none;
+
+    transition:
+        border .2s,
+        box-shadow .2s;
+}
+
+.controls input:focus,
+.controls select:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 4px rgba(99,91,255,.10);
 }
 
 .search {
-    width: 450px;
-    max-width: 100%;
+    flex: 1;
+    min-width: 230px;
 }
 
 .category {
-    width: 220px;
+    min-width: 220px;
 }
+
+/* ================================
+   ADMIN
+================================ */
 
 .admin {
     display: none;
-    background: white;
-    padding: 25px 5%;
-    border-bottom: 1px solid #ddd;
+
+    max-width: 1250px;
+
+    margin:
+        30px auto 0;
+
+    padding:
+        0 20px;
 }
 
 .admin.active {
     display: block;
 }
 
+.admin-inner {
+    background: white;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 20px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 10px 35px rgba(17,24,39,.06);
+}
+
 .admin-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     gap: 15px;
     flex-wrap: wrap;
 }
 
+.admin-title h2 {
+    font-size: 20px;
+}
+
 .admin-user {
-    color: #6b7280;
+    color: var(--muted);
     font-size: 14px;
 }
 
 .admin-buttons {
     display: flex;
     gap: 10px;
-    margin-top: 15px;
+    margin-top: 18px;
     flex-wrap: wrap;
 }
 
+/* ================================
+   PRODUITS
+================================ */
+
+.products-section {
+    max-width: 1250px;
+    margin: auto;
+    padding: 55px 20px 100px;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 20px;
+
+    margin-bottom: 28px;
+}
+
+.section-heading h2 {
+    font-size: 31px;
+    letter-spacing: -1px;
+}
+
+.section-heading p {
+    color: var(--muted);
+    margin-top: 4px;
+}
+
 .products {
-    padding: 20px 5% 100px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 25px;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(260px, 1fr)
+        );
+
+    gap: 24px;
 }
 
 .card {
-    background: white;
-    border-radius: 18px;
+    position: relative;
+
+    background: var(--card);
+
+    border-radius: var(--radius);
+
     overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0,0,0,.08);
-    transition: transform .2s, box-shadow .2s;
+
+    border:
+        1px solid rgba(17,24,39,.06);
+
+    box-shadow:
+        0 8px 30px rgba(17,24,39,.06);
+
+    transition:
+        transform .25s,
+        box-shadow .25s;
 }
 
 .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0,0,0,.12);
+    transform: translateY(-7px);
+
+    box-shadow:
+        0 18px 45px rgba(17,24,39,.12);
+}
+
+.card-image-wrapper {
+    position: relative;
+    overflow: hidden;
 }
 
 .card-image {
     width: 100%;
-    height: 210px;
+    height: 225px;
+
     object-fit: cover;
-    background: #e5e7eb;
+
     display: block;
+
+    background: #eef0f5;
+
+    transition:
+        transform .45s;
+}
+
+.card:hover .card-image {
+    transform: scale(1.04);
+}
+
+.category-badge {
+    position: absolute;
+
+    left: 14px;
+    top: 14px;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(17,24,39,.78);
+
+    backdrop-filter: blur(8px);
+
+    color: white;
+
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .card-content {
-    padding: 18px;
+    padding: 20px;
 }
 
 .card h3 {
-    margin-bottom: 8px;
+    font-size: 19px;
+    margin-bottom: 7px;
+
+    letter-spacing: -.3px;
 }
 
 .card-description {
-    color: #6b7280;
-    min-height: 45px;
-    margin-bottom: 15px;
-    line-height: 1.5;
+    color: var(--muted);
+
+    min-height: 49px;
+
+    font-size: 14px;
+
+    line-height: 1.55;
+
+    margin-bottom: 18px;
+}
+
+.card-bottom {
+    display: flex;
+
+    align-items: end;
+
+    justify-content: space-between;
+
+    gap: 12px;
 }
 
 .price {
-    color: #6366f1;
+    color: var(--primary);
+
     font-size: 23px;
-    font-weight: bold;
-    margin-bottom: 15px;
+
+    font-weight: 900;
+
+    letter-spacing: -.5px;
 }
 
 .actions {
@@ -232,9 +581,12 @@ nav {
 .empty,
 .loading {
     grid-column: 1 / -1;
+
     text-align: center;
-    padding: 70px 20px;
-    color: #6b7280;
+
+    padding: 80px 20px;
+
+    color: var(--muted);
 }
 
 .loading {
@@ -243,61 +595,141 @@ nav {
 
 .error-box {
     grid-column: 1 / -1;
+
     padding: 25px;
+
     background: #fee2e2;
+
     color: #991b1b;
+
     border-radius: 15px;
 }
 
+/* ================================
+   PANIER FLOTTANT
+================================ */
+
 .cart-button {
     position: fixed;
-    right: 20px;
-    bottom: 20px;
+
+    right: 22px;
+    bottom: 22px;
+
     z-index: 900;
-    background: #6366f1;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #635bff,
+            #7c3aed
+        );
+
     color: white;
-    padding: 15px 22px;
-    border-radius: 50px;
-    box-shadow: 0 8px 25px rgba(0,0,0,.25);
+
+    padding:
+        14px 20px;
+
+    border-radius: 999px;
+
+    box-shadow:
+        0 12px 30px rgba(99,91,255,.35);
+
+    font-weight: 800;
+
+    transition:
+        transform .2s;
 }
+
+.cart-button:hover {
+    transform: translateY(-3px);
+}
+
+/* ================================
+   MODALS
+================================ */
 
 .modal {
     display: none;
+
     position: fixed;
+
     inset: 0;
-    background: rgba(0,0,0,.65);
+
+    background:
+        rgba(3,7,18,.72);
+
+    backdrop-filter: blur(7px);
+
     z-index: 2000;
+
     padding: 20px;
+
     overflow-y: auto;
 }
 
 .modal.active {
     display: flex;
+
     justify-content: center;
     align-items: center;
 }
 
 .modal-box {
-    background: white;
-    border-radius: 18px;
     width: 100%;
-    max-width: 650px;
-    padding: 25px;
+    max-width: 700px;
+
+    background: white;
+
+    border-radius: 24px;
+
+    padding: 28px;
+
     max-height: 90vh;
+
     overflow-y: auto;
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.25);
+
+    animation:
+        modalIn .2s ease;
+}
+
+@keyframes modalIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+
 }
 
 .modal-box h2 {
     margin-bottom: 20px;
 }
 
+/* ================================
+   FORMULAIRES
+================================ */
+
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 16px;
 }
 
 .form-group label {
     display: block;
-    font-weight: bold;
+
+    font-weight: 800;
+
     margin-bottom: 7px;
 }
 
@@ -305,10 +737,26 @@ nav {
 .form-group textarea,
 .form-group select {
     width: 100%;
-    padding: 13px;
-    border: 1px solid #d1d5db;
-    border-radius: 10px;
-    background: white;
+
+    padding: 13px 14px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 12px;
+
+    background: #fafbfe;
+
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 4px rgba(99,91,255,.10);
 }
 
 .form-group textarea {
@@ -317,62 +765,193 @@ nav {
 
 .help {
     display: block;
+
     margin-top: 6px;
-    color: #6b7280;
+
+    color: var(--muted);
+
     font-size: 13px;
+}
+
+/* ================================
+   DETAIL PRODUIT PREMIUM
+================================ */
+
+.product-detail-header {
+    margin-bottom: 20px;
+}
+
+.product-detail-header h2 {
+    font-size: 31px;
+
+    line-height: 1.15;
+
+    letter-spacing: -1px;
+}
+
+.product-detail-category {
+    display: inline-block;
+
+    margin-bottom: 10px;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background: #efedff;
+
+    color: var(--primary);
+
+    font-size: 12px;
+
+    font-weight: 800;
 }
 
 .detail-image {
     width: 100%;
-    max-height: 400px;
-    object-fit: contain;
-    border-radius: 12px;
+
+    max-height: 430px;
+
+    object-fit: cover;
+
+    border-radius: 18px;
+
     background: #f3f4f6;
 }
 
 .gallery {
     display: flex;
+
     gap: 10px;
+
     overflow-x: auto;
-    margin: 15px 0;
+
+    margin: 14px 0 22px;
 }
 
 .gallery img {
     width: 75px;
     height: 75px;
+
     object-fit: cover;
-    border-radius: 8px;
+
+    border-radius: 10px;
+
     cursor: pointer;
+
     flex-shrink: 0;
+
+    border: 2px solid transparent;
 }
 
+.gallery img:hover {
+    border-color: var(--primary);
+}
+
+.detail-description {
+    color: #4b5563;
+
+    line-height: 1.8;
+
+    margin: 20px 0;
+}
+
+.detail-price {
+    font-size: 31px;
+
+    color: var(--primary);
+
+    font-weight: 900;
+
+    margin-bottom: 18px;
+}
+
+.detail-actions {
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+/* ================================
+   PANIER
+================================ */
+
 .cart-item {
-    border-bottom: 1px solid #ddd;
-    padding: 15px 0;
+    padding: 18px 0;
+
+    border-bottom:
+        1px solid var(--border);
 }
 
 .cart-item:last-child {
     border-bottom: 0;
 }
 
-footer {
-    background: #111827;
-    color: white;
-    text-align: center;
-    padding: 40px 20px;
+.cart-item-name {
+    font-weight: 800;
 }
+
+.cart-item-price {
+    color: var(--muted);
+
+    font-size: 14px;
+
+    margin-top: 3px;
+}
+
+.cart-total {
+    margin:
+        20px 0;
+
+    padding:
+        18px;
+
+    border-radius: 15px;
+
+    background: #f6f7fb;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+.cart-total strong {
+    font-size: 24px;
+
+    color: var(--primary);
+}
+
+/* ================================
+   STATUS
+================================ */
 
 .status {
     display: none;
+
     position: fixed;
-    top: 80px;
+
+    top: 85px;
     right: 20px;
+
     z-index: 3000;
-    max-width: 400px;
-    padding: 15px 20px;
-    border-radius: 12px;
+
+    max-width: 420px;
+
+    padding:
+        15px 20px;
+
+    border-radius: 14px;
+
     background: white;
-    box-shadow: 0 8px 30px rgba(0,0,0,.2);
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,.18);
+
+    border-left: 5px solid var(--primary);
 }
 
 .status.show {
@@ -381,19 +960,62 @@ footer {
 
 .status.success {
     color: #065f46;
-    border-left: 5px solid #10b981;
+
+    border-left-color:
+        var(--success);
 }
 
 .status.error {
     color: #991b1b;
-    border-left: 5px solid #ef4444;
+
+    border-left-color:
+        var(--danger);
 }
 
-@media(max-width:600px) {
+/* ================================
+   FOOTER
+================================ */
+
+footer {
+    background: #0b1020;
+
+    color: white;
+
+    text-align: center;
+
+    padding:
+        50px 20px;
+}
+
+.footer-logo {
+    font-size: 26px;
+
+    font-weight: 900;
+
+    margin-bottom: 8px;
+}
+
+.footer-logo span {
+    color: #7c73ff;
+}
+
+footer p {
+    color: #9ca3af;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 700px) {
 
     header {
+        padding:
+            14px 18px;
+
         flex-direction: column;
-        gap: 15px;
+
+        gap: 14px;
     }
 
     nav {
@@ -402,25 +1024,57 @@ footer {
     }
 
     .hero {
-        padding: 60px 20px;
+        padding:
+            75px 20px 90px;
     }
 
     .hero h1 {
-        font-size: 35px;
+        letter-spacing: -2px;
+    }
+
+    .controls-wrapper {
+        margin-top: -25px;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .search,
+    .category {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .products-section {
+        padding-top: 40px;
+    }
+
+    .section-heading {
+        display: block;
     }
 
     .products {
         grid-template-columns: 1fr;
     }
 
+    .modal {
+        padding: 10px;
+    }
+
+    .modal-box {
+        padding: 20px;
+        border-radius: 20px;
+    }
+
     .cart-button {
         right: 12px;
         bottom: 12px;
     }
+
 }
 
 </style>
-
 </head>
 
 <body>
@@ -429,431 +1083,467 @@ footer {
 
 <header>
 
-```
-<div class="logo">
-    Nex<span>ora</span>
-</div>
+    <div class="logo">
+        Nex<span>ora</span>
+    </div>
 
-<nav>
+    <nav>
 
-    <button class="secondary" onclick="openCart()">
-        🛒 Panier (<span id="cartCount">0</span>)
-    </button>
+        <button
+            class="secondary"
+            onclick="openCart()"
+        >
+            🛒 Panier
+            (<span id="cartCount">0</span>)
+        </button>
 
-    <!--
-        IMPORTANT :
-        Ce bouton est caché par défaut.
-        Il n'apparaît que si le compte connecté
-        possède role = admin dans profiles.
-    -->
-    <button
-        id="adminButton"
-        class="primary"
-        onclick="openLogin()"
-        style="display:none;"
-    >
-        ⚙️ Admin
-    </button>
+        <button
+            id="adminButton"
+            class="primary"
+            onclick="openLogin()"
+            style="display:none;"
+        >
+            ⚙️ Administration
+        </button>
 
-</nav>
-```
+    </nav>
 
 </header>
 
 <section class="hero">
 
-```
-<h1>Bienvenue sur Nexora</h1>
+    <div class="hero-content">
 
-<p>
-    Découvrez nos meilleurs produits numériques
-</p>
-```
+        <div class="hero-badge">
+            ✨ Marketplace numérique
+        </div>
+
+        <h1>
+            Des créations digitales
+            <span>prêtes à l'emploi.</span>
+        </h1>
+
+        <p>
+            Découvrez des templates, ressources et produits
+            numériques conçus pour vous aider à créer plus
+            rapidement et plus efficacement.
+        </p>
+
+        <div class="hero-stats">
+
+            <div class="hero-stat">
+                ⚡ Téléchargement rapide
+            </div>
+
+            <div class="hero-stat">
+                🔒 Paiement sécurisé
+            </div>
+
+            <div class="hero-stat">
+                💎 Produits premium
+            </div>
+
+        </div>
+
+    </div>
 
 </section>
 
-<section class="controls">
+<div class="controls-wrapper">
 
-```
-<input
-    id="search"
-    class="search"
-    type="text"
-    placeholder="🔎 Rechercher..."
->
+    <section class="controls">
 
-<select id="category" class="category">
+        <input
+            id="search"
+            class="search"
+            type="text"
+            placeholder="🔎 Rechercher un produit..."
+        >
 
-    <option value="">
-        Toutes les catégories
-    </option>
+        <select
+            id="category"
+            class="category"
+        >
+            <option value="">
+                Toutes les catégories
+            </option>
+        </select>
 
-</select>
-```
+    </section>
 
-</section>
-
-<!-- ADMIN -->
+</div>
 
 <section
     id="adminPanel"
     class="admin"
-    style="display:none;"
 >
 
-```
-<div class="admin-title">
+    <div class="admin-inner">
 
-    <div>
+        <div class="admin-title">
 
-        <h2>
-            ⚙️ Administration Nexora
-        </h2>
+            <div>
 
-        <div
-            id="adminUser"
-            class="admin-user"
-        ></div>
+                <h2>
+                    ⚙️ Administration Nexora
+                </h2>
+
+                <div
+                    id="adminUser"
+                    class="admin-user"
+                ></div>
+
+            </div>
+
+        </div>
+
+        <div class="admin-buttons">
+
+            <button
+                class="primary"
+                onclick="openProductForm()"
+            >
+                ➕ Ajouter un produit
+            </button>
+
+            <button
+                class="danger"
+                onclick="logout()"
+            >
+                Déconnexion
+            </button>
+
+        </div>
 
     </div>
 
-</div>
+</section>
 
-<div class="admin-buttons">
+<section class="products-section">
 
-    <button
-        class="primary"
-        onclick="openProductForm()"
+    <div class="section-heading">
+
+        <div>
+
+            <h2>
+                Découvrez nos produits
+            </h2>
+
+            <p>
+                Des ressources numériques sélectionnées pour vos projets.
+            </p>
+
+        </div>
+
+    </div>
+
+    <main
+        id="products"
+        class="products"
     >
-        ➕ Ajouter un produit
-    </button>
 
-    <button
-        class="danger"
-        onclick="logout()"
-    >
-        Déconnexion
-    </button>
+        <div class="loading">
+            Chargement des produits...
+        </div>
 
-</div>
-```
+    </main>
 
 </section>
 
-<main
-    id="products"
-    class="products"
->
-
-```
-<div class="loading">
-    Chargement des produits...
-</div>
-```
-
-</main>
-
 <button
-class="cart-button"
-onclick="openCart()"
-
+    class="cart-button"
+    onclick="openCart()"
 >
-
-```
-🛒 <span id="cartTotal">0.00 €</span>
-```
-
+    🛒
+    <span id="cartTotal">
+        0.00 €
+    </span>
 </button>
 
 <footer>
 
-```
-<p>
-    © 2026 Nexora — Marketplace numérique
-</p>
-```
+    <div class="footer-logo">
+        Nex<span>ora</span>
+    </div>
+
+    <p>
+        © 2026 Nexora — Marketplace numérique
+    </p>
 
 </footer>
 
-<!-- LOGIN ADMIN -->
+<!-- ================================
+     LOGIN ADMIN
+================================ -->
 
 <div
     id="loginModal"
     class="modal"
 >
 
-```
-<div class="modal-box">
+    <div class="modal-box">
 
-    <h2>
-        🔐 Connexion administrateur
-    </h2>
+        <h2>
+            🔐 Connexion administrateur
+        </h2>
 
-    <div class="form-group">
+        <div class="form-group">
 
-        <label>
-            Email
-        </label>
+            <label>
+                Email
+            </label>
 
-        <input
-            id="adminEmail"
-            type="email"
-            autocomplete="email"
-            placeholder="ton@email.com"
-        >
+            <input
+                id="adminEmail"
+                type="email"
+                autocomplete="email"
+                placeholder="ton@email.com"
+            >
 
-    </div>
+        </div>
 
-    <div class="form-group">
+        <div class="form-group">
 
-        <label>
-            Mot de passe
-        </label>
+            <label>
+                Mot de passe
+            </label>
 
-        <input
-            id="adminPassword"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Mot de passe"
-        >
+            <input
+                id="adminPassword"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Mot de passe"
+            >
 
-    </div>
+        </div>
 
-    <div class="actions">
+        <div class="actions">
 
-        <button
-            id="loginButton"
-            class="primary"
-            onclick="login()"
-        >
-            Se connecter
-        </button>
+            <button
+                id="loginButton"
+                class="primary"
+                onclick="login()"
+            >
+                Se connecter
+            </button>
 
-        <button
-            class="secondary"
-            onclick="closeModal('loginModal')"
-        >
-            Annuler
-        </button>
+            <button
+                class="secondary"
+                onclick="closeModal('loginModal')"
+            >
+                Annuler
+            </button>
+
+        </div>
 
     </div>
 
 </div>
-```
 
-</div>
-
-<!-- PRODUIT -->
+<!-- ================================
+     PRODUIT ADMIN
+================================ -->
 
 <div
     id="productModal"
     class="modal"
 >
 
-```
-<div class="modal-box">
+    <div class="modal-box">
 
-    <h2 id="productTitle">
-        Ajouter un produit
-    </h2>
-
-    <input
-        id="productId"
-        type="hidden"
-    >
-
-    <div class="form-group">
-
-        <label>
-            Nom du produit
-        </label>
+        <h2 id="productTitle">
+            Ajouter un produit
+        </h2>
 
         <input
-            id="productName"
-            type="text"
-            placeholder="Nom du produit"
+            id="productId"
+            type="hidden"
         >
 
-    </div>
+        <div class="form-group">
 
-    <div class="form-group">
+            <label>
+                Nom du produit
+            </label>
 
-        <label>
-            Description
-        </label>
+            <input
+                id="productName"
+                type="text"
+                placeholder="Ex : GourmetPro"
+            >
 
-        <textarea
-            id="productDescription"
-            rows="5"
-            placeholder="Description..."
-        ></textarea>
+        </div>
 
-    </div>
+        <div class="form-group">
 
-    <div class="form-group">
+            <label>
+                Description
+            </label>
 
-        <label>
-            Prix (€)
-        </label>
+            <textarea
+                id="productDescription"
+                rows="8"
+                placeholder="Décris ton produit..."
+            ></textarea>
 
-        <input
-            id="productPrice"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="9.99"
-        >
+        </div>
 
-    </div>
+        <div class="form-group">
 
-    <div class="form-group">
+            <label>
+                Prix (€)
+            </label>
 
-        <label>
-            Catégorie
-        </label>
+            <input
+                id="productPrice"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="19.99"
+            >
 
-        <input
-            id="productCategory"
-            type="text"
-            placeholder="Templates"
-        >
+        </div>
 
-    </div>
+        <div class="form-group">
 
-    <div class="form-group">
+            <label>
+                Catégorie
+            </label>
 
-        <label>
-            Images
-        </label>
+            <input
+                id="productCategory"
+                type="text"
+                placeholder="Templates"
+            >
 
-        <input
-            id="productImages"
-            type="file"
-            accept="image/*"
-            multiple
-        >
+        </div>
 
-        <small class="help">
-            Sélectionne une ou plusieurs images.
-        </small>
+        <div class="form-group">
 
-    </div>
+            <label>
+                Images
+            </label>
 
-    <div class="form-group">
+            <input
+                id="productImages"
+                type="file"
+                accept="image/*"
+                multiple
+            >
 
-        <label>
-            Fichiers numériques
-        </label>
+            <small class="help">
+                Tu peux sélectionner plusieurs images.
+            </small>
 
-        <input
-            id="productFiles"
-            type="file"
-            multiple
-        >
+        </div>
 
-        <small class="help">
-            PDF, ZIP, PSD, etc.
-        </small>
+        <div class="form-group">
 
-    </div>
+            <label>
+                Fichiers numériques
+            </label>
 
-    <div class="actions">
+            <input
+                id="productFiles"
+                type="file"
+                multiple
+            >
 
-        <button
-            id="saveProductButton"
-            class="primary"
-            onclick="saveProduct()"
-        >
-            💾 Enregistrer
-        </button>
+            <small class="help">
+                ZIP, PDF, PSD, HTML, etc.
+            </small>
 
-        <button
-            class="secondary"
-            onclick="closeModal('productModal')"
-        >
-            Annuler
-        </button>
+        </div>
+
+        <div class="actions">
+
+            <button
+                id="saveProductButton"
+                class="primary"
+                onclick="saveProduct()"
+            >
+                💾 Enregistrer
+            </button>
+
+            <button
+                class="secondary"
+                onclick="closeModal('productModal')"
+            >
+                Annuler
+            </button>
+
+        </div>
 
     </div>
 
 </div>
-```
 
-</div>
-
-<!-- DETAIL -->
+<!-- ================================
+     DETAIL PRODUIT
+================================ -->
 
 <div
     id="detailModal"
     class="modal"
 >
 
-```
-<div class="modal-box">
+    <div class="modal-box">
 
-    <div id="detailContent"></div>
+        <div id="detailContent"></div>
 
-    <br>
+        <br>
 
-    <button
-        class="secondary"
-        onclick="closeModal('detailModal')"
-    >
-        Fermer
-    </button>
+        <button
+            class="secondary"
+            onclick="closeModal('detailModal')"
+        >
+            Fermer
+        </button>
 
-</div>
-```
+    </div>
 
 </div>
 
-<!-- PANIER -->
+<!-- ================================
+     PANIER
+================================ -->
 
 <div
     id="cartModal"
     class="modal"
 >
 
-```
-<div class="modal-box">
+    <div class="modal-box">
 
-    <h2>
-        🛒 Mon panier
-    </h2>
+        <h2>
+            🛒 Votre panier
+        </h2>
 
-    <div id="cartContent"></div>
+        <div id="cartContent"></div>
 
-    <br>
+        <div
+            id="paypal-button-container"
+            style="margin-top:20px;"
+        ></div>
 
-    <button
-        class="primary"
-        onclick="checkout()"
-    >
-        💳 Commander
-    </button>
+        <br>
 
-    <button
-        class="secondary"
-        onclick="closeModal('cartModal')"
-    >
-        Fermer
-    </button>
+        <button
+            class="secondary"
+            onclick="closeModal('cartModal')"
+        >
+            Fermer
+        </button>
 
-    <div
-        id="paypal-button-container"
-        style="margin-top:15px;"
-    ></div>
-
-</div>
-```
+    </div>
 
 </div>
 
 <script>
 
-/* =====================================================
-   1. SUPABASE
-===================================================== */
+/* ==========================================
+   SUPABASE
+========================================== */
 
 const SUPABASE_URL =
     "https://lqaqfzpsilxctrvazatp.supabase.co";
@@ -868,9 +1558,9 @@ const supabaseClient =
     );
 
 
-/* =====================================================
-   2. CONFIGURATION
-===================================================== */
+/* ==========================================
+   CONFIGURATION
+========================================== */
 
 const IMAGE_BUCKET =
     "product-images";
@@ -879,9 +1569,9 @@ const FILE_BUCKET =
     "product-files";
 
 
-/* =====================================================
-   3. VARIABLES
-===================================================== */
+/* ==========================================
+   VARIABLES
+========================================== */
 
 let products = [];
 
@@ -889,12 +1579,6 @@ let cart = [];
 
 let currentUser = null;
 
-/*
- * IMPORTANT :
- * isAdmin est séparé de currentUser.
- *
- * Être connecté ≠ être administrateur.
- */
 let isAdmin = false;
 
 let savingProduct = false;
@@ -904,9 +1588,9 @@ let deletingProduct = false;
 let paypalButtonsRendered = false;
 
 
-/* =====================================================
-   4. DEMARRAGE
-===================================================== */
+/* ==========================================
+   DEMARRAGE
+========================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -936,9 +1620,9 @@ document.addEventListener(
 );
 
 
-/* =====================================================
-   5. MESSAGE
-===================================================== */
+/* ==========================================
+   MESSAGE
+========================================== */
 
 function showStatus(
     message,
@@ -954,8 +1638,7 @@ function showStatus(
         message;
 
     box.className =
-        "status show " +
-        type;
+        "status show " + type;
 
     clearTimeout(
         window.statusTimer
@@ -976,9 +1659,38 @@ function showStatus(
 }
 
 
-/* =====================================================
-   6. AUTHENTIFICATION
-===================================================== */
+/* ==========================================
+   UTILITAIRE ERREUR
+========================================== */
+
+function getErrorMessage(error) {
+
+    if (!error) {
+        return "Erreur inconnue.";
+    }
+
+    if (error.code === "42501") {
+
+        return (
+            "Permission refusée par Supabase."
+        );
+
+    }
+
+    if (error.message) {
+
+        return error.message;
+
+    }
+
+    return String(error);
+
+}
+
+
+/* ==========================================
+   AUTHENTIFICATION
+========================================== */
 
 async function checkUser() {
 
@@ -994,18 +1706,7 @@ async function checkUser() {
 
         if (error) {
 
-            console.error(
-                "Erreur session :",
-                error
-            );
-
-            currentUser = null;
-
-            isAdmin = false;
-
-            updateAdmin();
-
-            return;
+            throw error;
 
         }
 
@@ -1014,16 +1715,13 @@ async function checkUser() {
                 ? data.session.user
                 : null;
 
-        /*
-         * On vérifie le rôle réel dans profiles.
-         */
         await checkAdminRole();
 
     }
     catch (error) {
 
         console.error(
-            "Erreur vérification utilisateur :",
+            "Erreur session:",
             error
         );
 
@@ -1038,16 +1736,12 @@ async function checkUser() {
 }
 
 
-/* =====================================================
-   VERIFICATION ROLE ADMIN
-===================================================== */
+/* ==========================================
+   VERIFICATION ADMIN
+========================================== */
 
 async function checkAdminRole() {
 
-    /*
-     * Par défaut :
-     * personne n'est admin côté interface.
-     */
     isAdmin = false;
 
     if (!currentUser) {
@@ -1075,16 +1769,7 @@ async function checkAdminRole() {
 
         if (error) {
 
-            console.error(
-                "Erreur vérification rôle :",
-                error
-            );
-
-            isAdmin = false;
-
-            updateAdmin();
-
-            return;
+            throw error;
 
         }
 
@@ -1095,16 +1780,15 @@ async function checkAdminRole() {
 
             isAdmin = true;
 
-        } else {
-
-            isAdmin = false;
-
         }
 
     }
     catch (error) {
 
-        console.error(error);
+        console.error(
+            "Erreur rôle admin:",
+            error
+        );
 
         isAdmin = false;
 
@@ -1115,9 +1799,9 @@ async function checkAdminRole() {
 }
 
 
-/* =====================================================
-   LOGIN ADMIN
-===================================================== */
+/* ==========================================
+   LOGIN
+========================================== */
 
 async function login() {
 
@@ -1179,11 +1863,6 @@ async function login() {
         currentUser =
             data.user;
 
-        /*
-         * TRÈS IMPORTANT :
-         * une connexion normale ne donne
-         * pas automatiquement accès à l'Admin.
-         */
         await checkAdminRole();
 
         if (!isAdmin) {
@@ -1212,22 +1891,17 @@ async function login() {
             "loginModal"
         );
 
-        updateAdmin();
-
-        renderProducts();
-
         showStatus(
             "✅ Connexion administrateur réussie.",
             "success"
         );
 
+        renderProducts();
+
     }
     catch (error) {
 
-        console.error(
-            "Erreur login :",
-            error
-        );
+        console.error(error);
 
         showStatus(
             "❌ " +
@@ -1248,26 +1922,17 @@ async function login() {
 }
 
 
-/* =====================================================
+/* ==========================================
    LOGOUT
-===================================================== */
+========================================== */
 
 async function logout() {
 
     try {
 
-        const {
-            error
-        } =
-            await supabaseClient
-                .auth
-                .signOut();
-
-        if (error) {
-
-            throw error;
-
-        }
+        await supabaseClient
+            .auth
+            .signOut();
 
         currentUser = null;
 
@@ -1285,10 +1950,7 @@ async function logout() {
     }
     catch (error) {
 
-        console.error(error);
-
         showStatus(
-            "Erreur de déconnexion : " +
             getErrorMessage(error),
             "error"
         );
@@ -1298,9 +1960,9 @@ async function logout() {
 }
 
 
-/* =====================================================
+/* ==========================================
    AUTH STATE
-===================================================== */
+========================================== */
 
 supabaseClient
     .auth
@@ -1320,9 +1982,9 @@ supabaseClient
     );
 
 
-/* =====================================================
-   AFFICHAGE ADMIN
-===================================================== */
+/* ==========================================
+   ADMIN UI
+========================================== */
 
 function updateAdmin() {
 
@@ -1341,10 +2003,6 @@ function updateAdmin() {
             "adminUser"
         );
 
-    /*
-     * PAR DEFAUT :
-     * tout est caché.
-     */
     panel.style.display =
         "none";
 
@@ -1354,9 +2012,6 @@ function updateAdmin() {
     userText.textContent =
         "";
 
-    /*
-     * SEUL un vrai admin voit l'interface.
-     */
     if (
         currentUser &&
         isAdmin
@@ -1367,9 +2022,6 @@ function updateAdmin() {
 
         button.style.display =
             "inline-block";
-
-        button.textContent =
-            "⚙️ Administration";
 
         userText.textContent =
             "Connecté : " +
@@ -1383,9 +2035,9 @@ function updateAdmin() {
 }
 
 
-/* =====================================================
-   7. PRODUITS
-===================================================== */
+/* ==========================================
+   PRODUITS
+========================================== */
 
 async function loadProducts() {
 
@@ -1434,19 +2086,12 @@ async function loadProducts() {
     }
     catch (error) {
 
-        console.error(
-            "Erreur produits :",
-            error
-        );
+        console.error(error);
 
         container.innerHTML = `
             <div class="error-box">
-                <strong>
-                    ❌ Impossible de charger les produits.
-                </strong>
-
+                ❌ Impossible de charger les produits.
                 <br><br>
-
                 ${escapeHTML(
                     getErrorMessage(error)
                 )}
@@ -1458,9 +2103,9 @@ async function loadProducts() {
 }
 
 
-/* =====================================================
-   8. CATEGORIES
-===================================================== */
+/* ==========================================
+   CATEGORIES
+========================================== */
 
 function updateCategories() {
 
@@ -1533,9 +2178,9 @@ function updateCategories() {
 }
 
 
-/* =====================================================
-   9. AFFICHAGE PRODUITS
-===================================================== */
+/* ==========================================
+   AFFICHAGE
+========================================== */
 
 function renderProducts() {
 
@@ -1568,39 +2213,31 @@ function renderProducts() {
                     String(
                         product.name ||
                         ""
-                    )
-                    .toLowerCase();
+                    ).toLowerCase();
 
                 const description =
                     String(
                         product.description ||
                         ""
-                    )
-                    .toLowerCase();
+                    ).toLowerCase();
 
-                const categoryName =
+                const productCategory =
                     String(
                         product.category ||
                         ""
                     );
 
-                const searchOK =
-                    !search ||
-                    name.includes(
-                        search
-                    ) ||
-                    description.includes(
-                        search
-                    );
-
-                const categoryOK =
-                    !category ||
-                    categoryName ===
-                        category;
-
                 return (
-                    searchOK &&
-                    categoryOK
+                    (
+                        !search ||
+                        name.includes(search) ||
+                        description.includes(search)
+                    )
+                    &&
+                    (
+                        !category ||
+                        productCategory === category
+                    )
                 );
 
             }
@@ -1620,38 +2257,28 @@ function renderProducts() {
 
     container.innerHTML =
         filtered
-            .map(
-                product =>
-                    createProductCard(
-                        product
-                    )
-            )
+            .map(createProductCard)
             .join("");
 
 }
 
 
-/* =====================================================
+/* ==========================================
    CARTE PRODUIT
-===================================================== */
+========================================== */
 
-function createProductCard(
-    product
-) {
+function createProductCard(product) {
 
     const image =
-        Array.isArray(
-            product.images
-        ) &&
+        Array.isArray(product.images) &&
         product.images.length
             ? product.images[0]
             : placeholderImage();
 
-    /*
-     * IMPORTANT :
-     * Les boutons Modifier/Supprimer
-     * ne sont générés que pour un ADMIN.
-     */
+    const category =
+        product.category ||
+        "Produit numérique";
+
     const adminHTML =
         isAdmin
             ? `
@@ -1678,57 +2305,51 @@ function createProductCard(
     return `
         <article class="card">
 
-            <img
-                class="card-image"
-                src="${escapeAttribute(image)}"
-                alt="${escapeAttribute(
-                    product.name ||
-                    "Produit"
-                )}"
-                onerror="this.src=placeholderImage()"
-            >
+            <div class="card-image-wrapper">
+
+                <img
+                    class="card-image"
+                    src="${escapeAttribute(image)}"
+                    alt="${escapeAttribute(
+                        product.name || "Produit"
+                    )}"
+                    onerror="this.src=placeholderImage()"
+                >
+
+                <div class="category-badge">
+                    ${escapeHTML(category)}
+                </div>
+
+            </div>
 
             <div class="card-content">
 
                 <h3>
                     ${escapeHTML(
                         product.name ||
-                        "Sans nom"
+                        "Produit sans nom"
                     )}
                 </h3>
 
                 <p class="card-description">
                     ${escapeHTML(
                         String(
-                            product.description ||
-                            ""
-                        ).substring(
-                            0,
-                            110
-                        )
+                            product.description || ""
+                        ).substring(0, 120)
                     )}
                 </p>
 
-                <div class="price">
-                    ${formatPrice(
-                        product.price
-                    )}
-                </div>
+                <div class="card-bottom">
 
-                <div class="actions">
+                    <div class="price">
+                        ${formatPrice(product.price)}
+                    </div>
 
                     <button
                         class="primary"
                         onclick="showProduct('${escapeAttribute(product.id)}')"
                     >
-                        Voir
-                    </button>
-
-                    <button
-                        class="secondary"
-                        onclick="addToCart('${escapeAttribute(product.id)}')"
-                    >
-                        🛒
+                        Découvrir
                     </button>
 
                 </div>
@@ -1743,106 +2364,776 @@ function createProductCard(
 }
 
 
-/* =====================================================
-   10. UPLOAD
-===================================================== */
+/* ==========================================
+   DETAIL PRODUIT
+========================================== */
 
-async function uploadFile(
-    bucket,
-    file,
-    folder
-) {
+function showProduct(id) {
 
-    if (!file) {
-
-        throw new Error(
-            "Fichier manquant."
+    const product =
+        products.find(
+            p =>
+                String(p.id) ===
+                String(id)
         );
 
+    if (!product) {
+
+        showStatus(
+            "Produit introuvable.",
+            "error"
+        );
+
+        return;
+
     }
 
-    const extension =
-        file.name.includes(".")
-            ? "." +
-              file.name
-                  .split(".")
-                  .pop()
-                  .toLowerCase()
+    const images =
+        Array.isArray(product.images)
+            ? product.images
+            : [];
+
+    const mainImage =
+        images.length
+            ? images[0]
+            : placeholderImage();
+
+    const gallery =
+        images.length
+            ? `
+                <div class="gallery">
+
+                    ${images.map(
+                        image => `
+                            <img
+                                src="${escapeAttribute(image)}"
+                                alt="Aperçu"
+                                onclick="changeDetailImage('${escapeAttribute(image)}')"
+                                onerror="this.style.display='none'"
+                            >
+                        `
+                    ).join("")}
+
+                </div>
+            `
             : "";
 
-    const filename =
-        crypto.randomUUID() +
-        extension;
+    document.getElementById(
+        "detailContent"
+    ).innerHTML = `
 
-    const path =
-        folder +
-        "/" +
-        filename;
+        <div class="product-detail-header">
 
-    const {
-        error
-    } =
-        await supabaseClient
-            .storage
-            .from(bucket)
-            .upload(
-                path,
-                file,
-                {
-                    cacheControl:
-                        "3600",
+            <div class="product-detail-category">
+                ${escapeHTML(
+                    product.category ||
+                    "Produit numérique"
+                )}
+            </div>
 
-                    upsert:
-                        false,
+            <h2>
+                ${escapeHTML(
+                    product.name || ""
+                )}
+            </h2>
 
-                    contentType:
-                        file.type ||
-                        "application/octet-stream"
-                }
-            );
+        </div>
 
-    if (error) {
+        <img
+            id="detailMainImage"
+            class="detail-image"
+            src="${escapeAttribute(mainImage)}"
+            alt="${escapeAttribute(
+                product.name || ""
+            )}"
+        >
 
-        throw error;
+        ${gallery}
 
-    }
+        <div class="detail-description">
 
-    if (
-        bucket ===
-        IMAGE_BUCKET
-    ) {
+            ${escapeHTML(
+                product.description || ""
+            ).replace(
+                /\n/g,
+                "<br>"
+            )}
 
-        const {
-            data
-        } =
-            supabaseClient
-                .storage
-                .from(bucket)
-                .getPublicUrl(
-                    path
-                );
+        </div>
 
-        return {
-            url:
-                data.publicUrl,
+        <div class="detail-price">
+            ${formatPrice(product.price)}
+        </div>
 
-            path:
-                path
-        };
+        <div class="detail-actions">
 
-    }
+            <button
+                class="primary"
+                onclick="addToCart('${escapeAttribute(product.id)}')"
+            >
+                🛒 Ajouter au panier
+            </button>
 
-    return {
-        path:
-            path
-    };
+            <button
+                class="secondary"
+                onclick="closeModal('detailModal')"
+            >
+                Fermer
+            </button>
+
+        </div>
+
+    `;
+
+    openModal(
+        "detailModal"
+    );
 
 }
 
 
-/* =====================================================
-   11. AJOUT PRODUIT
-===================================================== */
+function changeDetailImage(url) {
+
+    const image =
+        document.getElementById(
+            "detailMainImage"
+        );
+
+    if (image) {
+
+        image.src = url;
+
+    }
+
+}
+
+
+/* ==========================================
+   PANIER
+========================================== */
+
+function addToCart(id) {
+
+    const product =
+        products.find(
+            p =>
+                String(p.id) ===
+                String(id)
+        );
+
+    if (!product) return;
+
+    const existing =
+        cart.find(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
+
+    if (existing) {
+
+        existing.quantity++;
+
+    }
+    else {
+
+        cart.push({
+
+            id: product.id,
+
+            name: product.name,
+
+            price:
+                Number(product.price) || 0,
+
+            quantity: 1
+
+        });
+
+    }
+
+    updateCart();
+
+    showStatus(
+        "🛒 Produit ajouté au panier.",
+        "success"
+    );
+
+}
+
+
+function removeFromCart(id) {
+
+    cart =
+        cart.filter(
+            item =>
+                String(item.id) !==
+                String(id)
+        );
+
+    updateCart();
+
+    openCart();
+
+}
+
+
+function changeCartQuantity(
+    id,
+    amount
+) {
+
+    const item =
+        cart.find(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
+
+    if (!item) return;
+
+    item.quantity += amount;
+
+    if (item.quantity <= 0) {
+
+        removeFromCart(id);
+
+        return;
+
+    }
+
+    updateCart();
+
+    openCart();
+
+}
+
+
+function updateCart() {
+
+    const count =
+        cart.reduce(
+            (
+                total,
+                item
+            ) =>
+                total + item.quantity,
+            0
+        );
+
+    const total =
+        cart.reduce(
+            (
+                total,
+                item
+            ) =>
+                total +
+                item.price *
+                item.quantity,
+            0
+        );
+
+    document.getElementById(
+        "cartCount"
+    ).textContent =
+        count;
+
+    document.getElementById(
+        "cartTotal"
+    ).textContent =
+        total.toFixed(2) +
+        " €";
+
+}
+
+
+function openCart() {
+
+    const container =
+        document.getElementById(
+            "cartContent"
+        );
+
+    if (!cart.length) {
+
+        container.innerHTML = `
+            <p style="color:#6b7280;">
+                Ton panier est actuellement vide.
+            </p>
+        `;
+
+        openModal(
+            "cartModal"
+        );
+
+        return;
+
+    }
+
+    container.innerHTML =
+        cart
+            .map(
+                item => `
+
+                    <div class="cart-item">
+
+                        <div class="cart-item-name">
+                            ${escapeHTML(item.name)}
+                        </div>
+
+                        <div class="cart-item-price">
+                            ${item.price.toFixed(2)} €
+                            ×
+                            ${item.quantity}
+                        </div>
+
+                        <br>
+
+                        <div class="actions">
+
+                            <button
+                                class="secondary"
+                                onclick="changeCartQuantity('${escapeAttribute(item.id)}', -1)"
+                            >
+                                −
+                            </button>
+
+                            <button
+                                class="secondary"
+                                onclick="changeCartQuantity('${escapeAttribute(item.id)}', 1)"
+                            >
+                                +
+                            </button>
+
+                            <button
+                                class="danger"
+                                onclick="removeFromCart('${escapeAttribute(item.id)}')"
+                            >
+                                Supprimer
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `
+            )
+            .join("");
+
+    const total =
+        cart.reduce(
+            (
+                sum,
+                item
+            ) =>
+                sum +
+                item.price *
+                item.quantity,
+            0
+        );
+
+    container.innerHTML += `
+
+        <div class="cart-total">
+
+            <span>
+                Total
+            </span>
+
+            <strong>
+                ${total.toFixed(2)} €
+            </strong>
+
+        </div>
+
+        <p style="
+            color:#6b7280;
+            font-size:13px;
+            margin-bottom:15px;
+        ">
+            💳 Le paiement peut être effectué
+            via PayPal.
+        </p>
+
+    `;
+
+    openModal(
+        "cartModal"
+    );
+
+}
+
+
+/* ==========================================
+   PAYPAL
+========================================== */
+
+async function checkout() {
+
+    if (!cart.length) {
+
+        showStatus(
+            "Ton panier est vide.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    const container =
+        document.getElementById(
+            "paypal-button-container"
+        );
+
+    if (
+        typeof window.paypal ===
+        "undefined"
+    ) {
+
+        showStatus(
+            "❌ PayPal n'est pas chargé.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if (paypalButtonsRendered) {
+
+        container.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+        return;
+
+    }
+
+    container.innerHTML = "";
+
+    showStatus(
+        "💳 Chargement de PayPal...",
+        "success"
+    );
+
+    try {
+
+        const buttons =
+            window.paypal.Buttons({
+
+                style: {
+                    layout: "vertical",
+                    shape: "rect",
+                    label: "paypal"
+                },
+
+
+                /* ======================
+                   CREATE ORDER
+                ====================== */
+
+                createOrder:
+                    async function () {
+
+                        const {
+                            data:
+                                sessionData
+                        } =
+                            await supabaseClient
+                                .auth
+                                .getSession();
+
+                        const session =
+                            sessionData
+                                ? sessionData.session
+                                : null;
+
+                        const items =
+                            cart.map(
+                                item => ({
+                                    product_id:
+                                        item.id,
+
+                                    quantity:
+                                        item.quantity
+                                })
+                            );
+
+                        const headers = {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "apikey":
+                                SUPABASE_ANON_KEY
+
+                        };
+
+                        if (session) {
+
+                            headers.Authorization =
+                                `Bearer ${session.access_token}`;
+
+                        }
+
+                        const response =
+                            await fetch(
+                                `${SUPABASE_URL}/functions/v1/paypal-create-order`,
+                                {
+                                    method: "POST",
+
+                                    headers,
+
+                                    body:
+                                        JSON.stringify({
+                                            items
+                                        })
+                                }
+                            );
+
+                        const result =
+                            await response.json();
+
+                        if (!response.ok) {
+
+                            console.error(
+                                "paypal-create-order:",
+                                result
+                            );
+
+                            throw new Error(
+                                result.error ||
+                                "Impossible de créer la commande PayPal."
+                            );
+
+                        }
+
+                        if (
+                            !result.paypal_order_id
+                        ) {
+
+                            throw new Error(
+                                "PayPal n'a pas retourné d'identifiant."
+                            );
+
+                        }
+
+                        return result.paypal_order_id;
+
+                    },
+
+
+                /* ======================
+                   APPROVE
+                ====================== */
+
+                onApprove:
+                    async function(data) {
+
+                        showStatus(
+                            "⏳ Confirmation du paiement...",
+                            "success"
+                        );
+
+                        try {
+
+                            const {
+                                data:
+                                    sessionData
+                            } =
+                                await supabaseClient
+                                    .auth
+                                    .getSession();
+
+                            const session =
+                                sessionData
+                                    ? sessionData.session
+                                    : null;
+
+                            const headers = {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "apikey":
+                                    SUPABASE_ANON_KEY
+
+                            };
+
+                            if (session) {
+
+                                headers.Authorization =
+                                    `Bearer ${session.access_token}`;
+
+                            }
+
+                            const response =
+                                await fetch(
+                                    `${SUPABASE_URL}/functions/v1/paypal-capture-order`,
+                                    {
+
+                                        method: "POST",
+
+                                        headers,
+
+                                        body:
+                                            JSON.stringify({
+
+                                                paypal_order_id:
+                                                    data.orderID
+
+                                            })
+
+                                    }
+                                );
+
+                            const result =
+                                await response.json();
+
+                            if (!response.ok) {
+
+                                console.error(
+                                    "paypal-capture-order:",
+                                    result
+                                );
+
+                                throw new Error(
+                                    result.error ||
+                                    "Impossible de confirmer le paiement."
+                                );
+
+                            }
+
+                            if (!result.success) {
+
+                                throw new Error(
+                                    "Le paiement n'a pas été confirmé."
+                                );
+
+                            }
+
+                            cart = [];
+
+                            updateCart();
+
+                            paypalButtonsRendered =
+                                false;
+
+                            container.innerHTML =
+                                "";
+
+                            closeModal(
+                                "cartModal"
+                            );
+
+                            showStatus(
+                                "✅ Paiement confirmé ! Merci pour ta commande.",
+                                "success"
+                            );
+
+                        }
+                        catch (error) {
+
+                            console.error(
+                                error
+                            );
+
+                            showStatus(
+                                "❌ " +
+                                getErrorMessage(error),
+                                "error"
+                            );
+
+                        }
+
+                    },
+
+
+                onCancel:
+                    function() {
+
+                        showStatus(
+                            "Paiement annulé.",
+                            "error"
+                        );
+
+                    },
+
+
+                onError:
+                    function(error) {
+
+                        console.error(
+                            "PayPal:",
+                            error
+                        );
+
+                        showStatus(
+                            "❌ Une erreur PayPal est survenue.",
+                            "error"
+                        );
+
+                    }
+
+            });
+
+        if (
+            !buttons.isEligible()
+        ) {
+
+            throw new Error(
+                "Les boutons PayPal ne sont pas disponibles."
+            );
+
+        }
+
+        await buttons.render(
+            "#paypal-button-container"
+        );
+
+        paypalButtonsRendered =
+            true;
+
+        container.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+        showStatus(
+            "💳 Choisis ton mode de paiement.",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Initialisation PayPal:",
+            error
+        );
+
+        paypalButtonsRendered =
+            false;
+
+        container.innerHTML =
+            "";
+
+        showStatus(
+            "❌ " +
+            getErrorMessage(error),
+            "error"
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   PRODUIT ADMIN
+========================================== */
 
 function openProductForm() {
 
@@ -1896,10 +3187,6 @@ function openProductForm() {
 
 }
 
-
-/* =====================================================
-   12. MODIFIER PRODUIT
-===================================================== */
 
 function editProduct(id) {
 
@@ -1977,9 +3264,87 @@ function editProduct(id) {
 }
 
 
-/* =====================================================
-   13. SAUVEGARDER PRODUIT
-===================================================== */
+/* ==========================================
+   UPLOAD
+========================================== */
+
+async function uploadFile(
+    bucket,
+    file,
+    folder
+) {
+
+    const extension =
+        file.name.includes(".")
+            ? "." +
+              file.name
+                  .split(".")
+                  .pop()
+                  .toLowerCase()
+            : "";
+
+    const path =
+        folder +
+        "/" +
+        crypto.randomUUID() +
+        extension;
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .storage
+            .from(bucket)
+            .upload(
+                path,
+                file,
+                {
+                    cacheControl: "3600",
+                    upsert: false,
+                    contentType:
+                        file.type ||
+                        "application/octet-stream"
+                }
+            );
+
+    if (error) {
+
+        throw error;
+
+    }
+
+    if (
+        bucket ===
+        IMAGE_BUCKET
+    ) {
+
+        const {
+            data
+        } =
+            supabaseClient
+                .storage
+                .from(bucket)
+                .getPublicUrl(path);
+
+        return {
+            url:
+                data.publicUrl,
+
+            path
+        };
+
+    }
+
+    return {
+        path
+    };
+
+}
+
+
+/* ==========================================
+   SAUVEGARDE PRODUIT
+========================================== */
 
 async function saveProduct() {
 
@@ -2028,9 +3393,7 @@ async function saveProduct() {
             .value;
 
     const price =
-        Number(
-            priceValue
-        );
+        Number(priceValue);
 
     const category =
         document
@@ -2102,8 +3465,7 @@ async function saveProduct() {
 
     savingProduct = true;
 
-    button.disabled =
-        true;
+    button.disabled = true;
 
     button.textContent =
         "Enregistrement...";
@@ -2127,18 +3489,14 @@ async function saveProduct() {
                 Array.isArray(
                     oldProduct?.images
                 )
-                    ? [
-                        ...oldProduct.images
-                    ]
+                    ? [...oldProduct.images]
                     : [];
 
             files =
                 Array.isArray(
                     oldProduct?.files
                 )
-                    ? [
-                        ...oldProduct.files
-                    ]
+                    ? [...oldProduct.files]
                     : [];
 
         }
@@ -2148,11 +3506,8 @@ async function saveProduct() {
             crypto.randomUUID();
 
 
-        /* IMAGES */
-
         for (
-            const file
-            of imageFiles
+            const file of imageFiles
         ) {
 
             const uploaded =
@@ -2169,11 +3524,8 @@ async function saveProduct() {
         }
 
 
-        /* FICHIERS PRIVES */
-
         for (
-            const file
-            of digitalFiles
+            const file of digitalFiles
         ) {
 
             const uploaded =
@@ -2229,16 +3581,9 @@ async function saveProduct() {
                 error
             } =
                 await supabaseClient
-                    .from(
-                        "products"
-                    )
-                    .update(
-                        productData
-                    )
-                    .eq(
-                        "id",
-                        id
-                    );
+                    .from("products")
+                    .update(productData)
+                    .eq("id", id);
 
             if (error) {
 
@@ -2251,18 +3596,15 @@ async function saveProduct() {
                 "success"
             );
 
-        } else {
+        }
+        else {
 
             const {
                 error
             } =
                 await supabaseClient
-                    .from(
-                        "products"
-                    )
-                    .insert(
-                        productData
-                    );
+                    .from("products")
+                    .insert(productData);
 
             if (error) {
 
@@ -2286,27 +3628,20 @@ async function saveProduct() {
     }
     catch (error) {
 
-        console.error(
-            "Erreur sauvegarde :",
-            error
-        );
+        console.error(error);
 
         showStatus(
             "❌ " +
-            getErrorMessage(
-                error
-            ),
+            getErrorMessage(error),
             "error"
         );
 
     }
     finally {
 
-        savingProduct =
-            false;
+        savingProduct = false;
 
-        button.disabled =
-            false;
+        button.disabled = false;
 
         button.textContent =
             "💾 Enregistrer";
@@ -2316,9 +3651,9 @@ async function saveProduct() {
 }
 
 
-/* =====================================================
-   14. SUPPRIMER PRODUIT
-===================================================== */
+/* ==========================================
+   SUPPRESSION
+========================================== */
 
 async function deleteProduct(id) {
 
@@ -2342,50 +3677,21 @@ async function deleteProduct(id) {
                 String(id)
         );
 
-    if (!product) {
+    if (!product) return;
 
-        showStatus(
-            "Produit introuvable.",
-            "error"
-        );
+    if (
+        !confirm(
+            `Supprimer "${product.name}" ?`
+        )
+    ) {
 
         return;
 
     }
 
-    const confirmation =
-        window.confirm(
-            `Supprimer "${product.name}" ?\n\nCette action supprimera le produit de la base de données.`
-        );
-
-    if (!confirmation) return;
-
-    deletingProduct =
-        true;
+    deletingProduct = true;
 
     try {
-
-        const {
-            data: sessionData,
-            error: sessionError
-        } =
-            await supabaseClient
-                .auth
-                .getSession();
-
-        if (sessionError) {
-
-            throw sessionError;
-
-        }
-
-        if (!sessionData.session) {
-
-            throw new Error(
-                "Ta session administrateur a expiré. Reconnecte-toi."
-            );
-
-        }
 
         const {
             data,
@@ -2394,46 +3700,19 @@ async function deleteProduct(id) {
             await supabaseClient
                 .from("products")
                 .delete()
-                .eq(
-                    "id",
-                    id
-                )
+                .eq("id", id)
                 .select();
 
         if (error) {
-
-            console.error(
-                "SUPABASE DELETE ERROR:",
-                error
-            );
 
             throw error;
 
         }
 
-        if (
-            !data ||
-            data.length === 0
-        ) {
+        if (!data || !data.length) {
 
             throw new Error(
-                "Supabase n'a supprimé aucune ligne. Vérifie les politiques RLS DELETE de la table products."
-            );
-
-        }
-
-        try {
-
-            await deleteProductFiles(
-                product
-            );
-
-        }
-        catch (storageError) {
-
-            console.warn(
-                "Produit supprimé mais fichiers Storage non nettoyés :",
-                storageError
+                "Le produit n'a pas pu être supprimé."
             );
 
         }
@@ -2450,1047 +3729,39 @@ async function deleteProduct(id) {
         renderProducts();
 
         showStatus(
-            "✅ Produit supprimé avec succès.",
+            "✅ Produit supprimé.",
             "success"
         );
 
     }
     catch (error) {
 
-        console.error(
-            "ERREUR SUPPRESSION:",
-            error
-        );
+        console.error(error);
 
         showStatus(
-            "❌ Suppression impossible : " +
-            getErrorMessage(
-                error
-            ),
+            "❌ " +
+            getErrorMessage(error),
             "error"
         );
 
     }
     finally {
 
-        deletingProduct =
-            false;
+        deletingProduct = false;
 
     }
 
 }
 
 
-/* =====================================================
-   15. SUPPRIMER FICHIERS STORAGE
-===================================================== */
-
-async function deleteProductFiles(
-    product
-) {
-
-    const imagePaths =
-        extractStoragePaths(
-            product.images,
-            IMAGE_BUCKET
-        );
-
-    const filePaths =
-        Array.isArray(
-            product.files
-        )
-            ? product.files
-                .map(
-                    file =>
-                        file &&
-                        file.path
-                            ? file.path
-                            : null
-                )
-                .filter(Boolean)
-            : [];
-
-    if (
-        imagePaths.length
-    ) {
-
-        const {
-            error
-        } =
-            await supabaseClient
-                .storage
-                .from(
-                    IMAGE_BUCKET
-                )
-                .remove(
-                    imagePaths
-                );
-
-        if (error) {
-
-            throw error;
-
-        }
-
-    }
-
-    if (
-        filePaths.length
-    ) {
-
-        const {
-            error
-        } =
-            await supabaseClient
-                .storage
-                .from(
-                    FILE_BUCKET
-                )
-                .remove(
-                    filePaths
-                );
-
-        if (error) {
-
-            throw error;
-
-        }
-
-    }
-
-}
-
-
-function extractStoragePaths(
-    values,
-    bucket
-) {
-
-    if (
-        !Array.isArray(values)
-    ) {
-
-        return [];
-
-    }
-
-    return values
-        .map(
-            value => {
-
-                if (
-                    typeof value !==
-                    "string"
-                ) {
-
-                    return null;
-
-                }
-
-                const marker =
-                    `/storage/v1/object/public/${bucket}/`;
-
-                const index =
-                    value.indexOf(
-                        marker
-                    );
-
-                if (
-                    index === -1
-                ) {
-
-                    return null;
-
-                }
-
-                return decodeURIComponent(
-                    value.substring(
-                        index +
-                        marker.length
-                    )
-                );
-
-            }
-        )
-        .filter(Boolean);
-
-}
-
-
-/* =====================================================
-   16. DETAIL PRODUIT
-===================================================== */
-
-function showProduct(id) {
-
-    const product =
-        products.find(
-            p =>
-                String(p.id) ===
-                String(id)
-        );
-
-    if (!product) {
-
-        showStatus(
-            "Produit introuvable.",
-            "error"
-        );
-
-        return;
-
-    }
-
-    const images =
-        Array.isArray(
-            product.images
-        )
-            ? product.images
-            : [];
-
-    const mainImage =
-        images.length
-            ? images[0]
-            : placeholderImage();
-
-    let galleryHTML =
-        "";
-
-    if (images.length) {
-
-        galleryHTML = `
-            <div class="gallery">
-
-                ${images
-                    .map(
-                        image => `
-                            <img
-                                src="${escapeAttribute(image)}"
-                                alt="Image"
-                                onclick="changeDetailImage('${escapeAttribute(image)}')"
-                                onerror="this.style.display='none'"
-                            >
-                        `
-                    )
-                    .join("")
-                }
-
-            </div>
-        `;
-
-    }
-
-    document.getElementById(
-        "detailContent"
-    ).innerHTML = `
-
-        <h2>
-            ${escapeHTML(
-                product.name ||
-                ""
-            )}
-        </h2>
-
-        <br>
-
-        <img
-            id="detailMainImage"
-            class="detail-image"
-            src="${escapeAttribute(mainImage)}"
-            alt="${escapeAttribute(
-                product.name ||
-                ""
-            )}"
-        >
-
-        ${galleryHTML}
-
-        <p>
-            ${escapeHTML(
-                product.description ||
-                ""
-            )}
-        </p>
-
-        <br>
-
-        <div class="price">
-            ${formatPrice(
-                product.price
-            )}
-        </div>
-
-        <button
-            class="primary"
-            onclick="addToCart('${escapeAttribute(product.id)}')"
-        >
-            🛒 Ajouter au panier
-        </button>
-
-    `;
-
-    openModal(
-        "detailModal"
-    );
-
-}
-
-
-function changeDetailImage(
-    url
-) {
-
-    const image =
-        document.getElementById(
-            "detailMainImage"
-        );
-
-    if (image) {
-
-        image.src =
-            url;
-
-    }
-
-}
-
-
-/* =====================================================
-   17. PANIER
-===================================================== */
-
-function addToCart(id) {
-
-    const product =
-        products.find(
-            p =>
-                String(p.id) ===
-                String(id)
-        );
-
-    if (!product) return;
-
-    const existing =
-        cart.find(
-            item =>
-                String(item.id) ===
-                String(id)
-        );
-
-    if (existing) {
-
-        existing.quantity++;
-
-    } else {
-
-        cart.push({
-
-            id:
-                product.id,
-
-            name:
-                product.name,
-
-            price:
-                Number(
-                    product.price
-                ) || 0,
-
-            quantity:
-                1
-
-        });
-
-    }
-
-    updateCart();
-
-    showStatus(
-        `${product.name} ajouté au panier.`,
-        "success"
-    );
-
-}
-
-
-function removeFromCart(id) {
-
-    cart =
-        cart.filter(
-            item =>
-                String(item.id) !==
-                String(id)
-        );
-
-    updateCart();
-
-    openCart();
-
-}
-
-
-function changeCartQuantity(
-    id,
-    amount
-) {
-
-    const item =
-        cart.find(
-            item =>
-                String(item.id) ===
-                String(id)
-        );
-
-    if (!item) return;
-
-    item.quantity +=
-        amount;
-
-    if (
-        item.quantity <= 0
-    ) {
-
-        cart =
-            cart.filter(
-                item =>
-                    String(item.id) !==
-                    String(id)
-            );
-
-    }
-
-    updateCart();
-
-    openCart();
-
-}
-
-
-function updateCart() {
-
-    const count =
-        cart.reduce(
-            (
-                total,
-                item
-            ) =>
-                total +
-                item.quantity,
-            0
-        );
-
-    const total =
-        cart.reduce(
-            (
-                total,
-                item
-            ) =>
-                total +
-                item.price *
-                item.quantity,
-            0
-        );
-
-    document.getElementById(
-        "cartCount"
-    ).textContent =
-        count;
-
-    document.getElementById(
-        "cartTotal"
-    ).textContent =
-        total.toFixed(2) +
-        " €";
-
-}
-
-
-function openCart() {
-
-    const container =
-        document.getElementById(
-            "cartContent"
-        );
-
-    if (!cart.length) {
-
-        container.innerHTML = `
-            <p>
-                Ton panier est vide.
-            </p>
-        `;
-
-        openModal(
-            "cartModal"
-        );
-
-        return;
-
-    }
-
-    container.innerHTML =
-        cart
-            .map(
-                item => `
-
-                    <div class="cart-item">
-
-                        <strong>
-                            ${escapeHTML(
-                                item.name
-                            )}
-                        </strong>
-
-                        <br><br>
-
-                        ${item.price.toFixed(2)}
-                        €
-                        ×
-                        ${item.quantity}
-
-                        <br><br>
-
-                        <div class="actions">
-
-                            <button
-                                class="secondary"
-                                onclick="changeCartQuantity('${escapeAttribute(item.id)}', -1)"
-                            >
-                                −
-                            </button>
-
-                            <button
-                                class="secondary"
-                                onclick="changeCartQuantity('${escapeAttribute(item.id)}', 1)"
-                            >
-                                +
-                            </button>
-
-                            <button
-                                class="danger"
-                                onclick="removeFromCart('${escapeAttribute(item.id)}')"
-                            >
-                                Supprimer
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                `
-            )
-            .join("");
-
-    const total =
-        cart.reduce(
-            (
-                sum,
-                item
-            ) =>
-                sum +
-                item.price *
-                item.quantity,
-            0
-        );
-
-    container.innerHTML += `
-
-        <br>
-
-        <h3>
-            Total :
-            ${total.toFixed(2)} €
-        </h3>
-
-    `;
-
-    openModal(
-        "cartModal"
-    );
-
-}
-
-
-/* =====================================================
-   18. PAIEMENT PAYPAL
-===================================================== */
-
-/*
- * IMPORTANT :
- *
- * Il n'y a PLUS de :
- *
- * if (!currentUser) ...
- *
- * Un client peut donc commencer le paiement
- * sans être connecté.
- *
- * MAIS :
- *
- * Tes fonctions Edge Supabase actuelles
- * demandent encore un utilisateur connecté.
- *
- * Elles devront être adaptées ensuite
- * pour accepter les paiements invités.
- */
-
-async function checkout() {
-
-    if (!cart.length) {
-
-        showStatus(
-            "Ton panier est vide.",
-            "error"
-        );
-
-        return;
-
-    }
-
-    const container =
-        document.getElementById(
-            "paypal-button-container"
-        );
-
-    if (!container) {
-
-        showStatus(
-            "❌ Conteneur PayPal introuvable.",
-            "error"
-        );
-
-        return;
-
-    }
-
-    if (
-        typeof window.paypal ===
-        "undefined"
-    ) {
-
-        showStatus(
-            "❌ PayPal n'est pas chargé. Vérifie ta connexion internet.",
-            "error"
-        );
-
-        return;
-
-    }
-
-    if (
-        paypalButtonsRendered
-    ) {
-
-        container.scrollIntoView({
-            behavior:
-                "smooth",
-
-            block:
-                "center"
-        });
-
-        return;
-
-    }
-
-    container.innerHTML =
-        "";
-
-    showStatus(
-        "💳 Chargement de PayPal...",
-        "success"
-    );
-
-    try {
-
-        const buttons =
-            window.paypal.Buttons({
-
-                style: {
-
-                    layout:
-                        "vertical",
-
-                    shape:
-                        "rect",
-
-                    label:
-                        "paypal"
-
-                },
-
-
-                /* =========================
-                   CREATION COMMANDE
-                ========================= */
-
-                createOrder:
-                    async function () {
-
-                        /*
-                         * On récupère la session
-                         * si elle existe.
-                         *
-                         * Un client invité peut
-                         * continuer sans session.
-                         */
-
-                        const {
-                            data:
-                                sessionData
-                        } =
-                            await supabaseClient
-                                .auth
-                                .getSession();
-
-                        const session =
-                            sessionData
-                                ? sessionData.session
-                                : null;
-
-                        const items =
-                            cart.map(
-                                item => ({
-
-                                    product_id:
-                                        item.id,
-
-                                    quantity:
-                                        item.quantity
-
-                                })
-                            );
-
-                        const headers = {
-
-                            "Content-Type":
-                                "application/json",
-
-                            "apikey":
-                                SUPABASE_ANON_KEY
-
-                        };
-
-                        /*
-                         * Si quelqu'un est connecté,
-                         * on transmet sa session.
-                         *
-                         * Sinon, aucun compte
-                         * n'est obligatoire côté frontend.
-                         */
-
-                        if (session) {
-
-                            headers.Authorization =
-                                `Bearer ${session.access_token}`;
-
-                        }
-
-
-                        const response =
-                            await fetch(
-                                `${SUPABASE_URL}/functions/v1/paypal-create-order`,
-                                {
-
-                                    method:
-                                        "POST",
-
-                                    headers,
-
-                                    body:
-                                        JSON.stringify({
-                                            items
-                                        })
-
-                                }
-                            );
-
-
-                        const result =
-                            await response.json();
-
-
-                        if (!response.ok) {
-
-                            console.error(
-                                "Erreur paypal-create-order:",
-                                result
-                            );
-
-                            throw new Error(
-                                result.error ||
-                                "Impossible de créer la commande PayPal."
-                            );
-
-                        }
-
-
-                        if (
-                            !result.paypal_order_id
-                        ) {
-
-                            throw new Error(
-                                "PayPal n'a pas retourné d'identifiant de commande."
-                            );
-
-                        }
-
-
-                        return result.paypal_order_id;
-
-                    },
-
-
-                /* =========================
-                   PAIEMENT APPROUVE
-                ========================= */
-
-                onApprove:
-                    async function (
-                        data
-                    ) {
-
-                        try {
-
-                            showStatus(
-                                "⏳ Confirmation du paiement...",
-                                "success"
-                            );
-
-
-                            const {
-                                data:
-                                    sessionData
-                            } =
-                                await supabaseClient
-                                    .auth
-                                    .getSession();
-
-                            const session =
-                                sessionData
-                                    ? sessionData.session
-                                    : null;
-
-                            const headers = {
-
-                                "Content-Type":
-                                    "application/json",
-
-                                "apikey":
-                                    SUPABASE_ANON_KEY
-
-                            };
-
-                            if (session) {
-
-                                headers.Authorization =
-                                    `Bearer ${session.access_token}`;
-
-                            }
-
-
-                            const response =
-                                await fetch(
-                                    `${SUPABASE_URL}/functions/v1/paypal-capture-order`,
-                                    {
-
-                                        method:
-                                            "POST",
-
-                                        headers,
-
-                                        body:
-                                            JSON.stringify({
-
-                                                paypal_order_id:
-                                                    data.orderID
-
-                                            })
-
-                                    }
-                                );
-
-
-                            const result =
-                                await response.json();
-
-
-                            if (!response.ok) {
-
-                                console.error(
-                                    "Erreur paypal-capture-order:",
-                                    result
-                                );
-
-                                throw new Error(
-                                    result.error ||
-                                    "Impossible de confirmer le paiement."
-                                );
-
-                            }
-
-
-                            if (
-                                !result.success
-                            ) {
-
-                                throw new Error(
-                                    "Le paiement n'a pas pu être confirmé."
-                                );
-
-                            }
-
-
-                            cart = [];
-
-                            updateCart();
-
-                            paypalButtonsRendered =
-                                false;
-
-                            container.innerHTML =
-                                "";
-
-                            closeModal(
-                                "cartModal"
-                            );
-
-                            showStatus(
-                                "✅ Paiement confirmé ! Merci pour ta commande.",
-                                "success"
-                            );
-
-                        }
-                        catch (error) {
-
-                            console.error(
-                                "Erreur confirmation PayPal:",
-                                error
-                            );
-
-                            showStatus(
-                                "❌ " +
-                                getErrorMessage(
-                                    error
-                                ),
-                                "error"
-                            );
-
-                        }
-
-                    },
-
-
-                /* =========================
-                   ANNULATION
-                ========================= */
-
-                onCancel:
-                    function () {
-
-                        showStatus(
-                            "Paiement annulé.",
-                            "error"
-                        );
-
-                    },
-
-
-                /* =========================
-                   ERREUR
-                ========================= */
-
-                onError:
-                    function (
-                        error
-                    ) {
-
-                        console.error(
-                            "Erreur PayPal:",
-                            error
-                        );
-
-                        showStatus(
-                            "❌ Une erreur PayPal est survenue.",
-                            "error"
-                        );
-
-                    }
-
-            });
-
-
-        if (
-            !buttons.isEligible()
-        ) {
-
-            throw new Error(
-                "Les boutons PayPal ne sont pas disponibles."
-            );
-
-        }
-
-
-        await buttons.render(
-            "#paypal-button-container"
-        );
-
-
-        paypalButtonsRendered =
-            true;
-
-
-        container.scrollIntoView({
-            behavior:
-                "smooth",
-
-            block:
-                "center"
-        });
-
-
-        showStatus(
-            "💳 Choisis ton mode de paiement PayPal.",
-            "success"
-        );
-
-    }
-    catch (error) {
-
-        console.error(
-            "Erreur initialisation PayPal:",
-            error
-        );
-
-        paypalButtonsRendered =
-            false;
-
-        container.innerHTML =
-            "";
-
-        showStatus(
-            "❌ " +
-            getErrorMessage(
-                error
-            ),
-            "error"
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   19. MODALS
-===================================================== */
+/* ==========================================
+   MODALS
+========================================== */
 
 function openModal(id) {
 
     const modal =
-        document.getElementById(
-            id
-        );
+        document.getElementById(id);
 
     if (modal) {
 
@@ -3506,9 +3777,7 @@ function openModal(id) {
 function closeModal(id) {
 
     const modal =
-        document.getElementById(
-            id
-        );
+        document.getElementById(id);
 
     if (modal) {
 
@@ -3522,12 +3791,6 @@ function closeModal(id) {
 
 
 function openLogin() {
-
-    /*
-     * Personne ne peut ouvrir l'Admin
-     * sauf si le bouton est réellement
-     * affiché pour un administrateur.
-     */
 
     if (
         currentUser &&
@@ -3579,32 +3842,30 @@ document.addEventListener(
     event => {
 
         if (
-            event.key !==
+            event.key ===
             "Escape"
         ) {
 
-            return;
+            document
+                .querySelectorAll(
+                    ".modal.active"
+                )
+                .forEach(
+                    modal =>
+                        modal.classList.remove(
+                            "active"
+                        )
+                );
 
         }
-
-        document
-            .querySelectorAll(
-                ".modal.active"
-            )
-            .forEach(
-                modal =>
-                    modal.classList.remove(
-                        "active"
-                    )
-            );
 
     }
 );
 
 
-/* =====================================================
-   20. OUTILS
-===================================================== */
+/* ==========================================
+   UTILITAIRES
+========================================== */
 
 function formatPrice(value) {
 
@@ -3612,14 +3873,10 @@ function formatPrice(value) {
         Number(value);
 
     return (
-        Number.isFinite(
-            number
-        )
+        Number.isFinite(number)
             ? number
             : 0
-    )
-    .toFixed(2) +
-    " €";
+    ).toFixed(2) + " €";
 
 }
 
@@ -3634,22 +3891,44 @@ function placeholderImage() {
                 xmlns="http://www.w3.org/2000/svg"
                 width="600"
                 height="400"
-                viewBox="0 0 600 400"
             >
+
+                <defs>
+
+                    <linearGradient
+                        id="g"
+                        x1="0"
+                        x2="1"
+                    >
+
+                        <stop
+                            offset="0"
+                            stop-color="#111827"
+                        />
+
+                        <stop
+                            offset="1"
+                            stop-color="#635bff"
+                        />
+
+                    </linearGradient>
+
+                </defs>
 
                 <rect
                     width="600"
                     height="400"
-                    fill="#e5e7eb"
+                    fill="url(#g)"
                 />
 
                 <text
                     x="300"
-                    y="205"
+                    y="210"
                     text-anchor="middle"
                     font-family="Arial"
-                    font-size="30"
-                    fill="#6b7280"
+                    font-size="38"
+                    font-weight="bold"
+                    fill="white"
                 >
                     Nexora
                 </text>
@@ -3662,9 +3941,7 @@ function placeholderImage() {
 }
 
 
-function escapeHTML(
-    value
-) {
+function escapeHTML(value) {
 
     return String(value)
 
@@ -3696,61 +3973,9 @@ function escapeHTML(
 }
 
 
-function escapeAttribute(
-    value
-) {
+function escapeAttribute(value) {
 
-    return escapeHTML(
-        value
-    );
-
-}
-
-
-function getErrorMessage(
-    error
-) {
-
-    if (!error) {
-
-        return "Erreur inconnue.";
-
-    }
-
-    if (
-        error.code ===
-        "42501"
-    ) {
-
-        return (
-            "Permission refusée par Supabase. " +
-            "Les politiques RLS bloquent cette opération."
-        );
-
-    }
-
-    if (
-        error.code ===
-        "PGRST116"
-    ) {
-
-        return (
-            "Aucune ligne trouvée."
-        );
-
-    }
-
-    if (
-        error.message
-    ) {
-
-        return error.message;
-
-    }
-
-    return String(
-        error
-    );
+    return escapeHTML(value);
 
 }
 
