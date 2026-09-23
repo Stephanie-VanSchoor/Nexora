@@ -774,7 +774,7 @@ nav .secondary:hover {
 }
 
 /* ================================
-   DETAIL PRODUIT PREMIUM
+   DETAIL PRODUIT
 ================================ */
 
 .product-detail-header {
@@ -1369,7 +1369,7 @@ footer p {
             <input
                 id="productName"
                 type="text"
-                placeholder="Ex : GourmetPro"
+                placeholder="Ex : CryptoSphere"
             >
 
         </div>
@@ -1482,7 +1482,18 @@ footer p {
      DETAIL PRODUIT
 ================================ -->
 
+<div
+    id="detailModal"
+    class="modal"
+>
 
+    <div class="modal-box">
+
+        <div id="detailContent"></div>
+
+    </div>
+
+</div>
 
 <!-- ================================
      PANIER
@@ -2326,6 +2337,7 @@ function createProductCard(product) {
                     </div>
 
                     <button
+                        type="button"
                         class="primary"
                         onclick="showProduct('${escapeAttribute(product.id)}')"
                     >
@@ -2368,6 +2380,31 @@ function showProduct(id) {
 
     }
 
+    const detailModal =
+        document.getElementById(
+            "detailModal"
+        );
+
+    const detailContent =
+        document.getElementById(
+            "detailContent"
+        );
+
+    if (!detailModal || !detailContent) {
+
+        console.error(
+            "detailModal ou detailContent introuvable."
+        );
+
+        showStatus(
+            "Erreur : fenêtre du produit introuvable.",
+            "error"
+        );
+
+        return;
+
+    }
+
     const images =
         Array.isArray(product.images)
             ? product.images
@@ -2398,9 +2435,7 @@ function showProduct(id) {
             `
             : "";
 
-    document.getElementById(
-        "detailContent"
-    ).innerHTML = `
+    detailContent.innerHTML = `
 
         <div class="product-detail-header">
 
@@ -2426,6 +2461,7 @@ function showProduct(id) {
             alt="${escapeAttribute(
                 product.name || ""
             )}"
+            onerror="this.src=placeholderImage()"
         >
 
         ${gallery}
@@ -2448,6 +2484,7 @@ function showProduct(id) {
         <div class="detail-actions">
 
             <button
+                type="button"
                 class="primary"
                 onclick="addToCart('${escapeAttribute(product.id)}')"
             >
@@ -2455,6 +2492,7 @@ function showProduct(id) {
             </button>
 
             <button
+                type="button"
                 class="secondary"
                 onclick="closeModal('detailModal')"
             >
@@ -2634,6 +2672,11 @@ function openCart() {
             "cartContent"
         );
 
+    const paypalContainer =
+        document.getElementById(
+            "paypal-button-container"
+        );
+
     if (!cart.length) {
 
         container.innerHTML = `
@@ -2641,6 +2684,11 @@ function openCart() {
                 Ton panier est actuellement vide.
             </p>
         `;
+
+        paypalContainer.innerHTML = "";
+
+        paypalButtonsRendered =
+            false;
 
         openModal(
             "cartModal"
@@ -2672,6 +2720,7 @@ function openCart() {
                         <div class="actions">
 
                             <button
+                                type="button"
                                 class="secondary"
                                 onclick="changeCartQuantity('${escapeAttribute(item.id)}', -1)"
                             >
@@ -2679,6 +2728,7 @@ function openCart() {
                             </button>
 
                             <button
+                                type="button"
                                 class="secondary"
                                 onclick="changeCartQuantity('${escapeAttribute(item.id)}', 1)"
                             >
@@ -2686,6 +2736,7 @@ function openCart() {
                             </button>
 
                             <button
+                                type="button"
                                 class="danger"
                                 onclick="removeFromCart('${escapeAttribute(item.id)}')"
                             >
@@ -2741,6 +2792,20 @@ function openCart() {
         "cartModal"
     );
 
+    /*
+       On affiche PayPal automatiquement
+       après ouverture du panier.
+    */
+
+    setTimeout(
+        () => {
+
+            checkout();
+
+        },
+        100
+    );
+
 }
 
 
@@ -2752,11 +2817,6 @@ async function checkout() {
 
     if (!cart.length) {
 
-        showStatus(
-            "Ton panier est vide.",
-            "error"
-        );
-
         return;
 
     }
@@ -2765,6 +2825,12 @@ async function checkout() {
         document.getElementById(
             "paypal-button-container"
         );
+
+    if (!container) {
+
+        return;
+
+    }
 
     if (
         typeof window.paypal ===
@@ -2781,11 +2847,6 @@ async function checkout() {
     }
 
     if (paypalButtonsRendered) {
-
-        container.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
 
         return;
 
@@ -2808,11 +2869,6 @@ async function checkout() {
                     shape: "rect",
                     label: "paypal"
                 },
-
-
-                /* ======================
-                   CREATE ORDER
-                ====================== */
 
                 createOrder:
                     async function () {
@@ -2903,11 +2959,6 @@ async function checkout() {
                         return result.paypal_order_id;
 
                     },
-
-
-                /* ======================
-                   APPROVE
-                ====================== */
 
                 onApprove:
                     async function(data) {
@@ -3030,7 +3081,6 @@ async function checkout() {
 
                     },
 
-
                 onCancel:
                     function() {
 
@@ -3041,7 +3091,6 @@ async function checkout() {
 
                     },
 
-
                 onError:
                     function(error) {
 
@@ -3049,6 +3098,9 @@ async function checkout() {
                             "PayPal:",
                             error
                         );
+
+                        paypalButtonsRendered =
+                            false;
 
                         showStatus(
                             "❌ Une erreur PayPal est survenue.",
@@ -3075,11 +3127,6 @@ async function checkout() {
 
         paypalButtonsRendered =
             true;
-
-        container.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
 
         showStatus(
             "💳 Choisis ton mode de paiement.",
