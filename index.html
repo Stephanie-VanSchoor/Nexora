@@ -20,6 +20,7 @@ body {
     background: #f5f7fb;
     color: #111827;
 }
+    
 
 button,
 input,
@@ -2595,7 +2596,14 @@ function openCart() {
    18. PAIEMENT
 ===================================================== */
 
-function checkout() {
+/* =====================================================
+   18. PAIEMENT PAYPAL
+===================================================== */
+
+let paypalButtonsRendered = false;
+
+
+async function checkout() {
 
     if (!cart.length) {
 
@@ -2607,13 +2615,420 @@ function checkout() {
         return;
     }
 
+    if (!currentUser) {
+
+        showStatus(
+            "🔐 Tu dois être connecté pour effectuer le paiement.",
+            "error"
+        );
+
+        closeModal("cartModal");
+        openLogin();
+
+        return;
+    }
+
+    const container =
+        document.getElementById(
+            "paypal-button-container"
+        );
+
+    if (!container) {
+
+        showStatus(
+            "❌ Conteneur PayPal introuvable.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (
+        typeof window.paypal ===
+        "undefined"
+    ) {
+
+        showStatus(
+            "❌ PayPal n'est pas chargé. Vérifie ta connexion internet.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (paypalButtonsRendered) {
+
+        container.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+        return;
+    }
+
+    container.innerHTML = "";
+
     showStatus(
-        "💳 Le paiement PayPal sera ajouté à l'étape suivante.",
+        "💳 Chargement de PayPal...",
         "success"
     );
 
-}
+    try {
 
+        const buttons =
+            window.paypal.Buttons({
+
+                style: {
+                    layout: "vertical",
+                    shape: "rect",
+                    label: "paypal"
+                },
+
+
+                /* =========================
+                   CREATION COMMANDE PAYPAL
+                ========================= */
+
+                createOrder:
+                    async function () {
+
+                        const {
+                            data: sessionData,
+                            error: sessionError
+                        } =
+                            await supabaseClient
+                                .auth
+                                .getSession();
+
+                        if (sessionError) {
+
+                            throw sessionError;
+
+                        }
+
+                        const session =
+                            sessionData.session;
+
+                        if (!session) {
+
+                            throw new Error(
+                                "Ta session a expiré. Reconnecte-toi."
+                            );
+
+                        }
+
+                        const items =
+                            cart.map(
+                                item => ({
+                                    product_id:
+                                        item.id,
+
+                                    quantity:
+                                        item.quantity
+                                })
+                            );
+
+
+                        const response =
+                            await fetch(
+                                `${SUPABASE_URL}/functions/v1/paypal-create-order`,
+                                {
+                                    method:
+                                        "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json",
+
+                                        "apikey":
+                                            SUPABASE_ANON_KEY,
+
+                                        "Authorization":
+                                            `Bearer ${session.access_token}`
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+                                            items
+                                        })
+                                }
+                            );
+
+
+                        const result =
+                            await response.json();
+
+
+                        if (!response.ok) {
+
+                            console.error(
+                                "Erreur paypal-create-order:",
+                                result
+                            );
+
+                            throw new Error(
+                                result.error ||
+                                "Impossible de créer la commande PayPal."
+                            );
+
+                        }
+
+
+                        if (
+                            !result.paypal_order_id
+                        ) {
+
+                            throw new Error(
+                                "PayPal n'a pas retourné d'identifiant de commande."
+                            );
+
+                        }
+
+
+                        return result.paypal_order_id;
+
+                    },
+
+
+                /* =========================
+                   PAIEMENT APPROUVE
+                ========================= */
+
+                onApprove:
+                    async function (
+                        data
+                    ) {
+
+                        try {
+
+                            showStatus(
+                                "⏳ Confirmation du paiement...",
+                                "success"
+                            );
+
+
+                            const {
+                                data: sessionData,
+                                error: sessionError
+                            } =
+                                await supabaseClient
+                                    .auth
+                                    .getSession();
+
+
+                            if (sessionError) {
+
+                                throw sessionError;
+
+                            }
+
+
+                            const session =
+                                sessionData.session;
+
+
+                            if (!session) {
+
+                                throw new Error(
+                                    "Ta session a expiré. Reconnecte-toi."
+                                );
+
+                            }
+
+
+                            const response =
+                                await fetch(
+                                    `${SUPABASE_URL}/functions/v1/paypal-capture-order`,
+                                    {
+                                        method:
+                                            "POST",
+
+                                        headers: {
+                                            "Content-Type":
+                                                "application/json",
+
+                                            "apikey":
+                                                SUPABASE_ANON_KEY,
+
+                                            "Authorization":
+                                                `Bearer ${session.access_token}`
+                                        },
+
+                                        body:
+                                            JSON.stringify({
+                                                paypal_order_id:
+                                                    data.orderID
+                                            })
+                                    }
+                                );
+
+
+                            const result =
+                                await response.json();
+
+
+                            if (!response.ok) {
+
+                                console.error(
+                                    "Erreur paypal-capture-order:",
+                                    result
+                                );
+
+                                throw new Error(
+                                    result.error ||
+                                    "Impossible de confirmer le paiement."
+                                );
+
+                            }
+
+
+                            if (
+                                !result.success
+                            ) {
+
+                                throw new Error(
+                                    "Le paiement n'a pas pu être confirmé."
+                                );
+
+                            }
+
+
+                            /* =========================
+                               PAIEMENT TERMINE
+                            ========================= */
+
+                            cart = [];
+
+                            updateCart();
+
+                            paypalButtonsRendered =
+                                false;
+
+                            container.innerHTML =
+                                "";
+
+                            closeModal(
+                                "cartModal"
+                            );
+
+                            showStatus(
+                                "✅ Paiement confirmé ! Merci pour ta commande.",
+                                "success"
+                            );
+
+
+                        }
+                        catch (error) {
+
+                            console.error(
+                                "Erreur confirmation PayPal:",
+                                error
+                            );
+
+                            showStatus(
+                                "❌ " +
+                                getErrorMessage(error),
+                                "error"
+                            );
+
+                        }
+
+                    },
+
+
+                /* =========================
+                   ANNULATION
+                ========================= */
+
+                onCancel:
+                    function () {
+
+                        showStatus(
+                            "Paiement annulé.",
+                            "error"
+                        );
+
+                    },
+
+
+                /* =========================
+                   ERREUR PAYPAL
+                ========================= */
+
+                onError:
+                    function (
+                        error
+                    ) {
+
+                        console.error(
+                            "Erreur PayPal:",
+                            error
+                        );
+
+                        showStatus(
+                            "❌ Une erreur PayPal est survenue.",
+                            "error"
+                        );
+
+                    }
+
+            });
+
+
+        if (
+            !buttons.isEligible()
+        ) {
+
+            throw new Error(
+                "Les boutons PayPal ne sont pas disponibles."
+            );
+
+        }
+
+
+        await buttons.render(
+            "#paypal-button-container"
+        );
+
+
+        paypalButtonsRendered =
+            true;
+
+
+        container.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+
+        showStatus(
+            "💳 Choisis ton mode de paiement PayPal.",
+            "success"
+        );
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Erreur initialisation PayPal:",
+            error
+        );
+
+        paypalButtonsRendered =
+            false;
+
+        container.innerHTML = "";
+
+        showStatus(
+            "❌ " +
+            getErrorMessage(error),
+            "error"
+        );
+
+    }
+
+}
 
 /* =====================================================
    19. MODALS
